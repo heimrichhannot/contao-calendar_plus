@@ -3,9 +3,9 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2013 Leo Feyer
+ * Copyright (c) 2005-2015 Leo Feyer
  *
- * @package Extended_events
+ * @package Calendar_plus
  * @link    https://contao.org
  * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
  */
@@ -25,17 +25,17 @@ ClassLoader::addNamespaces(array
  */
 ClassLoader::addClasses(array
 (
-	// Classes
-	'ExtendedEvents'                     => 'system/modules/extended_events/classes/ExtendedEvents.php',
-
 	// Models
-	'HeimrichHannot\CalendarEventsModel' => 'system/modules/extended_events/models/CalendarEventsModel.php',
+	'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel' => 'system/modules/calendar_plus/models/CalendarPlusEventsModel.php',
 
 	// Modules
-	'HeimrichHannot\ModuleEventChooser'  => 'system/modules/extended_events/modules/ModuleEventChooser.php',
+	'HeimrichHannot\CalendarPlus\ModuleEventChooser'      => 'system/modules/calendar_plus/modules/ModuleEventChooser.php',
 
 	// Widgets
-	'SubEventList'                       => 'system/modules/extended_events/widgets/SubEventList.php',
+	'HeimrichHannot\CalendarPlus\SubEventList'            => 'system/modules/calendar_plus/widgets/SubEventList.php',
+
+	// Classes
+	'HeimrichHannot\CalendarPlus\ExtendedEvents'          => 'system/modules/calendar_plus/classes/ExtendedEvents.php',
 ));
 
 
@@ -44,5 +44,5 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'mod_event_chooser' => 'system/modules/extended_events/templates',
+	'mod_event_chooser' => 'system/modules/calendar_plus/templates',
 ));

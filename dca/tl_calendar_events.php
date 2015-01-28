@@ -26,7 +26,7 @@ if (!isset($_GET['epid'])) {
 	$dc['list']['operations']['showSubEvents'] = array
 	(
 		'button_callback' => array('tl_extended_events_calendar_events', 'showSubEvents'),
-		'icon'            => '/system/modules/extended_events/assets/img/icons/show-sub-events.png'
+		'icon'            => '/system/modules/calendar_plus/assets/img/icons/show-sub-events.png'
 	);
 }
 
@@ -138,12 +138,12 @@ $dc['fields']['promoter'] = array
 	'inputType'  => 'select',
 	'foreignKey' => 'tl_calendar_promoters.title',
 	'exclude'    => true,
-	'eval'                    => array('chosen'=>true, 'includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'long'),
+	'eval'       => array('chosen' => true, 'includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'long'),
 	'wizard'     => array
 	(
 		array('tl_extended_events_calendar_events', 'editPromoter')
 	),
-	'sql'                     => "int(10) unsigned NOT NULL default '0'"
+	'sql'        => "int(10) unsigned NOT NULL default '0'"
 );
 
 /**
@@ -153,7 +153,7 @@ if ($_GET['table'] == 'tl_calendar_events') {
 	$objDatabase = \Database::getInstance();
 
 	if (isset($_GET['epid'])) {
-		if (($objEvents = \CalendarEventsModel::findByParentEvent($_GET['epid'])) !== null) {
+		if (($objEvents = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findByParentEvent($_GET['epid'])) !== null) {
 			while ($objEvents->next()) {
 				$dc['list']['sorting']['root'][] = $objEvents->id;
 			}
@@ -161,7 +161,7 @@ if ($_GET['table'] == 'tl_calendar_events') {
 			$dc['list']['sorting']['root'] = array(-1); // don't display anything
 		}
 	} else {
-		if (($objEvents = \CalendarEventsModel::findByParentEvent(0)) !== null) {
+		if (($objEvents = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findByParentEvent(0)) !== null) {
 			while ($objEvents->next()) {
 				$dc['list']['sorting']['root'][] = $objEvents->id;
 			}
@@ -189,8 +189,8 @@ class tl_extended_events_calendar_events extends Backend
 	public function setDefaultParentEvent($dc)
 	{
 		if (isset($_GET['id'])) {
-			$objEvent       = \CalendarEventsModel::findByPk($_GET['id']);
-			$objParentEvent = \CalendarEventsModel::findByPk($_GET['epid']);
+			$objEvent       = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findByPk($_GET['id']);
+			$objParentEvent = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findByPk($_GET['epid']);
 			if ($objEvent !== null && !$objEvent->parentEvent && isset($_GET['epid'])) {
 				if (!$objEvent->pid)
 					$objEvent->pid = $objParentEvent->pid;

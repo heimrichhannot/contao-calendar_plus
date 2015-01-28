@@ -1,14 +1,18 @@
 <?php
+/**
+ * Contao Open Source CMS
+ *
+ * Copyright (c) 2015 Heimrich & Hannot GmbH
+ * @package calendar_plus
+ * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
+ */
 
-namespace HeimrichHannot;
+namespace HeimrichHannot\CalendarPlus;
 
-use \Contao\CalendarEventsModel as CalendarEventsModelOld;
-
-if (!class_exists('CalendarEventsModel')) {
-
-class CalendarEventsModel extends CalendarEventsModelOld
+class CalendarPlusEventsModel extends \CalendarEventsModel
 {
-	
+
 	/**
 	 * Find published events by id or alias
 	 *
@@ -30,7 +34,7 @@ class CalendarEventsModel extends CalendarEventsModelOld
 
 		return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId), $arrOptions);
 	}
-	
+
 	/**
 	 * Find published sub events by the parent's ID or alias
 	 *
@@ -49,7 +53,7 @@ class CalendarEventsModel extends CalendarEventsModelOld
 
 		return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId), $arrOptions);
 	}
-	
+
 	public static function hasAtLeastOnePublishedPlacedSubEvent($config, $intId)
 	{
 		if (in_array('event_subscription', $config->getActiveModules())) {
@@ -65,7 +69,7 @@ class CalendarEventsModel extends CalendarEventsModelOld
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Find published sub events by the parent's ID or alias
 	 *
@@ -78,7 +82,7 @@ class CalendarEventsModel extends CalendarEventsModelOld
 	public static function findPublishedParentalEvents(array $arrOptions=array())
 	{
 		$t = static::$strTable;
-		$objEvents = \CalendarEventsModel::findAll();
+		$objEvents = static::findAll();
 		$parentalEvents = array();
 		if ($objEvents !== null) {
 			while ($objEvents->next())
@@ -105,11 +109,11 @@ class CalendarEventsModel extends CalendarEventsModelOld
 		if ($objEvent !== null)
 			if ($objEvent->teaser)
 				return true;
-		
+
 		$objContent = \ContentModel::findPublishedByPidAndTable($intId, 'tl_calendar_events');
 		return $objContent !== null;
 	}
-	
+
 	public static function getPlacesLeft($intId, $database) {
 		$objEvent = static::findByPk($intId);
 		if ($objEvent !== null) {
@@ -117,7 +121,7 @@ class CalendarEventsModel extends CalendarEventsModelOld
 		}
 		return false;
 	}
-	
+
 	public static function getReservedPlaces($intId, $database, $useMemberGroups = false) {
 		$objEvent = static::findByPk($intId);
 		$reservedPlaces = 0;
@@ -139,17 +143,17 @@ class CalendarEventsModel extends CalendarEventsModelOld
 		}
 		return $reservedPlaces;
 	}
-	
+
 	public static function getCheckedInCount($intId) {
 		$objEvent = static::findByPk($intId);
-		
+
 		if ($objEvent !== null) {
 			$objMembers = \Database::getInstance()->prepare('SELECT * FROM tl_member WHERE groups LIKE ?')->execute('%"' . $objEvent->memberGroupCheckedIn . '"%');
 			return $objMembers->numRows;
 		}
 		return false;
 	}
-	
+
 	public static function getPlacesLeftSubEvent($intId, $database) {
 		$objEvent = static::findByPk($intId);
 		if ($objEvent !== null) {
@@ -157,12 +161,12 @@ class CalendarEventsModel extends CalendarEventsModelOld
 		}
 		return false;
 	}
-	
+
 	public static function getReservedPlacesSubEvent($intId, $database) {
 		$objEvent = static::findByPk($intId);
 		$reservedPlaces = 0;
 		if ($objEvent !== null) {
-			$objParentEvent = \CalendarEventsModel::findByPk($objEvent->parentEvent);
+			$objParentEvent = static::findByPk($objEvent->parentEvent);
 			if ($objParentEvent !== null) {
 				$objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objParentEvent->alias);
 				if ($objSubscriber->numRows > 0) {
@@ -179,10 +183,8 @@ class CalendarEventsModel extends CalendarEventsModelOld
 		}
 		return $reservedPlaces;
 	}
-	
+
 	public static function hasContentElements($intId) {
 		return (\ContentModel::findBy(array('ptable=? AND pid=?'), array('tl_news', $intId)) !== null);
 	}
-	
-}
 }

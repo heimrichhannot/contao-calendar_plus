@@ -1,29 +1,15 @@
 <?php
-
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2013 Leo Feyer
- *
- * @package Core
- * @link    https://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
+ * Copyright (c) 2015 Heimrich & Hannot GmbH
+ * @package calendar_plus
+ * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
+namespace HeimrichHannot\CalendarPlus;
 
-/**
- * Run in a custom namespace, so the class can be replaced
- */
-
-
-/**
- * Class SubEventList
- *
- * Provide methods to handle radio buttons.
- * @copyright  Leo Feyer 2005-2013
- * @author     Leo Feyer <https://contao.org>
- * @package    Core
- */
 class SubEventList extends \Widget
 {
 
@@ -109,17 +95,17 @@ class SubEventList extends \Widget
 				foreach ($this->arrOptions as $i => $arrOption)
 				{
 					// further info link
-					if (\CalendarEventsModel::hasTextOrTeaser($arrOption['value']))
+					if (CalendarPlusEventsModel::hasTextOrTeaser($arrOption['value']))
 						$arrOption['url'] = $this->replaceInsertTags('{{event_url::' . $arrOption['value'] . '}}');
 				
 					// places left
 					if (in_array('event_subscription', $this->Config->getActiveModules())) {
 						$this->import('Database');
-						$objSubEvent = \CalendarEventsModel::findByPk($arrOption['value']);
+						$objSubEvent = CalendarPlusEventsModel::findByPk($arrOption['value']);
 						if ($objSubEvent !== null) {
-							$objParentEvent = \CalendarEventsModel::findByPk($objSubEvent->parentEvent);
+							$objParentEvent = CalendarPlusEventsModel::findByPk($objSubEvent->parentEvent);
 							if ($objParentEvent !== null && $objSubEvent->addSubscription && !$objParentEvent->hidePlacesLeftSubEvents) {
-								$placesLeftSubEvent = \CalendarEventsModel::getPlacesLeftSubEvent($objSubEvent->id, $this->Database);
+								$placesLeftSubEvent = CalendarPlusEventsModel::getPlacesLeftSubEvent($objSubEvent->id, $this->Database);
 								$arrOption['placesLeft'] = sprintf($GLOBALS['TL_LANG']['tl_event_subscription'][$placesLeftSubEvent <= 0 ? 'noPlacesLeftSubEventTeaser' : 'placesLeftSubEventTeaser'],
 										$placesLeftSubEvent, $objSubEvent->placesTotal);
 								if ($placesLeftSubEvent <= 0)
@@ -181,17 +167,17 @@ class SubEventList extends \Widget
 				foreach ($this->arrOptions as $i=>$arrOption)
 				{
 					// further info link
-					if (\CalendarEventsModel::hasTextOrTeaser($arrOption['value']))
+					if (CalendarPlusEventsModel::hasTextOrTeaser($arrOption['value']))
 						$arrOption['url'] = $this->replaceInsertTags('{{event_url::' . $arrOption['value'] . '}}');
 					
 					// places left
 					if (in_array('event_subscription', $this->Config->getActiveModules())) {
 						$this->import('Database');
-						$objSubEvent = \CalendarEventsModel::findByPk($arrOption['value']);
+						$objSubEvent = CalendarPlusEventsModel::findByPk($arrOption['value']);
 						if ($objSubEvent !== null) {
-							$objParentEvent = \CalendarEventsModel::findByPk($objSubEvent->parentEvent);
+							$objParentEvent = CalendarPlusEventsModel::findByPk($objSubEvent->parentEvent);
 							if ($objParentEvent !== null && $objSubEvent->addSubscription && !$objParentEvent->hidePlacesLeftSubEvents) {
-								$placesLeftSubEvent = \CalendarEventsModel::getPlacesLeftSubEvent($objSubEvent->id, $this->Database);
+								$placesLeftSubEvent = CalendarPlusEventsModel::getPlacesLeftSubEvent($objSubEvent->id, $this->Database);
 								$arrOption['placesLeft'] = sprintf($GLOBALS['TL_LANG']['tl_event_subscription'][$placesLeftSubEvent <= 0 ? 'noPlacesLeftSubEventTeaser' : 'placesLeftSubEventTeaser'],
 										$placesLeftSubEvent, $objSubEvent->placesTotal);
 								
@@ -272,8 +258,8 @@ class SubEventList extends \Widget
 					if ($_GET['act'] == 'edit') {
 						$objSignupForm = \FormModel::findBy('alias', str_replace('fd_', '', $_GET['do']));
 						if ($objSignupForm !== null) {
-							$objEvent = \CalendarEventsModel::findBy('signupForm', $objSignupForm->id);
-							$objSubEvents = \CalendarEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
+							$objEvent = CalendarPlusEventsModel::findBy('signupForm', $objSignupForm->id);
+							$objSubEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
 							if ($objSubEvents !== null) {
 								$i = 0;
 								while ($objSubEvents->next()) {
@@ -289,8 +275,8 @@ class SubEventList extends \Widget
 					if ($_GET['act'] == 'edit') {
 						$objSignupForm = \FormModel::findBy('alias', str_replace('fd_', '', $_GET['do']));
 						if ($objSignupForm !== null) {
-							$objEvent = \CalendarEventsModel::findBy('signupForm', $objSignupForm->id);
-							$objSubEvents = \CalendarEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
+							$objEvent = CalendarPlusEventsModel::findBy('signupForm', $objSignupForm->id);
+							$objSubEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
 							if ($objSubEvents !== null) {
 								$i = 0;
 								while ($objSubEvents->next()) {

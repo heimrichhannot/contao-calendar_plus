@@ -18,6 +18,6 @@ array_insert($dc['list']['operations'], 2, array(
 	(
 		'label' => &$GLOBALS['TL_LANG']['tl_calendar']['promoters'],
 		'href'  => 'table=tl_calendar_promoters',
-		'icon'  => 'system/modules/extended_events/assets/img/icons/promoters.png'
+		'icon'  => 'system/modules/calendar_plus/assets/img/icons/promoters.png'
 	)
 ));

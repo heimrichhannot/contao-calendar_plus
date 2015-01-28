@@ -77,7 +77,7 @@ class tl_extended_events_form_field extends Backend {
 	}
 
 	public function getParentalEvents() {
-		$objEvents = \CalendarEventsModel::findPublishedParentalEvents();
+		$objEvents = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findPublishedParentalEvents();
 		if ($objEvents !== null)
 		{
 			$parentalEvents = array();
@@ -101,7 +101,7 @@ class tl_extended_events_form_field extends Backend {
 	
 	public static function doCreateOptions($formFieldId, $formFieldEventId)
 	{
-		$objEvents = \CalendarEventsModel::findPublishedSubEventsByParentEventId($formFieldEventId);
+		$objEvents = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($formFieldEventId);
 		
 		if ($objEvents !== null)
 		{
