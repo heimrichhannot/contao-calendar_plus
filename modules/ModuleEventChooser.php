@@ -26,7 +26,9 @@ class ModuleEventChooser extends \Module
 	{
 		$this->loadLanguageFile('tl_calendar_events');
 		
-		$objEvents = \CalendarEventsModel::findAll();
+		$objEvents = \CalendarEventsModel::findAll(array(
+			'order' => 'startDate DESC'
+		));
 		
 		// HOOK: modify event objects for the chooser
 		if (isset($GLOBALS['TL_HOOKS']['getEventObjectsForChooser']) && is_array($GLOBALS['TL_HOOKS']['getEventObjectsForChooser']))
@@ -41,7 +43,10 @@ class ModuleEventChooser extends \Module
 		$items = array();
 		if ($objEvents !== null) {
 			while ($objEvents->next()) {
-				$items[$objEvents->id] = $objEvents->shortTitle ? $objEvents->shortTitle : $objEvents->title;
+				$items[$objEvents->id] = array(
+					'title' => $objEvents->shortTitle ? $objEvents->shortTitle : $objEvents->title,
+					'date' => date('d.m.Y', $objEvents->startDate)
+				);
 			}
 		}
 		

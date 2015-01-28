@@ -5,23 +5,23 @@ class ExtendedEvents extends Frontend
 
 	public function parseBackendTemplate($strContent, $strTemplate)
 	{
-			if ($_GET['epid'])
-			{
-				$objEvent = \CalendarEventsModel::findByPk($_GET['epid']);
-				if ($objEvent !== null) {
-					if ($this->Input->get('table') == 'tl_content')
-					{
-						$strContent = preg_replace('/<a href=\"(.*?)\" class=\"header_back\"/', '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $_GET['epid'] . '&pid=' . $_GET['pid'] . '"', $strContent);
-					}
-					else if ($objEvent->parentEvent)
-					{
-						$strContent = preg_replace('/<a href=\"(.*?)\" class=\"header_back\"/', '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $objEvent->parentEvent . '&pid=' . $_GET['pid'] . '"', $strContent);
-					}
-					else
-						$strContent = preg_replace('/<a href=\"(.*?)\" class=\"header_back\"/', '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&id=' . $_GET['pid'] . '"', $strContent);
+		if ($_GET['epid'])
+		{
+			$objEvent = \CalendarEventsModel::findByPk($_GET['epid']);
+			if ($objEvent !== null) {
+				if ($this->Input->get('table') == 'tl_content')
+				{
+					$strContent = preg_replace('/<a href=\"(.*?)\" class=\"header_back\"/', '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $_GET['epid'] . '&pid=' . $_GET['pid'] . '"', $strContent);
 				}
+				else if ($objEvent->parentEvent)
+				{
+					$strContent = preg_replace('/<a href=\"(.*?)\" class=\"header_back\"/', '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $objEvent->parentEvent . '&pid=' . $_GET['pid'] . '"', $strContent);
+				}
+				else
+					$strContent = preg_replace('/<a href=\"(.*?)\" class=\"header_back\"/', '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&id=' . $_GET['pid'] . '"', $strContent);
 			}
-			return $strContent;
+		}
+		return $strContent;
 	}
 	
 	public function getAllParentEvents($arrEvents, $arrCalendars, $intStart, $intEnd, \Module $objModule)

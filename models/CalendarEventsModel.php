@@ -88,7 +88,7 @@ class CalendarEventsModel extends CalendarEventsModelOld
 						$parentalEvents[] = $objEvents->parentEvent;
 			}
 		}
-		$arrColumns = array("($t.id IN (?))");
+		$arrColumns = array("($t.id IN (" . implode(',', $parentalEvents) . "))");
 
 		if (!BE_USER_LOGGED_IN)
 		{
@@ -118,28 +118,36 @@ class CalendarEventsModel extends CalendarEventsModelOld
 		return false;
 	}
 	
-	public static function getReservedPlaces($intId, $database) {
+	public static function getReservedPlaces($intId, $database, $useMemberGroups = false) {
 		$objEvent = static::findByPk($intId);
 		$reservedPlaces = 0;
 		if ($objEvent !== null) {
-			$objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objEvent->alias);
-			if ($objSubscriber->numRows > 0) {
-				$companionYesLabel = false;
-				if ($objEvent->companionFormField)
-					$companionYesLabel = \FormFieldModel::getFormFieldLabelByValue('yes', $objEvent->companionFormField, $objEvent->signupForm);
-				while ($objSubscriber->next()) {
-					if ($companionYesLabel !== false) {
-						$objSubscriberCompanion = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=? AND pid=?')->executeUncached($objEvent->companionFormField, $companionYesLabel, $objSubscriber->pid);
-						if ($objSubscriberCompanion->numRows > 0)
-							$reservedPlaces += 2;
-						else
-							$reservedPlaces += 1;
-					} else
+			if ($useMemberGroups)
+			{
+				$objMembers = $database->prepare('SELECT * FROM tl_member WHERE groups LIKE ?')->execute('%"' . $objEvent->memberGroup . '"%');
+				return $objMembers->numRows;
+			}
+			else
+			{
+				$objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objEvent->alias);
+				if ($objSubscriber->numRows > 0) {
+					while ($objSubscriber->next()) {
 						$reservedPlaces += 1;
+					}
 				}
 			}
 		}
 		return $reservedPlaces;
+	}
+	
+	public static function getCheckedInCount($intId) {
+		$objEvent = static::findByPk($intId);
+		
+		if ($objEvent !== null) {
+			$objMembers = \Database::getInstance()->prepare('SELECT * FROM tl_member WHERE groups LIKE ?')->execute('%"' . $objEvent->memberGroupCheckedIn . '"%');
+			return $objMembers->numRows;
+		}
+		return false;
 	}
 	
 	public static function getPlacesLeftSubEvent($intId, $database) {
@@ -158,29 +166,12 @@ class CalendarEventsModel extends CalendarEventsModelOld
 			if ($objParentEvent !== null) {
 				$objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objParentEvent->alias);
 				if ($objSubscriber->numRows > 0) {
-					$companionYesLabel = false;
-					if ($objParentEvent->companionFormField)
-						$companionYesLabel = \FormFieldModel::getFormFieldLabelByValue('yes', $objParentEvent->companionFormField, $objParentEvent->signupForm);
 					while ($objSubscriber->next()) {
-						if ($companionYesLabel !== false) {
-							$objSubEvents = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND pid=?')->limit(1)->executeUncached($objParentEvent->subEventFormField, $objSubscriber->pid);
-							if ($objSubEvents->numRows > 0) {
-								$objSubscriberCompanion = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=? AND pid=?')->executeUncached($objParentEvent->companionFormField, $companionYesLabel, $objSubscriber->pid);
-								$subEventIds = deserialize($objSubEvents->value, true);
-								if (in_array($intId, $subEventIds)) {
-									if ($objSubscriberCompanion->numRows > 0)
-										$reservedPlaces += 2;
-									else
-										$reservedPlaces += 1;
-								}
-							}
-						} else {
-							$objSubEvents = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND pid=?')->limit(1)->executeUncached($objParentEvent->subEventFormField, $objSubscriber->pid);
-							if ($objSubEvents->numRows > 0) {
-								$subEventIds = deserialize($objSubEvents->value, true);
-								if (in_array($intId, $subEventIds))
-									$reservedPlaces += 1;
-							}
+						$objSubEvents = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND pid=?')->limit(1)->executeUncached($objParentEvent->subEventFormField, $objSubscriber->pid);
+						if ($objSubEvents->numRows > 0) {
+							$subEventIds = deserialize($objSubEvents->value, true);
+							if (in_array($intId, $subEventIds))
+								$reservedPlaces += 1;
 						}
 					}
 				}

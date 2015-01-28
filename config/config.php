@@ -1,4 +1,9 @@
-<?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
+<?php
+
+/**
+ * Back end modules
+ */
+$GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_promoters';
 
 /**
  * Frontend modules

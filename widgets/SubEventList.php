@@ -130,13 +130,13 @@ class SubEventList extends \Widget
 					
 					$arrOptions[] = $this->generateRadioButton($arrOption, $i);
 				}
-		
+				
 				// Add a "no entries found" message if there are no options
 				if (empty($arrOptions))
 				{
 					$arrOptions[]= '<p class="tl_noopt">'.$GLOBALS['TL_LANG']['MSC']['noResult'].'</p>';
 				}
-		
+				
 				return sprintf('<fieldset id="ctrl_%s" class="tl_radio_container%s"><legend>%s%s%s%s</legend>%s</fieldset>%s',
 								$this->strId,
 								(($this->strClass != '') ? ' ' . $this->strClass : ''),
