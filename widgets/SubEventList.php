@@ -122,7 +122,7 @@ class SubEventList extends \Widget
 				{
 					$arrOptions[]= '<p class="tl_noopt">'.$GLOBALS['TL_LANG']['MSC']['noResult'].'</p>';
 				}
-				
+
 				return sprintf('<fieldset id="ctrl_%s" class="tl_radio_container%s"><legend>%s%s%s%s</legend>%s</fieldset>%s',
 								$this->strId,
 								(($this->strClass != '') ? ' ' . $this->strClass : ''),
@@ -130,7 +130,9 @@ class SubEventList extends \Widget
 								$this->strLabel,
 								($this->required ? '<span class="mandatory">*</span>' : ''),
 								$this->xlabel,
-								implode('<br>', $arrOptions),
+								implode('', array_map(function($value) {
+									return '<div>' . $value . '</div>';
+								}, $arrOptions)),
 								$this->wizard);
 				break;
 			case 'checkbox':

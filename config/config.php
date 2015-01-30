@@ -24,3 +24,4 @@ if(class_exists('HeimrichHannot\CalendarPlus\ExtendedEvents'))
  */
 
 $GLOBALS['BE_FFL']['subEventList'] = 'HeimrichHannot\CalendarPlus\SubEventList';
+$GLOBALS['TL_FFL']['subEventList'] = 'HeimrichHannot\CalendarPlus\SubEventList';
