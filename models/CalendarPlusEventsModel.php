@@ -171,11 +171,15 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 				$objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objParentEvent->alias);
 				if ($objSubscriber->numRows > 0) {
 					while ($objSubscriber->next()) {
-						$objSubEvents = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND pid=?')->limit(1)->executeUncached($objParentEvent->subEventFormField, $objSubscriber->pid);
-						if ($objSubEvents->numRows > 0) {
-							$subEventIds = deserialize($objSubEvents->value, true);
-							if (in_array($intId, $subEventIds))
-								$reservedPlaces += 1;
+						foreach (deserialize($objParentEvent->subEventFormFields, true) as $strSubEventFormField)
+						{
+							$objSubEvents = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND pid=?')
+								->limit(1)->executeUncached($strSubEventFormField, $objSubscriber->pid);
+							if ($objSubEvents->numRows > 0) {
+								$subEventIds = deserialize($objSubEvents->value, true);
+								if (in_array($intId, $subEventIds))
+									$reservedPlaces += 1;
+							}
 						}
 					}
 				}
