@@ -10,7 +10,7 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
-use HeimrichHannot\XCommonArray;
+use HeimrichHannot\EventSubscription\EventSubscriptionHelper;
 
 class SubEventList extends \Widget
 {
@@ -125,7 +125,7 @@ class SubEventList extends \Widget
 					$arrOptions[]= '<p class="tl_noopt">'.$GLOBALS['TL_LANG']['MSC']['noResult'].'</p>';
 				}
 
-				return sprintf('<fieldset id="ctrl_%s" class="tl_radio_container%s"><legend>%s%s%s%s</legend>%s</fieldset>%s',
+				return sprintf('<fieldset id="ctrl_%s" class="subevent tl_radio_container%s"><legend>%s%s%s%s</legend>%s</fieldset>%s',
 								$this->strId,
 								(($this->strClass != '') ? ' ' . $this->strClass : ''),
 								($this->required ? '<span class="invisible">'.$GLOBALS['TL_LANG']['MSC']['mandatory'].'</span> ' : ''),
@@ -268,7 +268,7 @@ class SubEventList extends \Widget
 
 				$result = sprintf('<fieldset id="ctrl_' . $this->name . '" class="tl_checkbox_container"><h3>%s</h3>', $this->generateLabel());
 
-				$subEvents = \EventSubscriptionHelper::getDeserializedArray($this->activeRecord->{$this->name});
+				$subEvents = EventSubscriptionHelper::getDeserializedArray($this->activeRecord->{$this->name});
 
 				if ($_GET['act'] == 'edit') {
 					foreach ($arrOptions as $i => $arrOption)
