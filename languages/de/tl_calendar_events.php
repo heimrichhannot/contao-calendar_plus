@@ -5,6 +5,7 @@
  */
 $GLOBALS['TL_LANG']['tl_calendar_events']['parentEvent'] = array('Übergeordneter Event', 'Wählen Sie einen übergeordneten Event, sofern es sich bei diesem Event um eine Unterveranstaltung handelt.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['promoter'] = array('Veranstalter', 'Wählen Sie einen Veranstalter aus.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['docents'] = array('Dozenten', 'Wählen Sie Dozenten dieser Veranstaltung aus.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['shortTitle'] = array('Kurztitel', 'Geben Sie hier eine verkürzte Bezeichnung des Events ein.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['locationAdditional'] = array('Zusatzangaben', 'Geben Sie hier Zusatzangaben zum Ort ein (z. B. einen Treffpunkt).');
 $GLOBALS['TL_LANG']['tl_calendar_events']['street'] = array('Straße', 'Geben Sie die Straße ein, in der das Event stattfindet.');

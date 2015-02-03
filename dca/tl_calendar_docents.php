@@ -9,9 +9,9 @@
  */
 
 /**
- * Table tl_calendar_promoters
+ * Table tl_calendar_docents
  */
-$GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
+$GLOBALS['TL_DCA']['tl_calendar_docents'] = array
 (
 
 	// Config
@@ -23,7 +23,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		'enableVersioning'            => true,
 		'onload_callback' => array
 		(
-			array('tl_calendar_promoters', 'checkPermission'),
+			array('tl_calendar_docents', 'checkPermission'),
 		),
 		'sql' => array
 		(
@@ -44,7 +44,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 			'fields'                  => array('title'),
 			'headerFields'            => array('title', 'jumpTo', 'tstamp', 'protected', 'allowComments', 'makeFeed'),
 			'panelLayout'             => 'filter;sort,search,limit',
-			'child_record_callback'   => array('tl_calendar_promoters', 'listPromoters'),
+			'child_record_callback'   => array('tl_calendar_docents', 'listDocents'),
 			'child_record_class'      => 'no_padding'
 		),
 		'global_operations' => array
@@ -61,39 +61,39 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['edit'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_docents']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
 			),
 			'copy' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['copy'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_docents']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.gif'
 			),
 			'cut' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['cut'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_docents']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.gif'
 			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_docents']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['toggle'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_docents']['toggle'],
 				'icon'                => 'visible.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_calendar_promoters', 'toggleIcon')
+				'button_callback'     => array('tl_calendar_docents', 'toggleIcon')
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_docents']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
 			)
@@ -132,7 +132,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		),
 		'title' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['title'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_docents']['title'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'sorting'                 => true,
@@ -143,20 +143,20 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		),
 		'alias' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['alias'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_docents']['alias'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'alias', 'unique'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
 			'save_callback' => array
 			(
-				array('tl_calendar_promoters', 'generateAlias')
+				array('tl_calendar_docents', 'generateAlias')
 			),
 			'sql'                     => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
 		),
 		'website' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['website'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_docents']['website'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -165,7 +165,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		),
 		'published' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['published'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_docents']['published'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'flag'                    => 2,
@@ -175,7 +175,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		),
 		'start' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['start'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_docents']['start'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
@@ -183,7 +183,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		),
 		'stop' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['stop'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_docents']['stop'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
@@ -194,7 +194,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 
 
 /**
- * Class tl_calendar_promoters
+ * Class tl_calendar_docents
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  * @package extended_events
@@ -202,7 +202,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  **/
 
-class tl_calendar_promoters extends Backend
+class tl_calendar_docents extends Backend
 {
 
 	/**
@@ -216,7 +216,7 @@ class tl_calendar_promoters extends Backend
 
 
 	/**
-	 * Check permissions to edit table tl_calendar_promoters
+	 * Check permissions to edit table tl_calendar_docents
 	 */
 	public function checkPermission()
 	{
@@ -247,7 +247,7 @@ class tl_calendar_promoters extends Backend
 			case 'create':
 				if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root))
 				{
-					$this->log('Not enough permissions to create promoters in calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+					$this->log('Not enough permissions to create docents in calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 				break;
@@ -256,7 +256,7 @@ class tl_calendar_promoters extends Backend
 			case 'copy':
 				if (!in_array(Input::get('pid'), $root))
 				{
-					$this->log('Not enough permissions to '.Input::get('act').' promoters ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+					$this->log('Not enough permissions to '.Input::get('act').' docents ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 			// NO BREAK STATEMENT HERE
@@ -265,19 +265,19 @@ class tl_calendar_promoters extends Backend
 			case 'show':
 			case 'delete':
 			case 'toggle':
-				$objPromoter = $this->Database->prepare("SELECT pid FROM tl_calendar_promoters WHERE id=?")
+				$objDocent = $this->Database->prepare("SELECT pid FROM tl_calendar_docents WHERE id=?")
 					->limit(1)
 					->execute($id);
 
-				if ($objPromoter->numRows < 1)
+				if ($objDocent->numRows < 1)
 				{
 					$this->log('Invalid event ID "'.$id.'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 
-				if (!in_array($objPromoter->pid, $root))
+				if (!in_array($objDocent->pid, $root))
 				{
-					$this->log('Not enough permissions to '.Input::get('act').' promoters ID "'.$id.'" of calendar ID "'.$objCalendar->pid.'"', __METHOD__, TL_ERROR);
+					$this->log('Not enough permissions to '.Input::get('act').' docents ID "'.$id.'" of calendar ID "'.$objDocent->pid.'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 				break;
@@ -294,17 +294,17 @@ class tl_calendar_promoters extends Backend
 					$this->redirect('contao/main.php?act=error');
 				}
 
-			$objPromoter = $this->Database->prepare("SELECT id FROM tl_calendar_promoters WHERE pid=?")
+				$objDocent = $this->Database->prepare("SELECT id FROM tl_calendar_docents WHERE pid=?")
 					->execute($id);
 
-				if ($objPromoter->numRows < 1)
+				if ($objDocent->numRows < 1)
 				{
 					$this->log('Invalid calendar ID "'.$id.'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 
 				$session = $this->Session->getData();
-				$session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $objPromoter->fetchEach('id'));
+				$session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $objDocent->fetchEach('id'));
 				$this->Session->setData($session);
 				break;
 
@@ -342,7 +342,7 @@ class tl_calendar_promoters extends Backend
 			$varValue = standardize(String::restoreBasicEntities($dc->activeRecord->title));
 		}
 
-		$objAlias = $this->Database->prepare("SELECT id FROM tl_calendar_promoters WHERE alias=?")
+		$objAlias = $this->Database->prepare("SELECT id FROM tl_calendar_docents WHERE alias=?")
 			->execute($varValue);
 
 		// Check whether the alias exists
@@ -366,7 +366,7 @@ class tl_calendar_promoters extends Backend
 	 * @param array
 	 * @return string
 	 */
-	public function listPromoters($arrRow)
+	public function listDocents($arrRow)
 	{
 		return '<div class="tl_content_left">' . $arrRow['title'] . '</div>';
 	}
@@ -391,7 +391,7 @@ class tl_calendar_promoters extends Backend
 		}
 
 		// Check permissions AFTER checking the tid, so hacking attempts are logged
-		if (!$this->User->hasAccess('tl_calendar_promoters::published', 'alexf'))
+		if (!$this->User->hasAccess('tl_calendar_docents::published', 'alexf'))
 		{
 			return '';
 		}
@@ -421,19 +421,19 @@ class tl_calendar_promoters extends Backend
 		$this->checkPermission();
 
 		// Check permissions to publish
-		if (!$this->User->hasAccess('tl_calendar_promoters::published', 'alexf'))
+		if (!$this->User->hasAccess('tl_calendar_docents::published', 'alexf'))
 		{
 			$this->log('Not enough permissions to publish/unpublish promoters ID "'.$intId.'"', __METHOD__, TL_ERROR);
 			$this->redirect('contao/main.php?act=error');
 		}
 
-		$objVersions = new Versions('tl_calendar_promoters', $intId);
+		$objVersions = new Versions('tl_calendar_docents', $intId);
 		$objVersions->initialize();
 
 		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_calendar_promoters']['fields']['published']['save_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_calendar_docents']['fields']['published']['save_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_calendar_promoters']['fields']['published']['save_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_calendar_docents']['fields']['published']['save_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -448,11 +448,11 @@ class tl_calendar_promoters extends Backend
 		}
 
 		// Update the database
-		$this->Database->prepare("UPDATE tl_calendar_promoters SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+		$this->Database->prepare("UPDATE tl_calendar_docents SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
 			->execute($intId);
 
 		$objVersions->create();
-		$this->log('A new version of record "tl_calendar_promoters.id='.$intId.'" has been created'.$this->getParentEntries('tl_calendar_promoters', $intId), __METHOD__, TL_GENERAL);
+		$this->log('A new version of record "tl_calendar_docents.id='.$intId.'" has been created'.$this->getParentEntries('tl_calendar_docents', $intId), __METHOD__, TL_GENERAL);
 
 		// Update the RSS feed (for some reason it does not work without sleep(1))
 		sleep(1);

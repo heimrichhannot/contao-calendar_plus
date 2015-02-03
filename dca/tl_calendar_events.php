@@ -7,7 +7,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_calendar_events'];
  */
 
 $dc['palettes']['default']      = str_replace('title', 'title,shortTitle', $dc['palettes']['default']);
-$dc['palettes']['default']      = str_replace('{details_legend}', '{details_legend},parentEvent,promoter', $dc['palettes']['default']);
+$dc['palettes']['default']      = str_replace('{details_legend}', '{details_legend},parentEvent,promoter,docents', $dc['palettes']['default']);
 $dc['palettes']['default']      = str_replace('location', 'location,locationAdditional,street,zipcode,city,coordinates,addMap', $dc['palettes']['default']);
 $dc['palettes']['__selector__'] = array_merge($dc['palettes']['__selector__'], array('addMap'));
 $dc['subpalettes']['addMap']    = 'map,mapText';
@@ -144,6 +144,18 @@ $dc['fields']['promoter'] = array
 		array('tl_extended_events_calendar_events', 'editPromoter')
 	),
 	'sql'        => "int(10) unsigned NOT NULL default '0'"
+);
+
+$dc['fields']['docents'] = array
+(
+	'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['docents'],
+	'exclude'    => true,
+	'search'     => true,
+	'inputType'  => 'select',
+	'foreignKey' => 'tl_calendar_docents.title',
+	'eval'       => array('mandatory' => true, 'multiple' => true, 'chosen' => true, 'tl_class' => 'clr', 'style' => 'width: 853px'),
+	'sql'        => "blob NULL",
+	'relation'   => array('type' => 'hasMany', 'load' => 'lazy')
 );
 
 /**

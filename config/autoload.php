@@ -27,6 +27,8 @@ ClassLoader::addClasses(array
 (
 	// Models
 	'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel' => 'system/modules/calendar_plus/models/CalendarPlusEventsModel.php',
+	'HeimrichHannot\CalendarPlus\CalendarDocentsModel'    => 'system/modules/calendar_plus/models/CalendarDocentsModel.php',
+	'HeimrichHannot\CalendarPlus\CalendarPromotersModel'  => 'system/modules/calendar_plus/models/CalendarPromotersModel.php',
 
 	// Modules
 	'HeimrichHannot\CalendarPlus\ModuleEventChooser'      => 'system/modules/calendar_plus/modules/ModuleEventChooser.php',

@@ -4,6 +4,7 @@
  * Back end modules
  */
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_promoters';
+$GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_docents';
 
 /**
  * Frontend modules
@@ -22,5 +23,12 @@ if(class_exists('HeimrichHannot\CalendarPlus\ExtendedEvents'))
 /**
  * Form fields
  */
-
 $GLOBALS['BE_FFL']['subEventList'] = 'HeimrichHannot\CalendarPlus\SubEventList';
+
+/**
+ * Models
+ */
+$GLOBALS['TL_MODELS']['tl_calendar_promoters'] = 'HeimrichHannot\CalendarPlus\CalendarPromotersModel';
+$GLOBALS['TL_MODELS']['tl_calendar_docents'] = 'HeimrichHannot\CalendarPlus\CalendarDocentsModel';
+$GLOBALS['TL_MODELS']['tl_calendar_events'] = 'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel';
+

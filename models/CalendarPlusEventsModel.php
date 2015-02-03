@@ -14,6 +14,28 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 {
 
 	/**
+	 * Helper method to generate the alias for the current model
+	 * @return $this
+	 */
+	public function generateAlias()
+	{
+		$varValue = standardize(\String::restoreBasicEntities($this->title));
+
+		$objAlias = static::findBy('alias', $varValue);
+
+		// Check whether the alias exists
+		if ($objAlias->numRows > 1)
+		{
+			if(!$this->id) return $this;
+			$varValue .= '-' . $this->id;
+		}
+
+		$this->alias = $varValue;
+
+		return $this;
+	}
+
+	/**
 	 * Find published events by id or alias
 	 *
 	 * @param mixed $varId      The numeric ID or alias name
