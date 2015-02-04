@@ -45,10 +45,6 @@ $dc['fields']['widgetType'] = array
 	'sql'                     => "varchar(255) NOT NULL default ''",
 );
 
-// add backend and frontend form fields
-$GLOBALS['BE_FFL']['subEventList'] = 'SubEventList';
-$GLOBALS['TL_FFL']['subEventList'] = 'SubEventList';
-
 class tl_extended_events_form_field extends Backend {
 
 	public function editEvent(DataContainer $dc)

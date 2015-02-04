@@ -10,6 +10,8 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
+use HeimrichHannot\EventSubscription\EventSubscriptionHelper;
+
 class SubEventList extends \Widget
 {
 
@@ -91,7 +93,7 @@ class SubEventList extends \Widget
 		switch($this->widgetType) {
 			case 'radio':
 				$arrOptions = array();
-		
+
 				foreach ($this->arrOptions as $i => $arrOption)
 				{
 					// further info link
@@ -122,15 +124,17 @@ class SubEventList extends \Widget
 				{
 					$arrOptions[]= '<p class="tl_noopt">'.$GLOBALS['TL_LANG']['MSC']['noResult'].'</p>';
 				}
-				
-				return sprintf('<fieldset id="ctrl_%s" class="tl_radio_container%s"><legend>%s%s%s%s</legend>%s</fieldset>%s',
+
+				return sprintf('<fieldset id="ctrl_%s" class="subevent tl_radio_container%s"><legend>%s%s%s%s</legend>%s</fieldset>%s',
 								$this->strId,
 								(($this->strClass != '') ? ' ' . $this->strClass : ''),
 								($this->required ? '<span class="invisible">'.$GLOBALS['TL_LANG']['MSC']['mandatory'].'</span> ' : ''),
 								$this->strLabel,
 								($this->required ? '<span class="mandatory">*</span>' : ''),
 								$this->xlabel,
-								implode('<br>', $arrOptions),
+								implode('', array_map(function($value) {
+									return '<div>' . $value . '</div>';
+								}, $arrOptions)),
 								$this->wizard);
 				break;
 			case 'checkbox':
@@ -236,7 +240,9 @@ class SubEventList extends \Widget
 									$this->xlabel,
 									$this->strName,
 									($blnCheckAll ? '<input type="checkbox" id="check_all_' . $this->strId . '" class="tl_checkbox" onclick="Backend.toggleCheckboxGroup(this,\'ctrl_' . $this->strId . '\')"> <label for="check_all_' . $this->strId . '" style="color:#a6a6a6"><em>' . $GLOBALS['TL_LANG']['MSC']['selectAll'] . '</em></label><br>' : ''),
-									str_replace('<br></fieldset><br>', '</fieldset>', implode('<br>', $arrOptions)),
+									str_replace('<br></fieldset><br>', '</fieldset>', implode('', array_map(function($value) {
+										return '<div>' . $value . '</div>';
+									}, $arrOptions))),
 									$this->wizard);
 				}
 				else
@@ -245,51 +251,34 @@ class SubEventList extends \Widget
 									$this->strId,
 									(($this->strClass != '') ? ' ' . $this->strClass : ''),
 									$this->strName,
-									str_replace('<br></div><br>', '</div>', implode('<br>', $arrOptions)),
+									str_replace('<br></div><br>', '</div>', implode('', array_map(function($value) {
+										return '<div>' . $value . '</div>';
+									}, $arrOptions))),
 									$this->wizard);
 				}
 				break;
 			default:
 				// Form data rendering
-				$result = sprintf('<fieldset id="ctrl_subevent" class="tl_checkbox_container"><h3>%s</h3>', $this->generateLabel());
-				if (@unserialize($this->activeRecord->subevent) !== false)
+				$widgetType = 'checkbox';
+				if (($objFormField = \FormFieldModel::findByName($this->name)) !== null)
 				{
-					$subEvents = deserialize($this->activeRecord->subevent, true);
-					if ($_GET['act'] == 'edit') {
-						$objSignupForm = \FormModel::findBy('alias', str_replace('fd_', '', $_GET['do']));
-						if ($objSignupForm !== null) {
-							$objEvent = CalendarPlusEventsModel::findBy('signupForm', $objSignupForm->id);
-							$objSubEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
-							if ($objSubEvents !== null) {
-								$i = 0;
-								while ($objSubEvents->next()) {
-									$result .= '<input type="checkbox" name="subevent[]" id="opt_subevent_' . $i . '" class="tl_checkbox" value="' . $objSubEvents->id . '" ' .
-											(in_array($objSubEvents->id, $subEvents) ? 'checked="checked"' : '') . 'onfocus="Backend.getScrollOffset()">' .
-											'<label for="opt_subevent_' . $i++ . '">' . ($objSubEvents->shortTitle ? $objSubEvents->shortTitle : $objSubEvents->title) . '</label><br>';
-								}
-							}
-						}
+					$widgetType = $objFormField->widgetType;
+					$arrOptions = deserialize($objFormField->options, true);
+				}
+
+				$result = sprintf('<fieldset id="ctrl_' . $this->name . '" class="tl_checkbox_container"><h3>%s</h3>', $this->generateLabel());
+
+				$subEvents = EventSubscriptionHelper::getDeserializedArray($this->activeRecord->{$this->name});
+
+				if ($_GET['act'] == 'edit') {
+					foreach ($arrOptions as $i => $arrOption)
+					{
+						$result .= '<input type="' . $widgetType . '" name="' . $this->name . '[]" id="opt_' . $this->name . '_' . $i . '" class="tl_checkbox" value="' . $arrOption['value'] . '" ' .
+							(in_array($arrOption['value'], $subEvents) ? 'checked="checked"' : '') . 'onfocus="Backend.getScrollOffset()">' .
+							'<label for="opt_' . $this->name . '_' . $i . '">' . $arrOption['label'] . '</label><br>';
 					}
 				}
-				else {
-					if ($_GET['act'] == 'edit') {
-						$objSignupForm = \FormModel::findBy('alias', str_replace('fd_', '', $_GET['do']));
-						if ($objSignupForm !== null) {
-							$objEvent = CalendarPlusEventsModel::findBy('signupForm', $objSignupForm->id);
-							$objSubEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
-							if ($objSubEvents !== null) {
-								$i = 0;
-								while ($objSubEvents->next()) {
-									$result .= '<input type="radio" name="subevent[]" id="opt_subevent_' . $i . '" class="tl_checkbox" value="' . $objSubEvents->id . '" ' .
-											($objSubEvents->id == $this->activeRecord->subevent ? 'checked="checked"' : '') . 'onfocus="Backend.getScrollOffset()">' .
-											'<label for="opt_subevent_' . $i++ . '">' . ($objSubEvents->shortTitle ? $objSubEvents->shortTitle : $objSubEvents->title) . '</label><br>';
-								}
-							} else
-								$result .= '<input name="subevent" value="' . $this->activeRecord->subevent . '">';
-						}
-					}
-				}
-				
+
 				return $result . '</fieldset>';
 				break;
 		}

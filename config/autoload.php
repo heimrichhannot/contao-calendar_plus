@@ -33,11 +33,14 @@ ClassLoader::addClasses(array
 	// Modules
 	'HeimrichHannot\CalendarPlus\ModuleEventChooser'      => 'system/modules/calendar_plus/modules/ModuleEventChooser.php',
 
+	// Classes
+	'HeimrichHannot\CalendarPlus\ExtendedEvents'          => 'system/modules/calendar_plus/classes/ExtendedEvents.php',
+
 	// Widgets
 	'HeimrichHannot\CalendarPlus\SubEventList'            => 'system/modules/calendar_plus/widgets/SubEventList.php',
 
-	// Classes
-	'HeimrichHannot\CalendarPlus\ExtendedEvents'          => 'system/modules/calendar_plus/classes/ExtendedEvents.php',
+	// Models
+	'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel' => 'system/modules/calendar_plus/models/CalendarPlusEventsModel.php',
 ));
 
 

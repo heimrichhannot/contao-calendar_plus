@@ -24,6 +24,7 @@ if(class_exists('HeimrichHannot\CalendarPlus\ExtendedEvents'))
  * Form fields
  */
 $GLOBALS['BE_FFL']['subEventList'] = 'HeimrichHannot\CalendarPlus\SubEventList';
+$GLOBALS['TL_FFL']['subEventList'] = 'HeimrichHannot\CalendarPlus\SubEventList';
 
 /**
  * Models
