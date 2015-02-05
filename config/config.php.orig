@@ -42,11 +42,12 @@ $GLOBALS['TL_MODELS']['tl_calendar_docents']   = 'HeimrichHannot\CalendarPlus\Ca
 $GLOBALS['TL_MODELS']['tl_calendar_events']    = 'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel';
 
 /**
+<<<<<<< HEAD
  * Constants
  */
 define('CALENDARPLUS_SORTBY_DAY', 'day');
-
-/**
+=======
  * EFG
  */
 $GLOBALS['EFG']['storable_fields'][] = 'subEventList';
+>>>>>>> 3d2b4f08ae59ac21a1d2965d7e7cbc52ec5b4c32
