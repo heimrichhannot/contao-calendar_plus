@@ -153,7 +153,7 @@ $dc['fields']['docents'] = array
 	'search'     => true,
 	'inputType'  => 'select',
 	'foreignKey' => 'tl_calendar_docents.title',
-	'eval'       => array('mandatory' => true, 'chosen' => true, 'tl_class' => 'clr', 'style' => 'width: 853px'),
+	'eval'       => array('multiple' => true, 'chosen' => true, 'tl_class' => 'clr', 'style' => 'width: 853px'),
 	'sql'        => "blob NULL",
 	'relation'   => array('type' => 'hasMany', 'load' => 'lazy')
 );
