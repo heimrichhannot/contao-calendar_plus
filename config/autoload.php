@@ -31,16 +31,18 @@ ClassLoader::addClasses(array
 	'HeimrichHannot\CalendarPlus\CalendarPromotersModel'  => 'system/modules/calendar_plus/models/CalendarPromotersModel.php',
 
 	// Modules
+	'HeimrichHannot\CalendarPlus\ModuleEventListPlus'     => 'system/modules/calendar_plus/modules/ModuleEventListPlus.php',
+	'HeimrichHannot\CalendarPlus\ModuleEventFilter'       => 'system/modules/calendar_plus/modules/ModuleEventFilter.php',
 	'HeimrichHannot\CalendarPlus\ModuleEventChooser'      => 'system/modules/calendar_plus/modules/ModuleEventChooser.php',
-
-	// Classes
-	'HeimrichHannot\CalendarPlus\ExtendedEvents'          => 'system/modules/calendar_plus/classes/ExtendedEvents.php',
 
 	// Widgets
 	'HeimrichHannot\CalendarPlus\SubEventList'            => 'system/modules/calendar_plus/widgets/SubEventList.php',
 
-	// Models
-	'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel' => 'system/modules/calendar_plus/models/CalendarPlusEventsModel.php',
+	// Classes
+	'HeimrichHannot\CalendarPlus\EventsPlus'              => 'system/modules/calendar_plus/classes/EventsPlus.php',
+	'HeimrichHannot\CalendarPlus\EventFilterHelper'       => 'system/modules/calendar_plus/classes/EventFilterHelper.php',
+	'HeimrichHannot\CalendarPlus\ExtendedEvents'          => 'system/modules/calendar_plus/classes/ExtendedEvents.php',
+	'HeimrichHannot\CalendarPlus\EventFilterForm'         => 'system/modules/calendar_plus/classes/EventFilterForm.php',
 ));
 
 
@@ -49,5 +51,9 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'mod_event_chooser' => 'system/modules/calendar_plus/templates',
+	'event_list_plus'    => 'system/modules/calendar_plus/templates/events',
+	'mod_eventfilter'    => 'system/modules/calendar_plus/templates/modules',
+	'mod_event_chooser'  => 'system/modules/calendar_plus/templates/modules',
+	'mod_eventlist_plus' => 'system/modules/calendar_plus/templates/modules',
+	'form_eventfilter'   => 'system/modules/calendar_plus/templates/form',
 ));

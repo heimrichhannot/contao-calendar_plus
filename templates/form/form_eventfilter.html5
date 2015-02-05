@@ -1,0 +1,51 @@
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?>>
+
+	<form<?php if ($this->action): ?> action="<?php echo $this->action; ?>"<?php endif; ?>
+		id="<?php echo $this->formId; ?>"
+		method="<?php echo $this->method; ?>"
+		enctype="<?php echo $this->enctype; ?>"
+		<?php echo $this->attributes; ?>
+		<?php echo $this->novalidate; ?>
+		<?php if($this->formClass):?> class="<?php echo $this->formClass; ?>"<?php endif;?>>
+		<div class="formbody">
+			<?php if ($this->method == FORMHYBRID_METHOD_POST): ?>
+				<input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formId; ?>">
+				<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+				<?php if ($this->maxFileSize): ?>
+					<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $this->maxFileSize; ?>">
+				<?php endif; ?>
+			<?php endif; ?>
+			<?php echo $this->hidden; ?>
+			<div class="field-wrapper">
+				<div class="row">
+					<div class="top-row">
+						<div class="fields-container">
+							<div class="date-wrapper">
+								<div class="form-group-label">
+									<span class="label label-input"><?php echo $GLOBALS['TL_LANG']['eventfilter']['dateLabel'];?></span>
+								</div>
+								<?php echo isset($this->fields['startDate']) ? $this->fields['startDate']->parse() : ''; ?>
+								<?php echo isset($this->fields['endDate']) ? $this->fields['endDate']->parse() : ''; ?>
+							</div>
+							<?php echo isset($this->fields['city']) ? $this->fields['city']->parse() : ''; ?>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="bottom-row">
+						<div class="fields-container">
+							<?php echo isset($this->fields['areasoflaw']) ? $this->fields['areasoflaw']->parse() : ''; ?>
+							<?php echo isset($this->fields['promoter']) ? $this->fields['promoter']->parse() : ''; ?>
+							<?php echo isset($this->fields['submit']) ? $this->fields['submit']->parse() : ''; ?>
+						</div>
+					</div>
+				</div>
+				<?php foreach($this->fields as $name => $objField): ?>
+					<?php if(in_array($name, array('startDate', 'endDate', 'city', 'areasoflaw', 'promoter', 'submit'))) continue; ?>
+					<?php echo $objField->parse(); ?>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	</form>
+
+</div>

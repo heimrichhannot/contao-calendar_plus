@@ -1,0 +1,17 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<form id="event-chooser" method="GET" <?php echo ($this->action ? 'action="' . $this->action . '"' : ''); ?>>
+	<div class="form-group">
+		<label for="eventId"><?php echo $GLOBALS['TL_LANG']['tl_calendar_events']['event']; ?></label>
+		<select name="eventId" onchange="this.form.submit()" class="form-control tl_chosen">
+			<?php if (!isset($_GET['eventId'])): ?><option value="-1" selected="selected">-</option><?php endif; ?>
+			<?php foreach ($this->items as $k => $v): ?>
+				<option value="<?php echo $k; ?>"<?php echo $_GET['eventId'] == $k ? 'selected="selected"' : ''; ?>><?php echo $v['title'] . ' (' . $v['date'] . ')'; ?></option>
+			<?php endforeach; ?>
+		</select>
+	</div>
+</form>
+
+<?php $this->endblock(); ?>
