@@ -33,3 +33,7 @@ $GLOBALS['TL_MODELS']['tl_calendar_promoters'] = 'HeimrichHannot\CalendarPlus\Ca
 $GLOBALS['TL_MODELS']['tl_calendar_docents'] = 'HeimrichHannot\CalendarPlus\CalendarDocentsModel';
 $GLOBALS['TL_MODELS']['tl_calendar_events'] = 'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel';
 
+/**
+ * EFG
+ */
+$GLOBALS['EFG']['storable_fields'][] = 'subEventList';
