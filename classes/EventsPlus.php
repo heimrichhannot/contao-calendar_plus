@@ -14,6 +14,32 @@ namespace HeimrichHannot\CalendarPlus;
 abstract class EventsPlus extends \Events
 {
 
+	public function getFilter($objModule)
+	{
+		\Controller::loadDataContainer('tl_calendar_events');
+
+		$arrFilter = array();
+
+		$arrFields = deserialize($objModule->formHybridEditable, true);
+
+		// Return if there are no fields
+		if (!is_array($arrFields) || empty($arrFields)) {
+			return $arrFilter;
+		}
+
+		foreach($arrFields as $strKey)
+		{
+			$arrData = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$strKey];
+
+			if(!is_array($arrData) || empty($arrData)) continue;
+
+			$arrFilter[$strKey] = EventFilterHelper::getValueByDca(\Input::get($strKey), $arrData);
+		}
+
+
+		return $arrFilter;
+	}
+
 	/**
 	 * Get all events of a certain period
 	 * @param array
@@ -21,7 +47,7 @@ abstract class EventsPlus extends \Events
 	 * @param integer
 	 * @return array
 	 */
-	protected function getAllEvents($arrCalendars, $intStart, $intEnd)
+	protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter=array())
 	{
 		if (!is_array($arrCalendars))
 		{
@@ -42,7 +68,7 @@ abstract class EventsPlus extends \Events
 			}
 
 			// Get the events of the current period
-			$objEvents = \CalendarEventsModel::findCurrentByPid($id, $intStart, $intEnd);
+			$objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter);
 
 			if ($objEvents === null)
 			{

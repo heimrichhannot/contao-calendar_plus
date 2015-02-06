@@ -35,6 +35,39 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return $this;
 	}
 
+	public static function findCurrentByPidAndFilter($intPid, $intStart, $intEnd, array $arrFilter = array(), $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$intStart = intval($intStart);
+		$intEnd = intval($intEnd);
+
+		if($arrFilter['startDate'] && $arrFilter['startDate'] >= $intStart)
+		{
+			$intStart = intval($arrFilter['startDate']);
+		}
+
+		if($arrFilter['endDate'] && $arrFilter['endDate'] <= $intEnd)
+		{
+			$intEnd = intval($arrFilter['endDate']);
+		}
+
+		$arrColumns = array("$t.pid=? AND (($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring=1 AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))");
+
+		if (!BE_USER_LOGGED_IN)
+		{
+			$time = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order']  = "$t.startTime";
+		}
+
+		return static::findBy($arrColumns, $intPid, $arrOptions);
+	}
+
 	/**
 	 * Find published events by id or alias
 	 *

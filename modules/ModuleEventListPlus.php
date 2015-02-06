@@ -128,8 +128,20 @@ class ModuleEventListPlus extends EventsPlus
 
 		list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->cal_format);
 
+		$arrFilter = array();
+
+		if($this->cal_filterModule)
+		{
+			$objFilterModule = \ModuleModel::findByPk($this->cal_filterModule);
+
+			if($objFilterModule !== null)
+			{
+				$arrFilter = $this->getFilter($objFilterModule);
+			}
+		}
+
 		// Get all events
-		$arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd);
+		$arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter);
 
 		$sort = ($this->cal_order == 'descending') ? 'krsort' : 'ksort';
 
@@ -241,7 +253,7 @@ class ModuleEventListPlus extends EventsPlus
 			$objTemplate = new \FrontendTemplate($this->cal_template);
 			$objTemplate->setData($event);
 
-			$objTemplate->lastItem = ($event['firstDate'] == $arrEvents[($limit-1)]['firstDate']);
+			$objTemplate->lastItem = ($i+1) == $limit;
 
 			// Month header
 			if ($strMonth != $event['month'])

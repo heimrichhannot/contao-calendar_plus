@@ -131,6 +131,66 @@ class EventFilterHelper extends \Frontend
 		}
 
 		return \Database::getInstance()->prepare($strQuery)->execute();
+	}
 
+
+	public static function getValueByDca($value, $arrData)
+	{
+		$value = deserialize($value);
+		$rgxp = $arrData['eval']['rgxp'];
+		$opts = $arrData['options'];
+		$rfrc = $arrData['reference'];
+
+		$rgxp = $arrData['eval']['rgxp'];
+
+		if ($rgxp == 'date' && \Validator::isDate($value))
+		{
+			// Validate the date (see #5086)
+			try
+			{
+				$objDate = new \Date($value);
+				$value = $objDate->tstamp;
+			}
+			catch (\OutOfBoundsException $e){}
+		}
+		elseif ($rgxp == 'time' && \Validator::isTime($value))
+		{
+			// Validate the date (see #5086)
+			try
+			{
+				$objDate = new \Date($value);
+				$value = $objDate->tstamp;
+			}
+			catch (\OutOfBoundsException $e){}
+		}
+		elseif ($rgxp == 'datim' && \Validator::isDatim($value))
+		{
+			// Validate the date (see #5086)
+			try
+			{
+				$objDate = new \Date($value);
+				$value = $objDate->tstamp;
+			}
+			catch (\OutOfBoundsException $e){}
+		}
+		elseif (is_array($value))
+		{
+			$value = implode(', ', $value);
+		}
+		elseif (is_array($opts) && array_is_assoc($opts))
+		{
+			$value = isset($opts[$value]) ? $opts[$value] : $value;
+		}
+		elseif (is_array($rfrc))
+		{
+			$value = isset($rfrc[$value]) ? ((is_array($rfrc[$value])) ? $rfrc[$value][0] : $rfrc[$value]) : $value;
+		}
+		else
+		{
+			$value = $value;
+		}
+
+		// Convert special characters (see #1890)
+		return specialchars($value);
 	}
 }

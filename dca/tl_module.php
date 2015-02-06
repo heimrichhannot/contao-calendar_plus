@@ -19,7 +19,7 @@ $dc['palettes']['eventlist']     = str_replace('cal_noSpan', 'hideSubEvents,cal_
 
 $dc['palettes']['eventlist_plus'] = '
 									{title_legend},name,headline,type;
-									{config_legend},cal_calendar,cal_noSpan,cal_format,cal_ignoreDynamic,cal_order,cal_groupBy,cal_readerModule,cal_limit,perPage;
+									{config_legend},cal_calendar,cal_noSpan,cal_format,cal_ignoreDynamic,cal_order,cal_readerModule,cal_filterModule,cal_limit,perPage;
 									{template_legend:hide},cal_template,customTpl;
 									{image_legend:hide},imgSize;
 									{protected_legend:hide},protected;
@@ -44,16 +44,36 @@ $arrFields = array
 		'inputType' => 'checkbox',
 		'sql'       => "char(1) NOT NULL default ''"
 	),
-	'cal_groupBy'   => array
+	'cal_filterModule'   => array
 	(
-		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_groupBy'],
+		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_filterModule'],
 		'exclude'   => true,
 		'inputType' => 'select',
-		'options'   => array(CALENDARPLUS_SORTBY_DAY),
-		'eval'      => array('tl_class' => 'w50 wizard', 'chosen' => true, 'includeBlankOption' => true),
-		'reference' => &$GLOBALS['TL_LANG']['MSC'],
-		'sql'       => "varchar(32) NOT NULL default ''"
-	)
+		'options_callback'        => array('tl_module_calendar_plus', 'getFilterModules'),
+		'reference'               => &$GLOBALS['TL_LANG']['tl_module'],
+		'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
+		'sql'                     => "int(10) unsigned NOT NULL default '0'"
+	),
 );
 
 $dc['fields'] = array_merge($dc['fields'], $arrFields);
+
+class tl_module_calendar_plus extends \Backend
+{
+	/**
+	 * Get all event filter modules and return them as array
+	 * @return array
+	 */
+	public function getFilterModules()
+	{
+		$arrModules = array();
+		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='eventfilter' ORDER BY t.name, m.name");
+
+		while ($objModules->next())
+		{
+			$arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
+		}
+
+		return $arrModules;
+	}
+}
