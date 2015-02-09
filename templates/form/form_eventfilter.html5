@@ -28,20 +28,25 @@
 								<?php echo isset($this->fields['endDate']) ? $this->fields['endDate']->parse() : ''; ?>
 							</div>
 							<?php echo isset($this->fields['city']) ? $this->fields['city']->parse() : ''; ?>
+							<?php echo isset($this->fields['postal']) ? $this->fields['postal']->parse() : ''; ?>
+							<?php echo isset($this->fields['timeHours']) ? $this->fields['timeHours']->parse() : ''; ?>
 						</div>
 					</div>
 				</div>
 				<div class="row">
 					<div class="bottom-row">
 						<div class="fields-container">
+							<?php echo isset($this->fields['eventtypes']) ? $this->fields['eventtypes']->parse() : ''; ?>
 							<?php echo isset($this->fields['areasoflaw']) ? $this->fields['areasoflaw']->parse() : ''; ?>
 							<?php echo isset($this->fields['promoter']) ? $this->fields['promoter']->parse() : ''; ?>
-							<?php echo isset($this->fields['submit']) ? $this->fields['submit']->parse() : ''; ?>
+							<div class="form-submit">
+								<?php echo isset($this->fields['submit']) ? $this->fields['submit']->parse() : ''; ?>
+							</div>
 						</div>
 					</div>
 				</div>
 				<?php foreach($this->fields as $name => $objField): ?>
-					<?php if(in_array($name, array('startDate', 'endDate', 'city', 'areasoflaw', 'promoter', 'submit'))) continue; ?>
+					<?php if(in_array($name, array('startDate', 'endDate', 'city', 'postal', 'areasoflaw', 'promoter', 'timeHours', 'eventtypes', 'submit'))) continue; ?>
 					<?php echo $objField->parse(); ?>
 				<?php endforeach; ?>
 			</div>

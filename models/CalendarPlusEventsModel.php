@@ -24,9 +24,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		$objAlias = static::findBy('alias', $varValue);
 
 		// Check whether the alias exists
-		if ($objAlias->numRows > 1)
-		{
-			if(!$this->id) return $this;
+		if ($objAlias->numRows > 1) {
+			if (!$this->id) return $this;
 			$varValue .= '-' . $this->id;
 		}
 
@@ -35,55 +34,77 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return $this;
 	}
 
-	public static function findCurrentByPidAndFilter($intPid, $intStart, $intEnd, array $arrFilter = array(), $arrOptions=array())
+	public static function findCurrentByPidAndFilter($intPid, $intStart, $intEnd, array $arrFilter = array(), $arrOptions = array())
 	{
-		$t = static::$strTable;
+		$t        = static::$strTable;
 		$intStart = intval($intStart);
-		$intEnd = intval($intEnd);
+		$intEnd   = intval($intEnd);
 
-		if($arrFilter['startDate'] && $arrFilter['startDate'] >= $intStart)
-		{
-			$intStart = intval($arrFilter['startDate']);
+		$arrValues = array($intPid);
+
+		$arrColumns[] = "$t.pid=?";
+
+		foreach ($arrFilter as $key => $value) {
+			switch ($key) {
+				case 'startDate':
+					if ($value && $value >= $intStart){
+						$intStart = $value;
+					}
+					break;
+				case 'endDate':
+					if ($value && $value <= $intEnd){
+						$intEnd = strtotime(date('d.m.Y', $value) .  ' 23:59:59'); // until last second of the day
+					}
+					break;
+				case 'areasoflaw':
+					if($value != ''){
+						$arrColumns[] = "$t.$key REGEXP \"$value\"";
+					}
+					break;
+				case 'postal':
+					if($value !=''){
+						$arrColumns[] = "LEFT($t.postal, 1) = ?";
+						$arrValues[] = $value;
+					}
+					break;
+				default:
+					if ($value != '') {
+						$arrColumns[] = "$t.$key=?";
+						$arrValues[]  = $value;
+					}
+			}
 		}
 
-		if($arrFilter['endDate'] && $arrFilter['endDate'] <= $intEnd)
-		{
-			$intEnd = intval($arrFilter['endDate']);
-		}
+		$arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring=1 AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
 
-		$arrColumns = array("$t.pid=? AND (($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring=1 AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))");
-
-		if (!BE_USER_LOGGED_IN)
-		{
-			$time = time();
+		if (!BE_USER_LOGGED_IN) {
+			$time         = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
 
-		if (!isset($arrOptions['order']))
-		{
-			$arrOptions['order']  = "$t.startTime";
+		if (!isset($arrOptions['order'])) {
+			$arrOptions['order'] = "$t.startTime";
 		}
 
-		return static::findBy($arrColumns, $intPid, $arrOptions);
+		return static::findBy($arrColumns, $arrValues, $arrOptions);
 	}
 
 	/**
 	 * Find published events by id or alias
 	 *
-	 * @param mixed $varId      The numeric ID or alias name
+	 * @param mixed $varId The numeric ID or alias name
 	 * @param array $arrOptions An optional options array
 	 *
 	 * @return \Model|null The model or null if there is no event
 	 */
-	public static function findPublishedEventsByIdOrAlias($varId, array $arrOptions=array())
+	public static function findPublishedEventsByIdOrAlias($varId, array $arrOptions = array())
 	{
-		$t = static::$strTable;
+		$t          = static::$strTable;
 		$arrColumns = array("($t.id=?) OR ($t.alias=?)");
 
-		if (!BE_USER_LOGGED_IN)
-		{
-			$time = time();
+		if (!BE_USER_LOGGED_IN) {
+			$time         = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
@@ -93,17 +114,17 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 	/**
 	 * Find published sub events by the parent's ID or alias
 	 *
-	 * @param mixed $varId      The numeric ID or alias name
+	 * @param mixed $varId The numeric ID or alias name
 	 * @param array $arrOptions An optional options array
 	 *
 	 * @return \Model|null The model or null if there is no event
 	 */
-	public static function findPublishedSubEventsByParentEventId($varId, array $arrOptions=array())
+	public static function findPublishedSubEventsByParentEventId($varId, array $arrOptions = array())
 	{
-		$t = static::$strTable;
+		$t          = static::$strTable;
 		$arrColumns = array("($t.parentEvent=?)");
 
-		$time = time();
+		$time         = time();
 		$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 
 		return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId), $arrOptions);
@@ -113,35 +134,33 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 	{
 		if (in_array('event_subscription', $config->getActiveModules())) {
 			$objSubEvents = static::findPublishedSubEventsByParentEventId($intId);
-			if ($objSubEvents !== null)
-			{
-				while ($objSubEvents->next())
-				{
+			if ($objSubEvents !== null) {
+				while ($objSubEvents->next()) {
 					if ($objSubEvents->addSubscription)
 						return true;
 				}
 			}
 		}
+
 		return false;
 	}
 
 	/**
 	 * Find published sub events by the parent's ID or alias
 	 *
-	 * @param mixed $varId      The numeric ID or alias name
-	 * @param array $arrPids    An array of calendar IDs
+	 * @param mixed $varId The numeric ID or alias name
+	 * @param array $arrPids An array of calendar IDs
 	 * @param array $arrOptions An optional options array
 	 *
 	 * @return \Model|null The model or null if there is no event
 	 */
-	public static function findPublishedParentalEvents(array $arrOptions=array())
+	public static function findPublishedParentalEvents(array $arrOptions = array())
 	{
-		$t = static::$strTable;
-		$objEvents = static::findAll();
+		$t              = static::$strTable;
+		$objEvents      = static::findAll();
 		$parentalEvents = array();
 		if ($objEvents !== null) {
-			while ($objEvents->next())
-			{
+			while ($objEvents->next()) {
 				if ($objEvents->parentEvent)
 					if (!in_array($objEvents->parentEvent, $parentalEvents))
 						$parentalEvents[] = $objEvents->parentEvent;
@@ -149,9 +168,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		}
 		$arrColumns = array("($t.id IN (" . implode(',', $parentalEvents) . "))");
 
-		if (!BE_USER_LOGGED_IN)
-		{
-			$time = time();
+		if (!BE_USER_LOGGED_IN) {
+			$time         = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
@@ -166,28 +184,30 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 				return true;
 
 		$objContent = \ContentModel::findPublishedByPidAndTable($intId, 'tl_calendar_events');
+
 		return $objContent !== null;
 	}
 
-	public static function getPlacesLeft($intId, $database) {
+	public static function getPlacesLeft($intId, $database)
+	{
 		$objEvent = static::findByPk($intId);
 		if ($objEvent !== null) {
 			return $objEvent->placesTotal - static::getReservedPlaces($intId, $database);
 		}
+
 		return false;
 	}
 
-	public static function getReservedPlaces($intId, $database, $useMemberGroups = false) {
-		$objEvent = static::findByPk($intId);
+	public static function getReservedPlaces($intId, $database, $useMemberGroups = false)
+	{
+		$objEvent       = static::findByPk($intId);
 		$reservedPlaces = 0;
 		if ($objEvent !== null) {
-			if ($useMemberGroups)
-			{
+			if ($useMemberGroups) {
 				$objMembers = $database->prepare('SELECT * FROM tl_member WHERE groups LIKE ?')->execute('%"' . $objEvent->memberGroup . '"%');
+
 				return $objMembers->numRows;
-			}
-			else
-			{
+			} else {
 				$objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objEvent->alias);
 				if ($objSubscriber->numRows > 0) {
 					while ($objSubscriber->next()) {
@@ -196,29 +216,36 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 				}
 			}
 		}
+
 		return $reservedPlaces;
 	}
 
-	public static function getCheckedInCount($intId) {
+	public static function getCheckedInCount($intId)
+	{
 		$objEvent = static::findByPk($intId);
 
 		if ($objEvent !== null) {
 			$objMembers = \Database::getInstance()->prepare('SELECT * FROM tl_member WHERE groups LIKE ?')->execute('%"' . $objEvent->memberGroupCheckedIn . '"%');
+
 			return $objMembers->numRows;
 		}
+
 		return false;
 	}
 
-	public static function getPlacesLeftSubEvent($intId, $database) {
+	public static function getPlacesLeftSubEvent($intId, $database)
+	{
 		$objEvent = static::findByPk($intId);
 		if ($objEvent !== null) {
 			return $objEvent->placesTotal - static::getReservedPlacesSubEvent($intId, $database);
 		}
+
 		return false;
 	}
 
-	public static function getReservedPlacesSubEvent($intId, $database) {
-		$objEvent = static::findByPk($intId);
+	public static function getReservedPlacesSubEvent($intId, $database)
+	{
+		$objEvent       = static::findByPk($intId);
 		$reservedPlaces = 0;
 		if ($objEvent !== null) {
 			$objParentEvent = static::findByPk($objEvent->parentEvent);
@@ -226,8 +253,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 				$objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objParentEvent->alias);
 				if ($objSubscriber->numRows > 0) {
 					while ($objSubscriber->next()) {
-						foreach (deserialize($objParentEvent->subEventFormFields, true) as $strSubEventFormField)
-						{
+						foreach (deserialize($objParentEvent->subEventFormFields, true) as $strSubEventFormField) {
 							$objSubEvents = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND pid=?')
 								->limit(1)->executeUncached($strSubEventFormField, $objSubscriber->pid);
 							if ($objSubEvents->numRows > 0) {
@@ -240,10 +266,12 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 				}
 			}
 		}
+
 		return $reservedPlaces;
 	}
 
-	public static function hasContentElements($intId) {
+	public static function hasContentElements($intId)
+	{
 		return (\ContentModel::findBy(array('ptable=? AND pid=?'), array('tl_news', $intId)) !== null);
 	}
 }

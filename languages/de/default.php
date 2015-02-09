@@ -9,10 +9,14 @@
  */
 
 /**
- * Reference
+ * Tables
  */
 $GLOBALS['TL_LANG']['MSC']['promoters'] = 'Veranstalter verwalten';
 $GLOBALS['TL_LANG']['MSC']['docents'] = 'Dozenten verwalten';
+
+/**
+ * Reference
+ */
 $GLOBALS['TL_LANG']['MSC']['day'] = 'Tag';
 
 /**
@@ -23,11 +27,12 @@ $GLOBALS['TL_LANG']['tl_form_field']['further-info'] = 'Weitere&nbsp;Information
 /**
  * Eventlist Plus
  */
-$GLOBALS['TL_LANG']['eventlist_plus']['startTimeLabel'] = 'Beginn:';
-$GLOBALS['TL_LANG']['eventlist_plus']['endTimeLabel'] = 'Ende:';
+$GLOBALS['TL_LANG']['eventlist_plus']['startTimeLabel'] = 'Beginn';
+$GLOBALS['TL_LANG']['eventlist_plus']['endTimeLabel'] = 'Ende';
 $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix'] = 'Uhr';
-$GLOBALS['TL_LANG']['eventlist_plus']['cityLabel'] = 'Ort:';
-$GLOBALS['TL_LANG']['eventlist_plus']['promoterLabel'] = 'Veranstalter:';
+$GLOBALS['TL_LANG']['eventlist_plus']['cityLabel'] = 'Ort';
+$GLOBALS['TL_LANG']['eventlist_plus']['promoterLabel'] = 'Veranstalter';
+$GLOBALS['TL_LANG']['eventlist_plus']['timeHoursLabel'] = 'Zeitstunden';
 
 /**
  * Eventfilter
@@ -38,3 +43,4 @@ $GLOBALS['TL_LANG']['eventfilter']['promoterBlankOptionLabel'] = 'Veranstalter';
 $GLOBALS['TL_LANG']['eventfilter']['dateLabel'] = 'Datum';
 $GLOBALS['TL_LANG']['eventfilter']['startDatePlaceholder'] = 'von';
 $GLOBALS['TL_LANG']['eventfilter']['endDatePlaceholder'] = 'bis';
+$GLOBALS['TL_LANG']['eventfilter']['eventTypesBlankOptionLabel'] = 'Veranstaltungsart';

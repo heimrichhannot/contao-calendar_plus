@@ -253,7 +253,7 @@ class ModuleEventListPlus extends EventsPlus
 			$objTemplate = new \FrontendTemplate($this->cal_template);
 			$objTemplate->setData($event);
 
-			$objTemplate->lastItem = ($i+1) == $limit;
+			$objTemplate->lastItem = (($i+1) == $limit)  || ($arrEvents[($i+1)]['month'] != $event['month']) || ($arrEvents[($i+1)]['firstDate'] != $event['firstDate']) ;
 
 			// Month header
 			if ($strMonth != $event['month'])

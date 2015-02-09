@@ -5,6 +5,7 @@
  */
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_promoters';
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_docents';
+$GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_eventtypes';
 
 /**
  * Frontend modules
@@ -40,6 +41,7 @@ $GLOBALS['TL_FFL']['subEventList'] = 'HeimrichHannot\CalendarPlus\SubEventList';
 $GLOBALS['TL_MODELS']['tl_calendar_promoters'] = 'HeimrichHannot\CalendarPlus\CalendarPromotersModel';
 $GLOBALS['TL_MODELS']['tl_calendar_docents']   = 'HeimrichHannot\CalendarPlus\CalendarDocentsModel';
 $GLOBALS['TL_MODELS']['tl_calendar_events']    = 'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel';
+$GLOBALS['TL_MODELS']['tl_calendar_eventtypes']    = 'HeimrichHannot\CalendarPlus\CalendarEventtypesModel';
 
 /**
  * Constants

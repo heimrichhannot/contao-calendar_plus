@@ -41,7 +41,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['endDate']['eval']['placeholder'] = &$GLOBALS['TL_LANG']['eventfilter']['endDatePlaceholder'];
 		$dc['fields']['endDate']['eval']['autocomplete'] = false;
 
-		// adjust city field
+		// adjust promoter field
 		$dc['fields']['promoter']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getPromoterSelectOptions');
 		unset($dc['fields']['promoter']['eval']['chosen']);
 		$dc['fields']['promoter']['eval']['includeBlankOption'] = true;
@@ -53,13 +53,19 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['city']['eval']['includeBlankOption'] = true;
 		$dc['fields']['city']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['cityBlankOptionLabel'];
 
+		// adjust eventtypes field
+		unset($dc['fields']['eventtypes']['eval']['chosen']);
+		$dc['fields']['eventtypes']['eval']['multiple'] = false;
+		$dc['fields']['eventtypes']['eval']['includeBlankOption'] = true;
+		$dc['fields']['eventtypes']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['eventTypesBlankOptionLabel'];
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['generateEventFilterForm']) && is_array($GLOBALS['TL_HOOKS']['generateEventFilterForm']))
 		{
 			foreach ($GLOBALS['TL_HOOKS']['generateEventFilterForm'] as $callback)
 			{
 				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($dc, $this);
+				$this->$callback[0]->$callback[1]($dc, $this->arrEditable, $this);
 			}
 		}
 

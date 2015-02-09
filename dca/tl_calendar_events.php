@@ -7,8 +7,8 @@ $dc = &$GLOBALS['TL_DCA']['tl_calendar_events'];
  */
 
 $dc['palettes']['default']      = str_replace('title', 'title,shortTitle', $dc['palettes']['default']);
-$dc['palettes']['default']      = str_replace('{details_legend}', '{details_legend},parentEvent,promoter,docents', $dc['palettes']['default']);
-$dc['palettes']['default']      = str_replace('location', 'location,locationAdditional,street,zipcode,city,coordinates,addMap', $dc['palettes']['default']);
+$dc['palettes']['default']      = str_replace('{details_legend}', '{details_legend},parentEvent,promoter,docents,eventtypes', $dc['palettes']['default']);
+$dc['palettes']['default']      = str_replace('location', 'location,locationAdditional,street,postal,city,coordinates,addMap', $dc['palettes']['default']);
 $dc['palettes']['__selector__'] = array_merge($dc['palettes']['__selector__'], array('addMap'));
 $dc['subpalettes']['addMap']    = 'map,mapText';
 
@@ -77,9 +77,9 @@ $dc['fields']['street'] = array
 	'sql'       => "varchar(255) NOT NULL default ''"
 );
 
-$dc['fields']['zipcode'] = array
+$dc['fields']['postal'] = array
 (
-	'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['zipcode'],
+	'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['postal'],
 	'inputType' => 'text',
 	'exclude'   => true,
 	'eval'      => array('tl_class' => 'w50'),
@@ -138,7 +138,7 @@ $dc['fields']['promoter'] = array
 	'inputType'  => 'select',
 	'foreignKey' => 'tl_calendar_promoters.title',
 	'exclude'    => true,
-	'eval'       => array('chosen' => true, 'includeBlankOption' => true, 'submitOnChange' => true, 'tl_class' => 'long'),
+	'eval'       => array('chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'long'),
 	'wizard'     => array
 	(
 		array('tl_extended_events_calendar_events', 'editPromoter')
@@ -157,6 +157,19 @@ $dc['fields']['docents'] = array
 	'sql'        => "blob NULL",
 	'relation'   => array('type' => 'hasMany', 'load' => 'lazy')
 );
+
+$dc['fields']['eventtypes'] = array
+(
+	'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['eventtypes'],
+	'exclude'    => true,
+	'search'     => true,
+	'inputType'  => 'select',
+	'foreignKey' => 'tl_calendar_eventtypes.title',
+	'eval'       => array('multiple' => true, 'chosen' => true, 'tl_class' => 'clr', 'style' => 'width: 853px'),
+	'sql'        => "blob NULL",
+	'relation'   => array('type' => 'hasMany', 'load' => 'lazy')
+);
+
 
 /**
  * Filter list / show subevents

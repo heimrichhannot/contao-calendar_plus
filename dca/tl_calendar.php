@@ -27,6 +27,13 @@ array_insert($dc['list']['operations'], 2, array(
 		'href'            => 'table=tl_calendar_docents',
 		'icon'            => 'system/modules/calendar_plus/assets/img/icons/docents.png',
 		'button_callback' => array('tl_calendar_plus', 'editDocents'),
+	),
+	'eventtypes'   => array
+	(
+		'label'           => &$GLOBALS['TL_LANG']['tl_calendar']['eventtypes'],
+		'href'            => 'table=tl_calendar_eventtypes',
+		'icon'            => 'system/modules/calendar_plus/assets/img/icons/eventtypes.png',
+		'button_callback' => array('tl_calendar_plus', 'editEventtypes'),
 	)
 ));
 
@@ -73,4 +80,18 @@ class tl_calendar_plus extends Backend
 		return $this->User->hasAccess('docents', 'calendarp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.gif$/i', '_.gif', $icon)).' ';
 	}
 
+
+	/**
+	 * Return the manage eventtypes button
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @return string
+	 */
+	public function editEventtypes($row, $href, $label, $title, $icon, $attributes)
+	{
+		return $this->User->hasAccess('eventtypes', 'calendarp') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ' : Image::getHtml(preg_replace('/\.gif$/i', '_.gif', $icon)).' ';
+	}
 }

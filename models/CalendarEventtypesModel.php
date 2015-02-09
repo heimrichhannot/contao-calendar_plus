@@ -11,9 +11,9 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
-class CalendarDocentsModel extends \Model
+class CalendarEventtypesModel extends \Model
 {
-	protected static $strTable = 'tl_calendar_docents';
+	protected static $strTable = 'tl_calendar_eventtypes';
 
 
 	public function generateAlias()
@@ -36,7 +36,7 @@ class CalendarDocentsModel extends \Model
 	}
 
 	/**
-	 * Find all items by title
+	 * Find all item by title
 	 *
 	 * @param string  $varValue   The title value
 	 * @param array   $arrOptions An optional options array

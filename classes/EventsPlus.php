@@ -216,6 +216,48 @@ abstract class EventsPlus extends \Events
 			}
 		}
 
+		$objEvents->docents = deserialize($objEvents->docents, true);
+
+		if(is_array($objEvents->docents) && !empty($objEvents->docents))
+		{
+			$objDocents = CalendarDocentsModel::findMultipleByIds($objEvents->docents);
+
+			if($objDocents !== null)
+			{
+				while($objDocents->next())
+				{
+					$arrEvent['doctentList'][] = $objDocents;
+				}
+			}
+		}
+
+
+		$objEvents->eventtypes = deserialize($objEvents->eventtypes, true);
+
+		if(is_array($objEvents->eventtypes) && !empty($objEvents->eventtypes))
+		{
+			$objEventTypes = CalendarEventtypesModel::findMultipleByIds($objEvents->eventtypes);
+
+			if($objEventTypes !== null)
+			{
+				while($objEventTypes->next())
+				{
+					$arrEvent['eventtypeList'][] = $objEventTypes;
+				}
+			}
+		}
+
+		// time diff
+		if($objEvents->endTime > $objEvents->startTime)
+		{
+			$objDateStartTime = new \DateTime();
+			$objDateStartTime->setTimestamp($objEvents->startTime);
+			$objDateEndTime = new \DateTime();
+			$objDateEndTime->setTimestamp($objEvents->endTime);
+			$arrEvent['timeDiff'] = $objDateStartTime->diff($objDateEndTime);
+		}
+
+
 		// Override the link target
 		if ($objEvents->source == 'external' && $objEvents->target)
 		{
