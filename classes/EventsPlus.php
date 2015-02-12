@@ -134,18 +134,8 @@ abstract class EventsPlus extends \Events
 
 		return $this->arrEvents;
 	}
-	
-	/**
-	 * Add an event to the array of active events
-	 * @param object
-	 * @param integer
-	 * @param integer
-	 * @param string
-	 * @param integer
-	 * @param integer
-	 * @param integer
-	 */
-	protected function addEvent($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intLimit, $intCalendar)
+
+	protected function getEventDetails($objEvent, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar)
 	{
 		global $objPage;
 		$span = \Calendar::calculateSpan($intStart, $intEnd);
@@ -156,8 +146,6 @@ abstract class EventsPlus extends \Events
 			$intStart = $intBegin;
 		}
 
-		$intDate = $intStart;
-		$intKey = date('Ymd', $intStart);
 		$strDate = \Date::parse($objPage->dateFormat, $intStart);
 		$strDay = $GLOBALS['TL_LANG']['DAYS'][date('w', $intStart)];
 		$strMonth = $GLOBALS['TL_LANG']['MONTHS'][(date('n', $intStart)-1)];
@@ -170,7 +158,7 @@ abstract class EventsPlus extends \Events
 
 		$strTime = '';
 
-		if ($objEvents->addTime)
+		if ($objEvent->addTime)
 		{
 			if ($span > 0)
 			{
@@ -187,7 +175,7 @@ abstract class EventsPlus extends \Events
 		}
 
 		// Store raw data
-		$arrEvent = $objEvents->row();
+		$arrEvent = $objEvent->row();
 
 		// Overwrite some settings
 		$arrEvent['time'] = $strTime;
@@ -195,20 +183,27 @@ abstract class EventsPlus extends \Events
 		$arrEvent['day'] = $strDay;
 		$arrEvent['month'] = $strMonth;
 		$arrEvent['parent'] = $intCalendar;
-		$arrEvent['link'] = $objEvents->title;
+		$arrEvent['link'] = $objEvent->title;
 		$arrEvent['target'] = '';
-		$arrEvent['title'] = specialchars($objEvents->title, true);
-		$arrEvent['href'] = $this->generateEventUrl($objEvents, $strUrl);
-		$arrEvent['class'] = ($objEvents->cssClass != '') ? ' ' . $objEvents->cssClass : '';
+		$arrEvent['title'] = specialchars($objEvent->title, true);
+		$arrEvent['href'] = $this->generateEventUrl($objEvent, $strUrl);
+		$arrEvent['class'] = ($objEvent->cssClass != '') ? ' ' . $objEvent->cssClass : '';
 		$arrEvent['begin'] = $intStart;
 		$arrEvent['end'] = $intEnd;
 		$arrEvent['details'] = '';
-		$arrEvent['startTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvents->startTime);
-		$arrEvent['endTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvents->endTime);
+		$arrEvent['startTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvent->startTime);
+		$arrEvent['endTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvent->endTime);
 
-		if($objEvents->promoter != '')
+		// modal
+		if($this->cal_showInModal && $objEvent->source == 'default' && $this->cal_readerModule)
 		{
-			$objPromoter = CalendarPromotersModel::findByPk($objEvents->promoter);
+			$arrEvent['modal'] = true;
+			$arrEvent['modalTarget'] = '#' . EventsPlusHelper::getCSSModalID($this->cal_readerModule);
+		}
+
+		if($objEvent->promoter != '')
+		{
+			$objPromoter = CalendarPromotersModel::findByPk($objEvent->promoter);
 
 			if($objPromoter !== null)
 			{
@@ -216,27 +211,27 @@ abstract class EventsPlus extends \Events
 			}
 		}
 
-		$objEvents->docents = deserialize($objEvents->docents, true);
+		$objEvent->docents = deserialize($objEvent->docents, true);
 
-		if(is_array($objEvents->docents) && !empty($objEvents->docents))
+		if(is_array($objEvent->docents) && !empty($objEvent->docents))
 		{
-			$objDocents = CalendarDocentsModel::findMultipleByIds($objEvents->docents);
+			$objDocents = CalendarDocentsModel::findMultipleByIds($objEvent->docents);
 
 			if($objDocents !== null)
 			{
 				while($objDocents->next())
 				{
-					$arrEvent['doctentList'][] = $objDocents;
+					$arrEvent['docentList'][] = $objDocents->current();
 				}
 			}
 		}
 
 
-		$objEvents->eventtypes = deserialize($objEvents->eventtypes, true);
+		$objEvent->eventtypes = deserialize($objEvent->eventtypes, true);
 
-		if(is_array($objEvents->eventtypes) && !empty($objEvents->eventtypes))
+		if(is_array($objEvent->eventtypes) && !empty($objEvent->eventtypes))
 		{
-			$objEventTypes = CalendarEventtypesModel::findMultipleByIds($objEvents->eventtypes);
+			$objEventTypes = CalendarEventtypesModel::findMultipleByIds($objEvent->eventtypes);
 
 			if($objEventTypes !== null)
 			{
@@ -248,18 +243,30 @@ abstract class EventsPlus extends \Events
 		}
 
 		// time diff
-		if($objEvents->endTime > $objEvents->startTime)
+		if($objEvent->endTime > $objEvent->startTime)
 		{
 			$objDateStartTime = new \DateTime();
-			$objDateStartTime->setTimestamp($objEvents->startTime);
+			$objDateStartTime->setTimestamp($objEvent->startTime);
 			$objDateEndTime = new \DateTime();
-			$objDateEndTime->setTimestamp($objEvents->endTime);
+			$objDateEndTime->setTimestamp($objEvent->endTime);
 			$arrEvent['timeDiff'] = $objDateStartTime->diff($objDateEndTime);
 		}
 
 
+		if($objEvent->website != '')
+		{
+			$arrEvent['websiteLink'] = $objEvent->website;
+
+			// Add http:// to the website
+			if (($objEvent->website != '') && !preg_match('@^(https?://|ftp://|mailto:|#)@i', $objEvent->website))
+			{
+				$arrEvent['websiteLink'] = 'http://' . $objEvent->website;
+			}
+		}
+
+
 		// Override the link target
-		if ($objEvents->source == 'external' && $objEvents->target)
+		if ($objEvent->source == 'external' && $objEvent->target)
 		{
 			$arrEvent['target'] = ($objPage->outputFormat == 'xhtml') ? ' onclick="return !window.open(this.href)"' : ' target="_blank"';
 		}
@@ -278,7 +285,7 @@ abstract class EventsPlus extends \Events
 		}
 
 		// Display the "read more" button for external/article links
-		if ($objEvents->source != 'default')
+		if ($objEvent->source != 'default')
 		{
 			$arrEvent['details'] = true;
 		}
@@ -286,7 +293,7 @@ abstract class EventsPlus extends \Events
 		// Compile the event text
 		else
 		{
-			$objElement = \ContentModel::findPublishedByPidAndTable($objEvents->id, 'tl_calendar_events');
+			$objElement = \ContentModel::findPublishedByPidAndTable($objEvent->id, 'tl_calendar_events');
 
 			if ($objElement !== null)
 			{
@@ -320,6 +327,34 @@ abstract class EventsPlus extends \Events
 		{
 			$arrEvent['class'] .= ' current';
 		}
+
+		return $arrEvent;
+	}
+	
+	/**
+	 * Add an event to the array of active events
+	 * @param object
+	 * @param integer
+	 * @param integer
+	 * @param string
+	 * @param integer
+	 * @param integer
+	 * @param integer
+	 */
+	protected function addEvent($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intLimit, $intCalendar)
+	{
+		$span = \Calendar::calculateSpan($intStart, $intEnd);
+
+		// Adjust the start time of a multi-day event (see #6802)
+		if ($this->cal_noSpan && $span > 0 && $intStart < $intBegin && $intBegin < $intEnd)
+		{
+			$intStart = $intBegin;
+		}
+
+		$intDate = $intStart;
+		$intKey = date('Ymd', $intStart);
+
+		$arrEvent = $this->getEventDetails($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar);
 
 		$this->arrEvents[$intKey][$intStart][] = $arrEvent;
 

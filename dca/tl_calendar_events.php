@@ -7,8 +7,9 @@ $dc = &$GLOBALS['TL_DCA']['tl_calendar_events'];
  */
 
 $dc['palettes']['default']      = str_replace('title', 'title,shortTitle', $dc['palettes']['default']);
-$dc['palettes']['default']      = str_replace('{details_legend}', '{details_legend},parentEvent,promoter,docents,eventtypes', $dc['palettes']['default']);
-$dc['palettes']['default']      = str_replace('location', 'location,locationAdditional,street,postal,city,coordinates,addMap', $dc['palettes']['default']);
+$dc['palettes']['default']      = str_replace('endDate', 'endDate,parentEvent;{promoter_legend},promoter;{docents_legend},docents;{eventtypes_legend},eventtypes', $dc['palettes']['default']);
+$dc['palettes']['default']      = str_replace('location', '{location_legend},location,locationAdditional,street,postal,city,coordinates,addMap', $dc['palettes']['default']);
+$dc['palettes']['default']      = str_replace('{location_legend}', '{contact_legend},website;{location_legend}', $dc['palettes']['default']);
 $dc['palettes']['__selector__'] = array_merge($dc['palettes']['__selector__'], array('addMap'));
 $dc['subpalettes']['addMap']    = 'map,mapText';
 
@@ -33,7 +34,6 @@ if (!isset($_GET['epid'])) {
 /**
  * Fields
  */
-
 $dc['fields']['shortTitle'] = array
 (
 	'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['shortTitle'],
@@ -170,6 +170,14 @@ $dc['fields']['eventtypes'] = array
 	'relation'   => array('type' => 'hasMany', 'load' => 'lazy')
 );
 
+$dc['fields']['website'] = array
+(
+	'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['website'],
+	'inputType' => 'text',
+	'exclude'   => true,
+	'eval'      => array('tl_class' => 'w50', 'rgxp' => 'url', 'maxlength'=>255),
+	'sql'       => "varchar(255) NOT NULL default ''"
+);
 
 /**
  * Filter list / show subevents

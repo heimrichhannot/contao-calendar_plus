@@ -1,0 +1,91 @@
+
+<div class="modal-content">
+	<div class="modal-header">
+		<!-- indexer::stop -->
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<!-- indexer::continue -->
+	</div>
+	<div class="modal-body">
+		<div class="event layout_full block<?php echo $this->class; ?>" data-history-delete="<?php echo $this->alias; ?>" data-history-base="{{link_url::9}}">
+
+			<div class="meta-row clearfix">
+				<?php if(is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
+					<div class="label label-default-dark eventtypes">
+						<?php foreach($this->eventtypeList as $eventType): ?>
+							<span class="eventtpe"><?php echo $eventType->title; ?></span>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
+
+				<?php if ($this->time || $this->span || $this->city): ?>
+					<div class="label label-default time-location">
+						<?php if($this->startTimeFormated): ?>
+							<span class="time-start">
+							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
+							</span>
+						<?php endif; ?>
+						<?php if($this->endTimeFormated): ?>
+							<span class="time-end">
+							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
+							</span>
+						<?php endif; ?>
+						<?php if($this->city): ?>
+							<span class="city">
+							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['cityLabel']; ?></span> <?php echo $this->city; ?>
+							</span>
+						<?php endif; ?>
+					</div>
+				<?php endif; ?>
+
+				<?php if($this->timeHours > 0): ?>
+					<div class="label label-default time-hours">
+						<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['timeHoursLabel']; ?></span> <?php echo rtrim(rtrim(number_format($this->timeHours, 2, ",", ""), '0'), ','); ?>
+					</div>
+				<?php endif; ?>
+			</div>
+
+			<h1 class="h4"><?php echo $this->title; ?></h1>
+
+			<?php if ($this->recurring): ?>
+				<p class="recurring"><?php echo $this->recurring; if ($this->until): ?> <?php echo $this->until; endif; ?>.</p>
+			<?php endif; ?>
+
+			<?php if ($this->details): ?>
+				<?php echo $this->details; ?>
+			<?php else: ?>
+				<div class="ce_text block">
+					<?php echo $this->teaser; ?>
+				</div>
+			<?php endif; ?>
+
+			<?php if(is_array($this->docentList) && !empty($this->docentList)): ?>
+				<div class="docents">
+					<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['docentLabel']; ?></span>
+					<?php foreach($this->docentList as $i => $docent): ?>
+						<span class="docent"><?php echo $docent->title; ?> <?php if($i + 1 <= count($this->docentList)): ?> &middot; <?php endif; ?></span>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+
+			<?php if($this->websiteLink || $this->enclosure): ?>
+				<div class="links">
+					<?php if($this->websiteLink): ?>
+						<a href="<?php echo $this->websiteLink; ?>" target="_blank" class="btn btn-primary"><?php echo $GLOBALS['TL_LANG']['event']['websiteLink']; ?></a>
+					<?php endif; ?>
+					<?php if ($this->enclosure): ?>
+						<?php foreach ($this->enclosure as $enclosure): ?>
+							<a href="<?php echo $enclosure['href']; ?>" title="<?php echo $enclosure['title']; ?>" class="btn btn-default-download"><?php echo $enclosure['link']; ?> <span class="size">(<?php echo $enclosure['filesize']; ?>)</span></a></p>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+
+			<?php if($this->promoterDetails): ?>
+				<div class="promoter">
+					<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span>  <?php echo $this->promoterDetails->title; ?>
+				</div>
+			<?php endif; ?>
+
+		</div>
+	</div>
+</div>

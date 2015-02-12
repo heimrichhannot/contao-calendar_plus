@@ -1,0 +1,7 @@
+<?php $this->extend('block_modal_event'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php echo $this->event; ?>
+
+<?php $this->endblock(); ?>

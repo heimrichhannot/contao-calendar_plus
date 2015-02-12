@@ -32,17 +32,17 @@
         <div class="label label-default time-location">
           <?php if($this->startTimeFormated): ?>
             <span class="time-start">
-              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['eventlist_plus']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
+              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
             </span>
           <?php endif; ?>
           <?php if($this->endTimeFormated): ?>
             <span class="time-end">
-              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['eventlist_plus']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
+              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
             </span>
           <?php endif; ?>
           <?php if($this->city): ?>
             <span class="city">
-              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['eventlist_plus']['cityLabel']; ?></span> <?php echo $this->city; ?>
+              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['cityLabel']; ?></span> <?php echo $this->city; ?>
             </span>
           <?php endif; ?>
         </div>
@@ -50,20 +50,22 @@
 
     <?php if($this->timeHours > 0): ?>
         <div class="label label-default time-hours">
-          <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeHoursLabel']; ?></span> <?php echo $this->timeHours; ?>
+          <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['timeHoursLabel']; ?></span> <?php echo rtrim(rtrim(number_format($this->timeHours, 2, ",", ""), '0'), ','); ?>
         </div>
     <?php endif; ?>
   </div>
 
-  <h4><a href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
+
+
+  <h4><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
 
   <div class="ce_text block">
-    <?php echo $this->details; ?>
+    <?php echo $this->teaser; ?>
   </div>
 
   <?php if($this->promoterDetails): ?>
       <div class="promoter">
-        <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['eventlist_plus']['promoterLabel']; ?></span> <?php echo $this->promoterDetails->title; ?>
+        <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span> <?php echo $this->promoterDetails->title; ?>
       </div>
   <?php endif; ?>
 

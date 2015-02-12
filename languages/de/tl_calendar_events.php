@@ -26,6 +26,15 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['agenda'] = array('Programm', 'Bitte w
 $GLOBALS['TL_LANG']['tl_calendar_events']['addMap'] = array('Anfahrtsplan hinzufügen', 'Wählen einen Anfahrtsplan aus.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['map'] = array('Anfahrtplan', 'Bitte wählen Sie die Dateien aus, die Sie hinzufügen möchten.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['mapText'] = array('Text', 'Bitte geben Sie hier einen Text für die Überschrift ein, falls er von "Abfahrtsplan" abweicht.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['website'] = array('Webseite', 'Hier können Sie eine Web-Adresse eingeben.');
+
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_calendar_events']['promoter_legend'] = 'Veranstalter';
+$GLOBALS['TL_LANG']['tl_calendar_events']['docents_legend'] = 'Dozenten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['eventtypes_legend'] = 'Veranstaltungsarten';
+$GLOBALS['TL_LANG']['tl_calendar_events']['contact_legend'] = 'Kontakt';
 
 /**
  * Event Chooser

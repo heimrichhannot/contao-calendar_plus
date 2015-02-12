@@ -25,14 +25,17 @@ $GLOBALS['TL_LANG']['MSC']['day'] = 'Tag';
 $GLOBALS['TL_LANG']['tl_form_field']['further-info'] = 'Weitere&nbsp;Informationen';
 
 /**
- * Eventlist Plus
+ * Event Details
  */
-$GLOBALS['TL_LANG']['eventlist_plus']['startTimeLabel'] = 'Beginn';
-$GLOBALS['TL_LANG']['eventlist_plus']['endTimeLabel'] = 'Ende';
-$GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix'] = 'Uhr';
-$GLOBALS['TL_LANG']['eventlist_plus']['cityLabel'] = 'Ort';
-$GLOBALS['TL_LANG']['eventlist_plus']['promoterLabel'] = 'Veranstalter';
-$GLOBALS['TL_LANG']['eventlist_plus']['timeHoursLabel'] = 'Zeitstunden';
+$GLOBALS['TL_LANG']['event']['startTimeLabel'] = 'Beginn';
+$GLOBALS['TL_LANG']['event']['endTimeLabel'] = 'Ende';
+$GLOBALS['TL_LANG']['event']['timeSuffix'] = 'Uhr';
+$GLOBALS['TL_LANG']['event']['cityLabel'] = 'Ort';
+$GLOBALS['TL_LANG']['event']['promoterLabel'] = 'Veranstalter';
+$GLOBALS['TL_LANG']['event']['timeHoursLabel'] = 'Zeitstunden';
+$GLOBALS['TL_LANG']['event']['docentLabel'] = 'Dozenten';
+$GLOBALS['TL_LANG']['event']['websiteLink'] = 'Webseite';
+
 
 /**
  * Eventfilter

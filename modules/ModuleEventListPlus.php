@@ -3,7 +3,7 @@
  * Contao Open Source CMS
  * 
  * Copyright (c) 2015 Heimrich & Hannot GmbH
- * @package ${CARET}
+ * @package calendar_plus
  * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
@@ -53,7 +53,7 @@ class ModuleEventListPlus extends EventsPlus
 		}
 
 		// Show the event reader if an item has been selected
-		if ($this->cal_readerModule > 0  && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
+		if (!$this->cal_showInModal && $this->cal_readerModule > 0  && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
 		{
 			return $this->getFrontendModule($this->cal_readerModule, $this->strColumn);
 		}
