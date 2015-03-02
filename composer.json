@@ -1,0 +1,32 @@
+{
+    "name": "heimrichhannot/contao-calendar_plus",
+    "description":"A collection of enhancements for the contao calendar module.",
+    "keywords":["contao", "calendar", "events", "filter", "modal", "subevents"],
+    "type": "contao-module",
+    "homepage":"https://github.com/heimrichhannot/contao-calendar_plus",
+    "license":"LGPL-3.0+",
+    "authors":[
+        {
+            "name":"Heimrich & Hannot",
+            "email":"digitales@heimrich-hannot.de",
+            "homepage":"http://www.heimrich-hannot.de",
+            "role":"Developer"
+        }
+    ],
+    "support":{
+        "issues":"https://github.com/heimrichhannot/contao-calendar_plus/issues"
+    },
+    "require": {
+        "contao/core": ">=3.2,<4-dev"
+    },
+    "autoload": {
+        "classmap": [""]
+    },
+    "extra": {
+        "contao": {
+            "sources": {
+                "": "system/modules/calendar_plus"
+            }
+        }
+    }
+}
