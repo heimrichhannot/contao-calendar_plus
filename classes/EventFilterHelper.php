@@ -48,7 +48,7 @@ class EventFilterHelper extends \Frontend
 
 		$arrItems = $objItems->fetchEach('promoter');
 
-		if (isset($arrOptions['foreignKey']))
+		if (is_array($arrItems) && !empty($arrItems) && isset($arrOptions['foreignKey']))
 		{
 			$arrKey = explode('.', $arrOptions['foreignKey'], 2);
 			$objOptions = \Database::getInstance()->query("SELECT id, " . $arrKey[1] . " AS value FROM " . $arrKey[0] . " WHERE tstamp>0 AND " . $arrKey[0] . ".id IN(" . implode(',', array_map('intval', $arrItems)) . ") ORDER BY value");

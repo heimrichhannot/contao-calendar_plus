@@ -1,12 +1,14 @@
 
 <div class="modal-content">
 	<div class="modal-header">
+		<?php echo $this->nav; ?>
+		<?php echo $this->share; ?>
 		<!-- indexer::stop -->
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		<!-- indexer::continue -->
 	</div>
 	<div class="modal-body">
-		<div class="event layout_full block<?php echo $this->class; ?>" data-history-delete="<?php echo $this->alias; ?>" data-history-base="{{link_url::9}}">
+		<div class="event layout_full block<?php echo $this->class; ?>" data-history-delete="<?php echo $this->alias; ?>" data-history-base="<?php echo $this->base; ?>">
 
 			<div class="meta-row clearfix">
 				<?php if(is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
@@ -17,14 +19,14 @@
 					</div>
 				<?php endif; ?>
 
-				<?php if ($this->time || $this->span || $this->city): ?>
+				<?php if ($this->addTime || $this->city): ?>
 					<div class="label label-default time-location">
-						<?php if($this->startTimeFormated): ?>
+						<?php if($this->addTime && $this->startTimeFormated): ?>
 							<span class="time-start">
 							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
 							</span>
 						<?php endif; ?>
-						<?php if($this->endTimeFormated): ?>
+						<?php if($this->addTime && $this->endTimeFormated): ?>
 							<span class="time-end">
 							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
 							</span>
@@ -44,7 +46,7 @@
 				<?php endif; ?>
 			</div>
 
-			<h1 class="h4"><?php echo $this->title; ?></h1>
+			<h1 class="h3"><?php echo $this->title; ?></h1>
 
 			<?php if ($this->recurring): ?>
 				<p class="recurring"><?php echo $this->recurring; if ($this->until): ?> <?php echo $this->until; endif; ?>.</p>
@@ -62,7 +64,7 @@
 				<div class="docents">
 					<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['docentLabel']; ?></span>
 					<?php foreach($this->docentList as $i => $docent): ?>
-						<span class="docent"><?php echo $docent->title; ?> <?php if($i + 1 <= count($this->docentList)): ?> &middot; <?php endif; ?></span>
+						<span class="docent"><?php echo $docent->title; ?> <?php if($i + 1 < count($this->docentList)): ?> &middot; <?php endif; ?></span>
 					<?php endforeach; ?>
 				</div>
 			<?php endif; ?>
@@ -74,7 +76,7 @@
 					<?php endif; ?>
 					<?php if ($this->enclosure): ?>
 						<?php foreach ($this->enclosure as $enclosure): ?>
-							<a href="<?php echo $enclosure['href']; ?>" title="<?php echo $enclosure['title']; ?>" class="btn btn-default-download"><?php echo $enclosure['link']; ?> <span class="size">(<?php echo $enclosure['filesize']; ?>)</span></a></p>
+							<a href="<?php echo $enclosure['href']; ?>" title="<?php echo $enclosure['title']; ?>" class="btn btn-default-download"><?php echo $enclosure['link']; ?> <span class="size">(<?php echo $enclosure['filesize']; ?>)</span></a>
 						<?php endforeach; ?>
 					<?php endif; ?>
 				</div>

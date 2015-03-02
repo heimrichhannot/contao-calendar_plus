@@ -36,7 +36,6 @@ abstract class EventsPlus extends \Events
 			$arrFilter[$strKey] = EventFilterHelper::getValueByDca(\Input::get($strKey), $arrData);
 		}
 
-
 		return $arrFilter;
 	}
 
@@ -132,6 +131,25 @@ abstract class EventsPlus extends \Events
 			}
 		}
 
+		$arrIds = array();
+
+		foreach($this->arrEvents as $intKey => $arrDays)
+		{
+			foreach($arrDays as $intStart => $arrEvents)
+			{
+				foreach($arrEvents as $arrEvent)
+				{
+					$arrIds[] = $arrEvent['id'];
+				}
+			}
+		}
+
+		// store events ids in session
+		$session = \Session::getInstance()->getData();
+		$session[CALENDARPLUS_SESSION_EVENT_IDS] = array();
+		$session[CALENDARPLUS_SESSION_EVENT_IDS] = $arrIds;
+		\Session::getInstance()->setData($session);
+
 		return $this->arrEvents;
 	}
 
@@ -193,6 +211,7 @@ abstract class EventsPlus extends \Events
 		$arrEvent['details'] = '';
 		$arrEvent['startTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvent->startTime);
 		$arrEvent['endTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvent->endTime);
+
 
 		// modal
 		if($this->cal_showInModal && $objEvent->source == 'default' && $this->cal_readerModule)
@@ -357,6 +376,7 @@ abstract class EventsPlus extends \Events
 		$arrEvent = $this->getEventDetails($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar);
 
 		$this->arrEvents[$intKey][$intStart][] = $arrEvent;
+
 
 		// Multi-day event
 		for ($i=1; $i<=$span && $intDate<=$intLimit; $i++)

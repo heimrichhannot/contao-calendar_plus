@@ -35,13 +35,13 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['startDate']['eval']['mandatory'] = false;
 		$dc['fields']['startDate']['eval']['placeholder'] = &$GLOBALS['TL_LANG']['eventfilter']['startDatePlaceholder'];
 		$dc['fields']['startDate']['eval']['autocomplete'] = false;
-		$dc['fields']['startDate']['eval']['linked'] = '#ctrl_startDate';
+		$dc['fields']['startDate']['eval']['linkedEnd'] = '#ctrl_endDate';
 
 		// adjust end date
 		$dc['fields']['endDate']['eval']['mandatory'] = false;
 		$dc['fields']['endDate']['eval']['placeholder'] = &$GLOBALS['TL_LANG']['eventfilter']['endDatePlaceholder'];
 		$dc['fields']['endDate']['eval']['autocomplete'] = false;
-		$dc['fields']['startDate']['eval']['linked'] = '#ctrl_endDate';
+		$dc['fields']['endDate']['eval']['linkedStart'] = '#ctrl_startDate';
 
 		// adjust promoter field
 		$dc['fields']['promoter']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getPromoterSelectOptions');

@@ -19,6 +19,8 @@
 <?php endif; ?>
 
 <div class="event layout_list<?php echo $this->classList; ?>">
+
+  <h4 class="visible-xs"><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
   <div class="meta-row clearfix">
     <?php if(is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
       <div class="label label-default-dark eventtypes">
@@ -28,14 +30,14 @@
       </div>
     <?php endif; ?>
 
-    <?php if ($this->time || $this->span || $this->city): ?>
+    <?php if ($this->addTime || $this->city): ?>
         <div class="label label-default time-location">
-          <?php if($this->startTimeFormated): ?>
+          <?php if($this->addTime && $this->startTimeFormated): ?>
             <span class="time-start">
               <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
             </span>
           <?php endif; ?>
-          <?php if($this->endTimeFormated): ?>
+          <?php if($this->addTime &&$this->endTimeFormated): ?>
             <span class="time-end">
               <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
             </span>
@@ -57,7 +59,7 @@
 
 
 
-  <h4><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
+  <h4 class="hidden-xs"><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
 
   <div class="ce_text block">
     <?php echo $this->teaser; ?>

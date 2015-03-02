@@ -48,6 +48,8 @@ $GLOBALS['TL_MODELS']['tl_calendar_eventtypes'] = 'HeimrichHannot\CalendarPlus\C
  * Constants
  */
 define('CALENDARPLUS_SORTBY_DAY', 'day');
+define('CALENDARPLUS_SESSION_EVENT_IDS', 'CALENDAR_PLUS_EVENT_IDS');
+define('CALENDARPLUS_FILTER', 'CALENDARPLUS_FILTER');
 
 /**
  * EFG

@@ -25,6 +25,11 @@ $GLOBALS['TL_LANG']['MSC']['day'] = 'Tag';
 $GLOBALS['TL_LANG']['tl_form_field']['further-info'] = 'Weitere&nbsp;Informationen';
 
 /**
+ * Event List
+ */
+$GLOBALS['TL_LANG']['eventlist']['listEmptyFilter'] = 'Für die angegebenen Filterkriterien wurden keine Veranstaltungen gefunden. <br />Bitte verändern Sie Ihre Eingabe und senden Sie die Suche anschließend erneut ab.';
+
+/**
  * Event Details
  */
 $GLOBALS['TL_LANG']['event']['startTimeLabel'] = 'Beginn';
@@ -35,6 +40,8 @@ $GLOBALS['TL_LANG']['event']['promoterLabel'] = 'Veranstalter';
 $GLOBALS['TL_LANG']['event']['timeHoursLabel'] = 'Zeitstunden';
 $GLOBALS['TL_LANG']['event']['docentLabel'] = 'Dozenten';
 $GLOBALS['TL_LANG']['event']['websiteLink'] = 'Webseite';
+$GLOBALS['TL_LANG']['event']['prevLink'] = 'Vorheriger';
+$GLOBALS['TL_LANG']['event']['nextLink'] = 'Nächster';
 
 
 /**

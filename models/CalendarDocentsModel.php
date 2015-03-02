@@ -23,8 +23,7 @@ class CalendarDocentsModel extends \Model
 		$objAlias = static::findBy('alias', $varValue);
 
 		// Check whether the alias exists
-		if ($objAlias->numRows > 1)
-		{
+		if ($objAlias !== null) {
 			if(!$this->id) return $this;
 
 			$varValue .= '-' . $this->id;

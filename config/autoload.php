@@ -54,14 +54,14 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'event_list_plus'      => 'system/modules/calendar_plus/templates/events',
-	'eventmodaldialog'     => 'system/modules/calendar_plus/templates/events',
-	'eventmodal_full'      => 'system/modules/calendar_plus/templates/events',
-	'mod_eventfilter'      => 'system/modules/calendar_plus/templates/modules',
-	'mod_event_modal_ajax' => 'system/modules/calendar_plus/templates/modules',
-	'mod_event_modal'      => 'system/modules/calendar_plus/templates/modules',
-	'mod_event_chooser'    => 'system/modules/calendar_plus/templates/modules',
-	'mod_eventlist_plus'   => 'system/modules/calendar_plus/templates/modules',
-	'form_eventfilter'     => 'system/modules/calendar_plus/templates/form',
-	'block_modal_event'    => 'system/modules/calendar_plus/templates/block',
+	'event_list_plus'        => 'system/modules/calendar_plus/templates/events',
+	'eventmodal_full'        => 'system/modules/calendar_plus/templates/events',
+	'eventnavigation_arrows' => 'system/modules/calendar_plus/templates/navigation',
+	'mod_eventfilter'        => 'system/modules/calendar_plus/templates/modules',
+	'mod_event_modal_ajax'   => 'system/modules/calendar_plus/templates/modules',
+	'mod_event_modal'        => 'system/modules/calendar_plus/templates/modules',
+	'mod_event_chooser'      => 'system/modules/calendar_plus/templates/modules',
+	'mod_eventlist_plus'     => 'system/modules/calendar_plus/templates/modules',
+	'form_eventfilter'       => 'system/modules/calendar_plus/templates/form',
+	'block_modal_event'      => 'system/modules/calendar_plus/templates/block',
 ));

@@ -24,7 +24,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		$objAlias = static::findBy('alias', $varValue);
 
 		// Check whether the alias exists
-		if ($objAlias->numRows > 1) {
+		if ($objAlias !== null) {
 			if (!$this->id) return $this;
 			$varValue .= '-' . $this->id;
 		}
@@ -47,24 +47,30 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		foreach ($arrFilter as $key => $value) {
 			switch ($key) {
 				case 'startDate':
-					if ($value && $value >= $intStart){
+					if ($value && $value >= $intStart) {
 						$intStart = $value;
 					}
 					break;
 				case 'endDate':
-					if ($value && $value <= $intEnd){
-						$intEnd = strtotime(date('d.m.Y', $value) .  ' 23:59:59'); // until last second of the day
+					if ($value && $value <= $intEnd) {
+						$intEnd = strtotime(date('d.m.Y', $value) . ' 23:59:59'); // until last second of the day
 					}
 					break;
 				case 'areasoflaw':
-					if($value != ''){
+				case 'eventtypes':
+					if ($value != '') {
 						$arrColumns[] = "$t.$key REGEXP \"$value\"";
 					}
 					break;
 				case 'postal':
-					if($value !=''){
+					if ($value != '') {
 						$arrColumns[] = "LEFT($t.postal, 1) = ?";
-						$arrValues[] = $value;
+						$arrValues[]  = $value;
+					}
+					break;
+				case 'timeHours':
+					if ($value != '') {
+						$arrColumns[] = "($t.$key >= $value AND $t.$key < ($value + 1))";
 					}
 					break;
 				default:

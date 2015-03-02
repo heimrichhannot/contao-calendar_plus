@@ -137,6 +137,11 @@ class ModuleEventListPlus extends EventsPlus
 			if($objFilterModule !== null)
 			{
 				$arrFilter = $this->getFilter($objFilterModule);
+
+				if(!empty($arrFilter))
+				{
+					$strEmpty = &$GLOBALS['TL_LANG']['eventlist']['listEmptyFilter'];
+				}
 			}
 		}
 
