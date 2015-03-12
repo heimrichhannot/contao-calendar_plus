@@ -67,7 +67,7 @@ class ModuleEventReaderPlus extends EventsPlus
 			$this->cssID = $arrCss;
 			$this->base = \Controller::generateFrontendUrl($objPage->row());
 
-			if($this->Environment->isAjaxRequest)
+			if($this->Environment->isAjaxRequest && !$this->isSearchIndexer())
 			{
 				$this->strTemplate = 'mod_event_modal_ajax';
 				$this->generateAjax();
@@ -426,5 +426,10 @@ class ModuleEventReaderPlus extends EventsPlus
 		$objConfig->moderate = $objCalendar->moderate;
 
 		$this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_calendar_events', $objEvent->id, $arrNotifies);
+	}
+
+	protected function isSearchIndexer()
+	{
+		return (strpos($_SERVER['HTTP_REFERER'], 'main.php?act=index&do=maintenance') !== false);
 	}
 }
