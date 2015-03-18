@@ -6,7 +6,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_calendar_events'];
  * Palettes
  */
 
-$dc['palettes']['default']      = str_replace('title', 'title,shortTitle', $dc['palettes']['default']);
+$dc['palettes']['default']      = str_replace('title,', 'title,shortTitle,', $dc['palettes']['default']);
 $dc['palettes']['default']      = str_replace('endDate', 'endDate,parentEvent;{promoter_legend},promoter;{docents_legend},docents;{eventtypes_legend},eventtypes', $dc['palettes']['default']);
 $dc['palettes']['default']      = str_replace('location', '{location_legend},location,locationAdditional,street,postal,city,coordinates,addMap', $dc['palettes']['default']);
 $dc['palettes']['default']      = str_replace('{location_legend}', '{contact_legend},website;{location_legend}', $dc['palettes']['default']);
