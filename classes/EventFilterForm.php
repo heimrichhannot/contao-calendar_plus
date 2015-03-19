@@ -15,7 +15,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 {
 	protected $strTable = 'tl_calendar_events';
 
-	protected $strTemplate = 'form_eventfilter';
+	protected $strTemplate = 'formhybrid_eventfilter';
 
 	public function __construct($objModule)
 	{

@@ -62,6 +62,6 @@ TemplateLoader::addFiles(array
 	'mod_event_modal'        => 'system/modules/calendar_plus/templates/modules',
 	'mod_event_chooser'      => 'system/modules/calendar_plus/templates/modules',
 	'mod_eventlist_plus'     => 'system/modules/calendar_plus/templates/modules',
-	'form_eventfilter'       => 'system/modules/calendar_plus/templates/form',
+	'formhybrid_eventfilter' => 'system/modules/calendar_plus/templates/form',
 	'block_modal_event'      => 'system/modules/calendar_plus/templates/block',
 ));

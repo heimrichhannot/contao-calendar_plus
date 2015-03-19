@@ -34,7 +34,7 @@ $dc['palettes']['eventreader_plus'] = '
 
 $dc['palettes']['eventfilter'] = '
 									{title_legend},name,headline,type;
-									{config_legend},cal_calendar,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues;
+									{config_legend},cal_calendar,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues,formHybridTemplate;
 									{template_legend:hide},customTpl;
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';
