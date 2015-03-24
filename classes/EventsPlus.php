@@ -227,6 +227,17 @@ abstract class EventsPlus extends \Events
 			if($objPromoter !== null)
 			{
 				$arrEvent['promoterDetails'] = $objPromoter;
+
+                if($objPromoter->website != '')
+                {
+                    $strWebsiteLink = $objPromoter->website;
+
+                    // Add http:// to the website
+                    if (($strWebsiteLink != '') && !preg_match('@^(https?://|ftp://|mailto:|#)@i', $strWebsiteLink))
+                    {
+                        $objPromoter->website = 'http://' . $strWebsiteLink;
+                    }
+                }
 			}
 		}
 
