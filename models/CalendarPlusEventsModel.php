@@ -10,8 +10,119 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
+use HeimrichHannot\DavAreasOfLaw\AreasOfLawModel;
+
 class CalendarPlusEventsModel extends \CalendarEventsModel
 {
+
+	public static function getUniqueCityNamesByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "($t.city != '')";
+
+		if($currentOnly)
+		{
+			$arrColumns[] = "($t.startDate >= $time)";
+		}
+
+		$arrOptions['group'] = 'city';
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		return static::findBy($arrColumns, null, $arrOptions);
+	}
+
+
+	public static function getUniquePromoterNamesByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "($t.promoter != '')";
+
+		if($currentOnly)
+		{
+			$arrColumns[] = "($t.startDate >= $time)";
+		}
+
+		$arrOptions['group'] = 'promoter';
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$objEvents = static::findBy($arrColumns, null, $arrOptions);
+
+		if($objEvents === null) return $objEvents;
+
+		$arrPromoters = array();
+
+		while($objEvents->next())
+		{
+			$arrPromoters = array_merge($arrPromoters, deserialize($objEvents->promoter, true));
+		}
+
+		$arrPromoters = array_unique($arrPromoters);
+		
+		return CalendarPromotersModel::findMultipleByIds($arrPromoters);
+	}
+
+
+	public static function getUniqueAreasOfLawByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "($t.areasoflaw != '')";
+
+		if($currentOnly)
+		{
+			$arrColumns[] = "($t.startDate >= $time)";
+		}
+
+		//$arrOptions['group'] = 'promoter';
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$objEvents = static::findBy($arrColumns, null, $arrOptions);
+
+		if($objEvents === null) return $objEvents;
+
+		$arrAreasOfLaw = array();
+
+		while($objEvents->next())
+		{
+			$arrAreasOfLaw = array_merge($arrAreasOfLaw, deserialize($objEvents->areasoflaw, true));
+		}
+		
+		$arrAreasOfLaw = array_unique($arrAreasOfLaw);
+
+		return AreasOfLawModel::findMultipleByIds($arrAreasOfLaw);
+	}
 
 	/**
 	 * Helper method to generate the alias for the current model
@@ -34,15 +145,20 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return $this;
 	}
 
-	public static function findCurrentByPidAndFilter($intPid, $intStart, $intEnd, array $arrFilter = array(), $arrOptions = array())
+	public static function countCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), $arrOptions = array())
+	{
+		return static::findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, $arrFilter, $arrOptions, true);
+	}
+
+	public static function findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), $arrOptions = array(), $count = false)
 	{
 		$t        = static::$strTable;
 		$intStart = intval($intStart);
 		$intEnd   = intval($intEnd);
 
-		$arrValues = array($intPid);
+		$arrPids = !is_array($arrPids) ? array($arrPids) : $arrPids;
 
-		$arrColumns[] = "$t.pid=?";
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
 
 		foreach ($arrFilter as $key => $value) {
 			switch ($key) {
@@ -91,6 +207,11 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
 		if (!isset($arrOptions['order'])) {
 			$arrOptions['order'] = "$t.startTime";
+		}
+
+		if($count)
+		{
+			return static::countBy($arrColumns, $arrValues, $arrOptions);
 		}
 
 		return static::findBy($arrColumns, $arrValues, $arrOptions);
