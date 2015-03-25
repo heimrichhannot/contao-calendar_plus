@@ -43,6 +43,7 @@ $GLOBALS['TL_MODELS']['tl_calendar_promoters']  = 'HeimrichHannot\CalendarPlus\C
 $GLOBALS['TL_MODELS']['tl_calendar_docents']    = 'HeimrichHannot\CalendarPlus\CalendarDocentsModel';
 $GLOBALS['TL_MODELS']['tl_calendar_events']     = 'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel';
 $GLOBALS['TL_MODELS']['tl_calendar_eventtypes'] = 'HeimrichHannot\CalendarPlus\CalendarEventtypesModel';
+$GLOBALS['TL_MODELS']['tl_calendar_eventtypes_archive'] = 'HeimrichHannot\CalendarPlus\CalendarEventtypesArchiveModel';
 
 /**
  * Constants

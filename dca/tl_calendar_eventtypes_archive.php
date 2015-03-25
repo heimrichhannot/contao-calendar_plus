@@ -19,6 +19,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes_archive'] = array
 	(
 		'dataContainer'               => 'Table',
 		'ptable'                      => 'tl_calendar',
+		'ctable'					  => array('tl_calendar_eventtypes'),
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
 		'onload_callback' => array
@@ -62,8 +63,14 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes_archive'] = array
 			'edit' => array
 			(
 				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['edit'],
-				'href'                => 'act=edit',
+				'href'                => 'table=tl_calendar_eventtypes',
 				'icon'                => 'edit.gif'
+			),
+			'editheader' => array
+			(
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['editmeta'],
+				'href'                => 'act=edit',
+				'icon'                => 'header.gif'
 			),
 			'copy' => array
 			(

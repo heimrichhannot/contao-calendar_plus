@@ -42,9 +42,18 @@ class CalendarEventtypesModel extends \Model
 	 *
 	 * @return \Model\Collection|null A collection of models or null if the title was not found
 	 */
-	public static function findByTitle($title, array $arrOptions=array())
+	public static function findByTitleAndPid(array $arrPids=array(), $title, array $arrOptions=array())
 	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
 		$t = static::$strTable;
-		return static::findBy(array("LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'"), null, $arrOptions);
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'";
+
+		return static::findBy($arrColumns, null, $arrOptions);
 	}
 }
