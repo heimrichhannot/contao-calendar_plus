@@ -67,7 +67,14 @@
 
   <?php if($this->promoterDetails): ?>
       <div class="promoter">
-        <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span> <?php echo $this->promoterDetails->title; ?>
+        <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span>
+        <?php if($this->promoterDetails->website): ?>
+            <a href="<?php echo $this->promoterDetails->website; ?>" target="_blank">
+        <?php endif; ?>
+        <?php echo $this->promoterDetails->title; ?>
+        <?php if($this->promoterDetails->website): ?>
+            </a>
+        <?php endif; ?>
       </div>
   <?php endif; ?>
 

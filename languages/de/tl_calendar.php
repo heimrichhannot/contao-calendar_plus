@@ -20,3 +20,6 @@ $GLOBALS['TL_LANG']['tl_calendar']['docents'][1] = 'Dozenten für Kalender ID %s
 
 $GLOBALS['TL_LANG']['tl_calendar']['eventtypes'][0] = 'Veranstaltungsarten';
 $GLOBALS['TL_LANG']['tl_calendar']['eventtypes'][1] = 'Veranstaltungsarten für Kalender ID %s anzeigen';
+
+$GLOBALS['TL_LANG']['tl_calendar']['eventtypearchives'][0] = 'Veranstaltungsarchiv';
+$GLOBALS['TL_LANG']['tl_calendar']['eventtypearchives'][1] = 'Veranstaltungsarchiv für Kalender ID %s anzeigen';

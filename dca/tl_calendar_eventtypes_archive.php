@@ -4,26 +4,26 @@
  * 
  * Copyright (c) 2015 Heimrich & Hannot GmbH
  * @package extended_events
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @author Oliver Janke <o.janke@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
 /**
- * Table tl_calendar_eventtypes
+ * Table tl_calendar_eventtypes_archive
  */
-$GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
+$GLOBALS['TL_DCA']['tl_calendar_eventtypes_archive'] = array
 (
 
 	// Config
 	'config' => array
 	(
 		'dataContainer'               => 'Table',
-		'ptable'                      => 'tl_calendar_eventtypes_archive',
+		'ptable'                      => 'tl_calendar',
 		'switchToEdit'                => true,
 		'enableVersioning'            => true,
 		'onload_callback' => array
 		(
-			array('tl_calendar_eventtypes', 'checkPermission'),
+			array('tl_calendar_eventtypes_archive', 'checkPermission'),
 		),
 		'sql' => array
 		(
@@ -44,7 +44,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 			'fields'                  => array('title'),
 			'headerFields'            => array('title', 'jumpTo', 'tstamp', 'protected', 'allowComments', 'makeFeed'),
 			'panelLayout'             => 'filter;sort,search,limit',
-			'child_record_callback'   => array('tl_calendar_eventtypes', 'listEventtypes'),
+			'child_record_callback'   => array('tl_calendar_eventtypes_archive', 'listEventtypeArchives'),
 			'child_record_class'      => 'no_padding'
 		),
 		'global_operations' => array
@@ -61,39 +61,39 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['edit'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.gif'
 			),
 			'copy' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['copy'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.gif'
 			),
 			'cut' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['cut'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.gif'
 			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.gif',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['toggle'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['toggle'],
 				'icon'                => 'visible.gif',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
 				'button_callback'     => array('tl_calendar_eventtypes', 'toggleIcon')
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.gif'
 			)
@@ -104,7 +104,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('published'),
-		'default'                     => '{title_legend},title,alias;{contact_legend},website;{publish_legend},published'
+		'default'                     => '{title_legend},title,alias;{publish_legend},published'
 	),
 
 	// Subpalettes
@@ -122,7 +122,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 		),
 		'pid' => array
 		(
-			'foreignKey'              => 'tl_calendar_eventtypes_archive.title',
+			'foreignKey'              => 'tl_calendar.title',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'belongsTo', 'load'=>'eager')
 		),
@@ -132,7 +132,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 		),
 		'title' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['title'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['title'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'sorting'                 => true,
@@ -141,32 +141,22 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>255),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
-		'archive' => array
-		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['archive'],
-			'exclude'                 => true,
-			'filter'                  => true,
-			'inputType'               => 'treePicker',
-			'foreignKey'              => 'tl_calendar_eventtypes_archive.title',
-			'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_calendar_eventtypes_archive', 'titleField'=>'title', 'searchField'=>'title'),
-			'sql'                     => "blob NULL"
-		),
 		'alias' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['alias'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['alias'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'alias', 'unique'=>true, 'maxlength'=>128, 'tl_class'=>'w50'),
 			'save_callback' => array
 			(
-				array('tl_calendar_eventtypes', 'generateAlias')
+				array('tl_calendar_eventtypes_archive', 'generateAlias')
 			),
 			'sql'                     => "varchar(128) COLLATE utf8_bin NOT NULL default ''"
 		),
 		'published' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['published'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['published'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'flag'                    => 2,
@@ -176,7 +166,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 		),
 		'start' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['start'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['start'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
@@ -184,7 +174,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 		),
 		'stop' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['stop'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['stop'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
@@ -195,7 +185,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 
 
 /**
- * Class tl_calendar_eventtypes
+ * Class tl_calendar_eventtypes_archive
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  * @package extended_events
@@ -203,7 +193,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  **/
 
-class tl_calendar_eventtypes extends Backend
+class tl_calendar_eventtypes_archive extends Backend
 {
 
 	/**
@@ -217,7 +207,7 @@ class tl_calendar_eventtypes extends Backend
 
 
 	/**
-	 * Check permissions to edit table tl_calendar_eventtypes
+	 * Check permissions to edit table tl_calendar_eventtypes_archive
 	 */
 	public function checkPermission()
 	{
@@ -248,7 +238,7 @@ class tl_calendar_eventtypes extends Backend
 			case 'create':
 				if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root))
 				{
-					$this->log('Not enough permissions to create eventtypes in calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+					$this->log('Not enough permissions to create eventtype-archives in calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 				break;
@@ -257,7 +247,7 @@ class tl_calendar_eventtypes extends Backend
 			case 'copy':
 				if (!in_array(Input::get('pid'), $root))
 				{
-					$this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+					$this->log('Not enough permissions to '.Input::get('act').' eventtype-achives ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 			// NO BREAK STATEMENT HERE
@@ -266,7 +256,7 @@ class tl_calendar_eventtypes extends Backend
 			case 'show':
 			case 'delete':
 			case 'toggle':
-				$objEventtype = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes WHERE id=?")
+				$objEventtype = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")
 					->limit(1)
 					->execute($id);
 
@@ -278,7 +268,7 @@ class tl_calendar_eventtypes extends Backend
 
 				if (!in_array($objEventtype->pid, $root))
 				{
-					$this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'" of calendar ID "'.$objEventtype->pid.'"', __METHOD__, TL_ERROR);
+					$this->log('Not enough permissions to '.Input::get('act').' eventtype-achives ID "'.$id.'" of calendar ID "'.$objEventtype->pid.'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 				break;
@@ -295,7 +285,7 @@ class tl_calendar_eventtypes extends Backend
 					$this->redirect('contao/main.php?act=error');
 				}
 
-				$objEventtype = $this->Database->prepare("SELECT id FROM tl_calendar_eventtypes WHERE pid=?")
+				$objEventtype = $this->Database->prepare("SELECT id FROM tl_calendar_eventtypes_archive WHERE pid=?")
 					->execute($id);
 
 				if ($objEventtype->numRows < 1)
@@ -343,7 +333,7 @@ class tl_calendar_eventtypes extends Backend
 			$varValue = standardize(String::restoreBasicEntities($dc->activeRecord->title));
 		}
 
-		$objAlias = $this->Database->prepare("SELECT id FROM tl_calendar_eventtypes WHERE alias=?")
+		$objAlias = $this->Database->prepare("SELECT id FROM tl_calendar_eventtypes_archive WHERE alias=?")
 			->execute($varValue);
 
 		// Check whether the alias exists
@@ -367,7 +357,7 @@ class tl_calendar_eventtypes extends Backend
 	 * @param array
 	 * @return string
 	 */
-	public function listEventtypes($arrRow)
+	public function listEventtypeArchives($arrRow)
 	{
 		return '<div class="tl_content_left">' . $arrRow['title'] . '</div>';
 	}
@@ -392,7 +382,7 @@ class tl_calendar_eventtypes extends Backend
 		}
 
 		// Check permissions AFTER checking the tid, so hacking attempts are logged
-		if (!$this->User->hasAccess('tl_calendar_eventtypes::published', 'alexf'))
+		if (!$this->User->hasAccess('tl_calendar_eventtypes_archive::published', 'alexf'))
 		{
 			return '';
 		}
@@ -422,19 +412,19 @@ class tl_calendar_eventtypes extends Backend
 		$this->checkPermission();
 
 		// Check permissions to publish
-		if (!$this->User->hasAccess('tl_calendar_eventtypes::published', 'alexf'))
+		if (!$this->User->hasAccess('tl_calendar_eventtypes_archive::published', 'alexf'))
 		{
 			$this->log('Not enough permissions to publish/unpublish promoters ID "'.$intId.'"', __METHOD__, TL_ERROR);
 			$this->redirect('contao/main.php?act=error');
 		}
 
-		$objVersions = new Versions('tl_calendar_eventtypes', $intId);
+		$objVersions = new Versions('tl_calendar_eventtypes_archive', $intId);
 		$objVersions->initialize();
 
 		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_calendar_eventtypes']['fields']['published']['save_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_calendar_eventtypes_archive']['fields']['published']['save_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_calendar_eventtypes']['fields']['published']['save_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_calendar_eventtypes_archive']['fields']['published']['save_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -449,11 +439,11 @@ class tl_calendar_eventtypes extends Backend
 		}
 
 		// Update the database
-		$this->Database->prepare("UPDATE tl_calendar_eventtypes SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+		$this->Database->prepare("UPDATE tl_calendar_eventtypes_archive SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
 			->execute($intId);
 
 		$objVersions->create();
-		$this->log('A new version of record "tl_calendar_eventtypes.id='.$intId.'" has been created'.$this->getParentEntries('tl_calendar_eventtypes', $intId), __METHOD__, TL_GENERAL);
+		$this->log('A new version of record "tl_calendar_eventtypes_archive.id='.$intId.'" has been created'.$this->getParentEntries('tl_calendar_eventtypes_archive', $intId), __METHOD__, TL_GENERAL);
 
 		// Update the RSS feed (for some reason it does not work without sleep(1))
 		sleep(1);
