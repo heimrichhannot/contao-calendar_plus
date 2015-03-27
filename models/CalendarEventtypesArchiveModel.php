@@ -11,9 +11,9 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
-class CalendarEventtypesModel extends \Model
+class CalendarEventtypesArchiveModel extends \Model
 {
-	protected static $strTable = 'tl_calendar_eventtypes';
+	protected static $strTable = 'tl_calendar_eventtypes_archive';
 
 
 	public function generateAlias()

@@ -53,17 +53,6 @@ abstract class EventsPlus extends \Events
 			return array();
 		}
 
-        // set end date from filter
-        if($arrFilter['startDate'] && $arrFilter['startDate'] > $intStart)
-        {
-            $intStart = $arrFilter['startDate'];
-        }
-
-        // set end date from filter
-        if ($arrFilter['endDate'] && $arrFilter['endDate'] <= $intEnd) {
-            $intEnd = strtotime(date('d.m.Y', $arrFilter['endDate']) . ' 23:59:59'); // until last second of the day
-        }
-
 		$this->arrEvents = array();
 
 		foreach ($arrCalendars as $id)

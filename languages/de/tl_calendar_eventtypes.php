@@ -12,6 +12,7 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['title'] = array('Titel', 'Bitte geben Sie einen Titel an.');
+$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['archive'] = array('Veranstaltungsarchiv', 'Zu welchem Archiv gehört die Veranstaltungsart');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['alias'] = array('Veranstaltungsart-Alias', 'Der Veranstaltungsart-Alias ist eine eindeutige Referenz, die anstelle der numerischen Dozenten-ID aufgerufen werden kann.');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['published'] = array('Veranstaltungsart veröffentlichen', 'Die Veranstaltungsart auf der Webseite anzeigen.');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['start'] = array('Anzeigen ab', 'Die Veranstaltungsart erst ab diesem Tag auf der Webseite anzeigen.');
