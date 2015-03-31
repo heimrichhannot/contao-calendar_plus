@@ -13,6 +13,8 @@
  */
 $GLOBALS['TL_LANG']['MSC']['promoters'] = 'Veranstalter verwalten';
 $GLOBALS['TL_LANG']['MSC']['docents'] = 'Dozenten verwalten';
+$GLOBALS['TL_LANG']['MSC']['eventtypes'] = 'Veranstaltungsarten verwalten';
+$GLOBALS['TL_LANG']['MSC']['subevents'] = 'Unterveranstaltungen';
 
 /**
  * Reference

@@ -14,10 +14,14 @@
 $GLOBALS['TL_LANG']['tl_calendar']['root'][0] = 'Zugehörigkeit';
 $GLOBALS['TL_LANG']['tl_calendar']['root'][1] = 'Wählen Sie eine Zugehörigkeit des Archivs zu einem Startpunkt des Seitenbaumes aus.';
 
+$GLOBALS['TL_LANG']['tl_calendar']['eventTypeArchives'][0] = 'Zusätzliche Veranstaltungsarten-Archive';
+$GLOBALS['TL_LANG']['tl_calendar']['eventTypeArchives'][1] = 'Wählen Sie zusätzliche Veranstaltungsarten-Archive, aus welchem Sie Veranstaltungsarten in diesem Archiv bereitstellen möchten.';
+
 /**
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_calendar']['root_legend'] = 'Zugehörigkeit';
+$GLOBALS['TL_LANG']['tl_calendar']['join_legend'] = 'Verknüpfungen';
 
 
 /**

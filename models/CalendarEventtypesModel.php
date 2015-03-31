@@ -35,6 +35,33 @@ class CalendarEventtypesModel extends \Model
 	}
 
 	/**
+	 * Find all item by pids
+	 *
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return \Model\Collection|null A collection of models or null
+	 */
+	public static function findByPids(array $arrPids=array(), array $arrOptions=array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+
+
+		if(!$arrOptions['order'])
+		{
+			$arrOptions['order'] = 'title';
+		}
+
+		return static::findBy($arrColumns, null, $arrOptions);
+	}
+
+	/**
 	 * Find all item by title
 	 *
 	 * @param string  $varValue   The title value

@@ -11,7 +11,9 @@
 $dc = &$GLOBALS['TL_DCA']['tl_user'];
 
 /**
- * Add Permissions 
+ * Add Permissions
  */
+$dc['fields']['calendarp']['options'][] = 'subevents';
 $dc['fields']['calendarp']['options'][] = 'promoters';
 $dc['fields']['calendarp']['options'][] = 'docents';
+$dc['fields']['calendarp']['options'][] = 'eventtypes';
