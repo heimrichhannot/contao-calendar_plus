@@ -56,6 +56,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['city']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['cityBlankOptionLabel'];
 
 		// adjust eventtypes field
+		$dc['fields']['eventtypes']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getEventTypesSelectOptions');
 		unset($dc['fields']['eventtypes']['eval']['chosen']);
 		$dc['fields']['eventtypes']['eval']['multiple'] = false;
 		$dc['fields']['eventtypes']['eval']['includeBlankOption'] = true;

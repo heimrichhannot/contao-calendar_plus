@@ -15,6 +15,33 @@ class EventFilterHelper extends \Frontend
 {
 	protected static $strTable = 'tl_calendar_events';
 
+	public static function getEventTypesSelectOptions(\DataContainer $dc)
+	{
+		$arrItems = array();
+
+		if (!is_array($dc->objModule->cal_calendar) || empty($dc->objModule->cal_calendar))
+		{
+			return $arrItems;
+		}
+
+		$objArchives = CalendarEventtypesArchiveModel::findByPids($dc->objModule->cal_calendar);
+		
+		if($objArchives === null)
+		{
+			return $arrItems;
+		}
+
+		$objEvenTypes = CalendarEventtypesModel::findByPids($objArchives->fetchEach('id'));
+		
+		if($objEvenTypes === null)
+		{
+			return $arrItems;
+		}
+		
+
+		return $objEvenTypes->fetchEach('title');
+	}
+
 	public static function getPromoterSelectOptions(\DataContainer $dc)
 	{
 		$arrItems = array();
