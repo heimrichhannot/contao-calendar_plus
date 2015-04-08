@@ -56,3 +56,4 @@ $GLOBALS['TL_LANG']['eventfilter']['dateLabel'] = 'Datum';
 $GLOBALS['TL_LANG']['eventfilter']['startDatePlaceholder'] = 'von';
 $GLOBALS['TL_LANG']['eventfilter']['endDatePlaceholder'] = 'bis';
 $GLOBALS['TL_LANG']['eventfilter']['eventTypesBlankOptionLabel'] = 'Veranstaltungsart';
+$GLOBALS['TL_LANG']['eventfilter']['docentsBlankOptionLabel'] = 'Referenten';

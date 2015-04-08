@@ -15,6 +15,25 @@ class EventFilterHelper extends \Frontend
 {
 	protected static $strTable = 'tl_calendar_events';
 
+	public static function getDocentSelectOptions(\DataContainer $dc)
+	{
+		$arrItems = array();
+
+		if (!is_array($dc->objModule->cal_calendar) || empty($dc->objModule->cal_calendar))
+		{
+			return $arrItems;
+		}
+
+		$objDocents = CalendarDocentsModel::findByPids($dc->objModule->cal_calendar);
+
+		if($objDocents === null)
+		{
+			return $arrItems;
+		}
+
+		return $objDocents->fetchEach('title');
+	}
+
 	public static function getEventTypesSelectOptions(\DataContainer $dc)
 	{
 		$arrItems = array();

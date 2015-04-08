@@ -73,7 +73,7 @@ $arrFields = array
 		'exclude'          => true,
 		'inputType'        => 'checkbox',
 		'options_callback' => array('tl_calendar_plus', 'getEventTypeArchives'),
-		'eval'             => array('mandatory' => true, 'multiple' => true),
+		'eval'             => array('multiple' => true),
 		'sql'              => "blob NULL"
 	)
 );

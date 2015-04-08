@@ -62,7 +62,7 @@ class CalendarEventtypesArchiveModel extends \Model
 	 *
 	 * @param array   $arrOptions An optional options array
 	 *
-	 * @return \Model\Collection|null A collection of models or null if the title was not found
+	 * @return \Model\Collection|null A collection of models or null if no items found
 	 */
 	public static function findByPids(array $arrPids=array(), array $arrOptions=array())
 	{

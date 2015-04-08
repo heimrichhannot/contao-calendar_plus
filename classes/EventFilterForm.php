@@ -55,6 +55,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['city']['eval']['includeBlankOption'] = true;
 		$dc['fields']['city']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['cityBlankOptionLabel'];
 
+
 		// adjust eventtypes field
 		$dc['fields']['eventtypes']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getEventTypesSelectOptions');
 		unset($dc['fields']['eventtypes']['eval']['chosen']);
@@ -62,6 +63,14 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['eventtypes']['eval']['includeBlankOption'] = true;
 		$dc['fields']['eventtypes']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['eventTypesBlankOptionLabel'];
 
+		// adjust docents field
+		$dc['fields']['docents']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getDocentSelectOptions');
+		unset($dc['fields']['docents']['eval']['chosen']);
+		unset($dc['fields']['docents']['eval']['style']);
+		$dc['fields']['docents']['eval']['multiple'] = false;
+		$dc['fields']['docents']['eval']['includeBlankOption'] = true;
+		$dc['fields']['docents']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['docentsBlankOptionLabel'];
+		
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['generateEventFilterForm']) && is_array($GLOBALS['TL_HOOKS']['generateEventFilterForm']))
 		{
