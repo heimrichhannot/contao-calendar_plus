@@ -276,7 +276,22 @@ class ModuleEventReaderPlus extends EventsPlus
 			}
 		}
 
-		$objEvent = (object) $this->getEventDetails($objEventModel, $intStartTime, $intEndTime, $strUrl, $intBegin, $intLimit, $intCalendar);
+		$objEvent = (object) $this->getEventDetails($objEventModel, $intStartTime, $intEndTime, $strUrl, $intStartTime, $objEventModel->pid);
+
+		$arrSubEvents = array();
+
+		if(!$this->cal_ungroupSubevents)
+		{
+			$objChildEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
+
+			if($objChildEvents !== null)
+			{
+				while($objChildEvents->next())
+				{
+					$arrSubEvents[$objChildEvents->id] = $this->addSingleEvent($objChildEvents, $intStartTime);
+				}
+			}
+		}
 
 		if ($objPage->outputFormat == 'xhtml')
 		{
@@ -332,9 +347,38 @@ class ModuleEventReaderPlus extends EventsPlus
 			}
 		}
 
+		$imgSize = false;
+
+		// Override the default image size
+		if ($this->imgSize != '')
+		{
+			$size = deserialize($this->imgSize);
+
+			if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
+			{
+				$imgSize = $this->imgSize;
+			}
+		}
+
 		$objTemplate = new \FrontendTemplate($this->cal_template);
 		$objTemplate->setData((array) $objEvent);
 		$objTemplate->nav = $this->generateArrowNavigation($objEvent, $strUrl);
+
+
+		if(is_array($arrSubEvents) && !empty($arrSubEvents))
+		{
+			$strSubEvents = '';
+
+			foreach($arrSubEvents as $subID => $arrSubEvent)
+			{
+				$objSubEventTemplate = new \FrontendTemplate($this->cal_templateSubevent);
+				$objSubEventTemplate->setData($arrSubEvent);
+				$this->addEventDetailsToTemplate($objSubEventTemplate, $arrSubEvent, '', '', $imgSize);
+				$strSubEvents .= $objSubEventTemplate->parse() . "\n";
+			}
+
+			$objTemplate->subEvents = $strSubEvents;
+		}
 
 
 		if(in_array('share',$this->Config->getActiveModules()))

@@ -16,12 +16,14 @@ $GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['alias'] = array('Alias', 
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['published'] = array('Veranstaltungsartarchiv veröffentlichen', 'Die Veranstaltungsartarchive auf der Webseite anzeigen.');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['start'] = array('Anzeigen ab', 'Die Veranstaltungsartarchive erst ab diesem Tag auf der Webseite anzeigen.');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['stop'] = array('Anzeigen bis', 'Die Veranstaltungsartarchive nur bis zu diesem Tag auf der Webseite anzeigen.');
+$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['cssClass'] = array('CSS-Klasse', 'Hier können Sie beliebig viele Klassen eingeben');
 
 /**
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['title_legend'] = 'Titel';
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['publish_legend'] = 'Veröffentlichung';
+$GLOBALS['TL_LANG']['tl_calendar_eventtypes_archive']['expert_legend'] = 'Experten-Einstellungen';
 
 /**
  * Buttons

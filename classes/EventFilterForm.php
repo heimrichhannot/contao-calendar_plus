@@ -1,7 +1,7 @@
 <?php
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
  * @package calendar_plus
  * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
@@ -55,9 +55,8 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['city']['eval']['includeBlankOption'] = true;
 		$dc['fields']['city']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['cityBlankOptionLabel'];
 
-
 		// adjust eventtypes field
-		$dc['fields']['eventtypes']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getEventTypesSelectOptions');
+		$dc['fields']['eventtypes']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getEventTypesFieldsByArchive');
 		unset($dc['fields']['eventtypes']['eval']['chosen']);
 		$dc['fields']['eventtypes']['eval']['multiple'] = false;
 		$dc['fields']['eventtypes']['eval']['includeBlankOption'] = true;
@@ -70,7 +69,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['docents']['eval']['multiple'] = false;
 		$dc['fields']['docents']['eval']['includeBlankOption'] = true;
 		$dc['fields']['docents']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['docentsBlankOptionLabel'];
-		
+
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['generateEventFilterForm']) && is_array($GLOBALS['TL_HOOKS']['generateEventFilterForm']))
 		{
@@ -95,8 +94,8 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$arrData = array
 		(
 			'inputType' => 'submit',
-			'label'		=> &$GLOBALS['TL_LANG']['eventfilter']['submit'],
-			'eval'		=> array('class' => 'btn btn-primary')
+			'label'     => &$GLOBALS['TL_LANG']['eventfilter']['submit'],
+			'eval'      => array('class' => 'btn btn-primary')
 		);
 
 		$this->arrFields[FORMHYBRID_NAME_SUBMIT] = $this->generateField(FORMHYBRID_NAME_SUBMIT, $arrData);

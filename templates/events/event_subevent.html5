@@ -1,0 +1,61 @@
+<div class="event layout_subevent<?php echo $this->classList; ?>">
+
+	<h5 class="visible-xs"><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h5>
+	<div class="meta-row clearfix">
+		<?php if(is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
+			<?php foreach($this->eventtypeList as $eventType): ?>
+				<div class="label label-default-dark eventtypes<?php echo $eventType->class; ?>">
+					<span class="eventtpe"><?php echo $eventType->title; ?></span>
+				</div>
+			<?php endforeach; ?>
+		<?php endif; ?>
+
+		<?php if ($this->addTime || $this->city): ?>
+			<div class="label label-default time-location">
+				<?php if($this->addTime && $this->startTimeFormated): ?>
+					<span class="time-start">
+              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
+            </span>
+				<?php endif; ?>
+				<?php if($this->addTime &&$this->endTimeFormated): ?>
+					<span class="time-end">
+              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
+            </span>
+				<?php endif; ?>
+				<?php if($this->city): ?>
+					<span class="city">
+              <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['cityLabel']; ?></span> <?php echo $this->city; ?>
+            </span>
+				<?php endif; ?>
+			</div>
+		<?php endif; ?>
+
+		<?php if($this->timeHours > 0): ?>
+			<div class="label label-default time-hours">
+				<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['timeHoursLabel']; ?></span> <?php echo rtrim(rtrim(number_format($this->timeHours, 2, ",", ""), '0'), ','); ?>
+			</div>
+		<?php endif; ?>
+	</div>
+
+
+
+	<h5 class="hidden-xs"><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h5>
+
+	<div class="ce_text block">
+		<?php echo $this->teaser; ?>
+	</div>
+
+	<?php if($this->promoterDetails): ?>
+		<div class="promoter">
+			<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span>
+			<?php if($this->promoterDetails->website): ?>
+			<a href="<?php echo $this->promoterDetails->website; ?>" target="_blank">
+				<?php endif; ?>
+				<?php echo $this->promoterDetails->title; ?>
+				<?php if($this->promoterDetails->website): ?>
+			</a>
+		<?php endif; ?>
+		</div>
+	<?php endif; ?>
+
+</div>

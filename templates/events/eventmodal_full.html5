@@ -12,11 +12,11 @@
 
 			<div class="meta-row clearfix">
 				<?php if(is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
-					<div class="label label-default-dark eventtypes">
-						<?php foreach($this->eventtypeList as $eventType): ?>
+					<?php foreach($this->eventtypeList as $eventType): ?>
+						<div class="label label-default-dark eventtypes<?php echo $eventType->class; ?>"<?php if($eventType->tooltipTitle):?> data-toggle="tooltip" data-placement="right" title="<?php echo $eventType->tooltipTitle; ?>"<?php endif; ?>>
 							<span class="eventtpe"><?php echo $eventType->title; ?></span>
-						<?php endforeach; ?>
-					</div>
+						</div>
+					<?php endforeach; ?>
 				<?php endif; ?>
 
 				<?php if ($this->addTime || $this->city): ?>
@@ -66,6 +66,12 @@
 					<?php foreach($this->docentList as $i => $docent): ?>
 						<span class="docent"><?php echo $docent->title; ?> <?php if($i + 1 < count($this->docentList)): ?> &middot; <?php endif; ?></span>
 					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+
+			<?php if($this->subEvents): ?>
+				<div class="subevents">
+					<?php echo $this->subEvents; ?>
 				</div>
 			<?php endif; ?>
 

@@ -37,7 +37,11 @@
 				<div class="row">
 					<div class="bottom-row">
 						<div class="fields-container">
-							<?php echo isset($this->fields['eventtypes']) ? $this->fields['eventtypes']->parse() : ''; ?>
+							<?php if(isset($this->fields['eventtypes'])): ?>
+								<?php foreach($this->fields['eventtypes']->arrOptions as $arrSelects): ?>
+									<?php echo $arrSelects['value']; ?>
+								<?php endforeach; ?>
+							<?php endif; ?>
 							<?php echo isset($this->fields['areasoflaw']) ? $this->fields['areasoflaw']->parse() : ''; ?>
 							<?php echo isset($this->fields['promoter']) ? $this->fields['promoter']->parse() : ''; ?>
 							<div class="form-submit">

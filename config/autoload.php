@@ -46,6 +46,7 @@ ClassLoader::addClasses(array
 	'HeimrichHannot\CalendarPlus\EventFilterHelper'              => 'system/modules/calendar_plus/classes/EventFilterHelper.php',
 	'HeimrichHannot\CalendarPlus\ExtendedEvents'                 => 'system/modules/calendar_plus/classes/ExtendedEvents.php',
 	'HeimrichHannot\CalendarPlus\EventFilterForm'                => 'system/modules/calendar_plus/classes/EventFilterForm.php',
+	'HeimrichHannot\CalendarPlus\EventModelHelper'               => 'system/modules/calendar_plus/classes/EventModelHelper.php',
 ));
 
 
@@ -54,14 +55,16 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'event_list_plus'        => 'system/modules/calendar_plus/templates/events',
-	'eventmodal_full'        => 'system/modules/calendar_plus/templates/events',
-	'eventnavigation_arrows' => 'system/modules/calendar_plus/templates/navigation',
-	'mod_eventfilter'        => 'system/modules/calendar_plus/templates/modules',
-	'mod_event_modal_ajax'   => 'system/modules/calendar_plus/templates/modules',
-	'mod_event_modal'        => 'system/modules/calendar_plus/templates/modules',
-	'mod_event_chooser'      => 'system/modules/calendar_plus/templates/modules',
-	'mod_eventlist_plus'     => 'system/modules/calendar_plus/templates/modules',
-	'formhybrid_eventfilter' => 'system/modules/calendar_plus/templates/form',
-	'block_modal_event'      => 'system/modules/calendar_plus/templates/block',
+	'event_list_plus'                 => 'system/modules/calendar_plus/templates/events',
+	'eventmodal_full'                 => 'system/modules/calendar_plus/templates/events',
+	'event_subevent'                  => 'system/modules/calendar_plus/templates/events',
+	'eventnavigation_arrows'          => 'system/modules/calendar_plus/templates/navigation',
+	'mod_eventfilter'                 => 'system/modules/calendar_plus/templates/modules',
+	'mod_event_modal_ajax'            => 'system/modules/calendar_plus/templates/modules',
+	'mod_event_modal'                 => 'system/modules/calendar_plus/templates/modules',
+	'mod_event_chooser'               => 'system/modules/calendar_plus/templates/modules',
+	'mod_eventlist_plus'              => 'system/modules/calendar_plus/templates/modules',
+	'eventfilter_eventtypes_archives' => 'system/modules/calendar_plus/templates/form',
+	'formhybrid_eventfilter'          => 'system/modules/calendar_plus/templates/form',
+	'block_modal_event'               => 'system/modules/calendar_plus/templates/block',
 ));

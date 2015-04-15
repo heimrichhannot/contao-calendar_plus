@@ -104,7 +104,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('published'),
-		'default'                     => '{title_legend},title,alias;{contact_legend},website;{publish_legend},published'
+		'default'                     => '{title_legend},title,alias;{contact_legend},website;{tooltip_legend},tooltipTitle;{publish_legend},published;{expert_legend:hide},cssClass'
 	),
 
 	// Subpalettes
@@ -189,7 +189,23 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = array
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'datim', 'datepicker'=>true, 'tl_class'=>'w50 wizard'),
 			'sql'                     => "varchar(10) NOT NULL default ''"
-		)
+		),
+		'tooltipTitle'	=> array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['tooltipTitle'],
+			'exclude'                 => true,
+			'inputType'               => 'text',
+			'eval'                    => array('maxlength'=>255),
+			'sql'                     => "varchar(255) NOT NULL default ''"
+		),
+		'cssClass' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['cssClass'],
+			'exclude'                 => true,
+			'inputType'               => 'text',
+			'eval'                    => array('tl_class'=>'w50 clr'),
+			'sql'                     => "varchar(255) NOT NULL default ''"
+		),
 	)
 );
 

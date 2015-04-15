@@ -147,7 +147,7 @@ class ModuleEventListPlus extends EventsPlus
 
 		// Get all events
 		$arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter);
-
+		
 		$sort = ($this->cal_order == 'descending') ? 'krsort' : 'ksort';
 
 		// Sort the days
@@ -160,6 +160,10 @@ class ModuleEventListPlus extends EventsPlus
 		}
 
 		$arrEvents = array();
+		$arrEventIds = array();
+		$arrParentEvents = array();
+		$arrParentEventIds = array();
+		$arrSubEvents = array();
 		$dateBegin = date('Ymd', $strBegin);
 		$dateEnd = date('Ymd', $strEnd);
 
@@ -180,11 +184,61 @@ class ModuleEventListPlus extends EventsPlus
 					$event['datetime'] = date('Y-m-d', $day);
 					$event['dateday'] = $day;
 
+					if(!$this->cal_ungroupSubevents)
+					{
+						// event is child event --> add parent event
+						if(($intParentEvent = $event['parentEvent']) > 0){
+
+							// add parent event
+							if(($arrParentEvent = $this->getParentEventDetails($intParentEvent, $event['pid'], $strBegin)) === null) continue;
+							$arrParentEvent['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
+							$arrParentEvent['firstDate'] = \Date::parse($objPage->dateFormat, $day);
+							$arrParentEvent['datetime'] = date('Y-m-d', $day);
+							$arrParentEvent['dateday'] = $day;
+
+							$arrParentEvents[$arrParentEvent['id']] = $arrParentEvent;
+							$arrParentEventIds[] = $arrParentEvent['id'];
+
+							// set parent event as href
+							$event['href'] = $event['parentHref'];
+							$arrSubEvents[$intParentEvent][$event['id']] = $event;
+							continue;
+						}
+						// event is parent even --> add child events
+						else
+						{
+							$objChildEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($event['id']);
+
+							if($objChildEvents !== null)
+							{
+								while($objChildEvents->next())
+								{
+									$arrSubEvents[$event['id']][$objChildEvents->id] = $this->addSingleEvent($objChildEvents, $strBegin);
+								}
+							}
+						}
+					}
+
 					$arrEvents[] = $event;
+					$arrEventIds[] = $event['id'];
+
 				}
 			}
 		}
+		
+		// add parent events to $arrEvents
+		if(!empty($arrParentEventIds))
+		{
+			$arrEventIds = array_diff($arrParentEventIds,$arrEventIds);
+			
+			foreach($arrParentEvents as $id => $event)
+			{
+				if(!in_array($id, $arrEventIds)) continue;
 
+				$arrEvents[] = $event;
+			}
+		}
+		
 		unset($arrAllEvents);
 		$total = count($arrEvents);
 		$limit = $total;
@@ -269,7 +323,7 @@ class ModuleEventListPlus extends EventsPlus
 				$strMonth = $event['month'];
 				++$monthCount;
 			}
-
+			
 			// Day header
 			if ($strDate != $event['firstDate'])
 			{
@@ -282,67 +336,25 @@ class ModuleEventListPlus extends EventsPlus
 				++$dayCount;
 			}
 
-
-			// Show the teaser text of redirect events (see #6315)
-			if (is_bool($event['details']))
+			if(isset($arrSubEvents[$event['id']]) && is_array($arrSubEvents[$event['id']]))
 			{
-				$objTemplate->details = $event['teaser'];
-			}
+				$strSubEvents = '';
 
-			// Add the template variables
-			$objTemplate->classList = $event['class'] . ((($headerCount % 2) == 0) ? ' even' : ' odd') . (($headerCount == 0) ? ' first' : '') . ($blnIsLastEvent ? ' last' : '') . ' cal_' . $event['parent'];
-			$objTemplate->classUpcoming = $event['class'] . ((($eventCount % 2) == 0) ? ' even' : ' odd') . (($eventCount == 0) ? ' first' : '') . ((($offset + $eventCount + 1) >= $limit) ? ' last' : '') . ' cal_' . $event['parent'];
-			$objTemplate->readMore = specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $event['title']));
-			$objTemplate->more = $GLOBALS['TL_LANG']['MSC']['more'];
-			$objTemplate->locationLabel = $GLOBALS['TL_LANG']['MSC']['location'];
-
-			// Short view
-			if ($this->cal_noSpan)
-			{
-				$objTemplate->day = $event['day'];
-				$objTemplate->date = $event['date'];
-				$objTemplate->span = ($event['time'] == '' && $event['day'] == '') ? $event['date'] : '';
-			}
-			else
-			{
-				$objTemplate->day = $event['firstDay'];
-				$objTemplate->date = $event['firstDate'];
-				$objTemplate->span = '';
-			}
-
-			$objTemplate->addImage = false;
-
-			// Add an image
-			if ($event['addImage'] && $event['singleSRC'] != '')
-			{
-				$objModel = \FilesModel::findByUuid($event['singleSRC']);
-
-				if ($objModel === null)
+				foreach($arrSubEvents[$event['id']] as $subID => $arrSubEvent)
 				{
-					if (!\Validator::isUuid($event['singleSRC']))
-					{
-						$objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
-					}
+					$objSubEventTemplate = new \FrontendTemplate($this->cal_templateSubevent);
+					$objSubEventTemplate->setData($arrSubEvent);
+					$this->addEventDetailsToTemplate($objTemplate, $arrSubEvent, $headerCount, $eventCount, $imgSize);
+					$strSubEvents .= $objSubEventTemplate->parse() . "\n";
 				}
-				elseif (is_file(TL_ROOT . '/' . $objModel->path))
-				{
-					if ($imgSize)
-					{
-						$event['size'] = $imgSize;
-					}
 
-					$event['singleSRC'] = $objModel->path;
-					$this->addImageToTemplate($objTemplate, $event);
-				}
+				$objTemplate->subEvents = $strSubEvents;
 			}
 
-			$objTemplate->enclosure = array();
+			$strClassList = $event['class'] . ((($headerCount % 2) == 0) ? ' even' : ' odd') . (($headerCount == 0) ? ' first' : '') . ($blnIsLastEvent ? ' last' : '') . ' cal_' . $event['parent'];
+			$strClassUpcoming = $event['class'] . ((($eventCount % 2) == 0) ? ' even' : ' odd') . (($eventCount == 0) ? ' first' : '') . ((($offset + $eventCount + 1) >= $limit) ? ' last' : '') . ' cal_' . $event['parent'];
 
-			// Add enclosure
-			if ($event['addEnclosure'])
-			{
-				$this->addEnclosuresToTemplate($objTemplate, $event);
-			}
+			$this->addEventDetailsToTemplate($objTemplate, $event, $strClassList, $strClassUpcoming, $imgSize);
 
 			$strEvents .= $objTemplate->parse();
 

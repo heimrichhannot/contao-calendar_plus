@@ -17,10 +17,21 @@ $dc = &$GLOBALS['TL_DCA']['tl_calendar'];
 $dc['list']['sorting']['fields'] = array('root', 'title');
 
 /**
+ * Selector
+ */
+$dc['palettes']['__selector__'][] = 'addMemberDocentGroups';
+
+/**
  * Palettes
  */
 $dc['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{root_legend},root;', $dc['palettes']['default']);
 $dc['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{join_legend},eventTypeArchives;', $dc['palettes']['default']);
+$dc['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{docent_legend},addMemberDocentGroups;', $dc['palettes']['default']);
+
+/**
+ * Subpalettes
+ */
+$dc['subpalettes']['addMemberDocentGroups'] = 'memberDocentGroups';
 
 /**
  * Operations
@@ -75,6 +86,25 @@ $arrFields = array
 		'options_callback' => array('tl_calendar_plus', 'getEventTypeArchives'),
 		'eval'             => array('multiple' => true),
 		'sql'              => "blob NULL"
+	),
+	'addMemberDocentGroups' => array
+	(
+		'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['addMemberDocentGroups'],
+		'exclude'                 => true,
+		'filter'                  => true,
+		'inputType'               => 'checkbox',
+		'eval'                    => array('submitOnChange'=>true),
+		'sql'                     => "char(1) NOT NULL default ''"
+	),
+	'memberDocentGroups' => array
+	(
+		'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['memberDocentGroups'],
+		'exclude'                 => true,
+		'inputType'               => 'checkbox',
+		'foreignKey'              => 'tl_member_group.name',
+		'eval'                    => array('mandatory'=>true, 'multiple'=>true),
+		'sql'                     => "blob NULL",
+		'relation'                => array('type'=>'hasMany', 'load'=>'lazy')
 	)
 );
 

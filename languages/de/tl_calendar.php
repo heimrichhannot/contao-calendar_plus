@@ -17,10 +17,18 @@ $GLOBALS['TL_LANG']['tl_calendar']['root'][1] = 'Wählen Sie eine Zugehörigkeit
 $GLOBALS['TL_LANG']['tl_calendar']['eventTypeArchives'][0] = 'Zusätzliche Veranstaltungsarten-Archive';
 $GLOBALS['TL_LANG']['tl_calendar']['eventTypeArchives'][1] = 'Wählen Sie zusätzliche Veranstaltungsarten-Archive, aus welchem Sie Veranstaltungsarten in diesem Archiv bereitstellen möchten.';
 
+$GLOBALS['TL_LANG']['tl_calendar']['addMemberDocentGroups'][0] = 'Dozenten aus Mitgliedergruppen hinzufügen';
+$GLOBALS['TL_LANG']['tl_calendar']['addMemberDocentGroups'][1] = 'Fügen Sie Veranstaltungen echte Mitglieder aus den gewählten Mitgliedergruppen hinzu.';
+
+$GLOBALS['TL_LANG']['tl_calendar']['memberDocentGroups'][0] = 'Erlaubte Mitgliedergruppen';
+$GLOBALS['TL_LANG']['tl_calendar']['memberDocentGroups'][1] = 'Mitglieder dieser Mitgliedergruppen können Events als Dozenten hinzgefügt werden.';
+
+
 /**
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_calendar']['root_legend'] = 'Zugehörigkeit';
+$GLOBALS['TL_LANG']['tl_calendar']['docent_legend'] = 'Dozenten';
 $GLOBALS['TL_LANG']['tl_calendar']['join_legend'] = 'Verknüpfungen';
 
 

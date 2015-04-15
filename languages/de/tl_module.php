@@ -12,6 +12,13 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_module']['hideSubEvents'] = array('Untergeordnete Events verstecken', 'Es werden nur noch Events der höchsten Hierarchieebene angezeigt (Root-Events).');
+$GLOBALS['TL_LANG']['tl_module']['cal_ungroupSubevents'] = array('Untergeordnete Events nicht gruppieren', 'Stellt untergeordnete Events als einzelne Veranstaltung dar, ohne Verknüpfung zum Elterevent.');
 $GLOBALS['TL_LANG']['tl_module']['cal_filterModule'] = array('Eventfilter', 'Legen Sie den Filter für die Anzeige der Events fest.');
+$GLOBALS['TL_LANG']['tl_module']['cal_templateSubevent'] = array('Untergeordnete Events-Template', 'Hier können Sie das Event-Template für untergeordnete Events auswählen, wird nur verwendet wenn untergeordnete Events mit ihren Elternevents gruppiert ausgegeben werden.');
 $GLOBALS['TL_LANG']['tl_module']['cal_template_modal'] = array('Event-Template (Modal)', 'Hier können Sie das Event-Template für die Anzeige im Modalfenster auswählen.');
 $GLOBALS['TL_LANG']['tl_module']['cal_showInModal'] = array('Eventdetails im Modalfenster anzeigen', '<strong>Achtung</strong>: Der Eventleser muss entsprechend angegeben werden.');
+$GLOBALS['TL_LANG']['tl_module']['cal_combineEventTypesArchive'] = array('Eventtyp-Archive zusammenfassen', 'Fasst alle Archive zusammen');
+$GLOBALS['TL_LANG']['tl_module']['cal_combineEventTypesArchiveMultiple'] = array('Mehrfachauswahl für zusammengefasste Archive', 'Lässt die Suche nach mehreren Eventtypen zu.');
+$GLOBALS['TL_LANG']['tl_module']['cal_eventTypesArchive'] = array('Eventtyp-Archive auswählen', 'Aus welchen Eventtyp-Archiven sollen die Eventtypen bezogen werden?');
+$GLOBALS['TL_LANG']['tl_module']['cal_eventTypesArchiveMultiple'] = array('Mehrfachauswahl für Eventtyp-Archive', 'In aktivierten Archiven ist eine Mehrfachauswahl der Eventtypen möglich.');
+
