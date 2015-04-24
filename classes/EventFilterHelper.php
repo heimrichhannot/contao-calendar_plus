@@ -30,15 +30,18 @@ class EventFilterHelper extends \Frontend
 
 		$objDocents = CalendarPlusEventsModel::getUniqueDocentsByPids($dc->objModule->cal_calendar);
 		$objMemberDocents = CalendarPlusEventsModel::getUniqueMemberDocentsByPids($dc->objModule->cal_calendar);
-
+		
 		if($objDocents !== null)
 		{
 			while($objDocents->next())
 			{
+				$arrOrder['m' . $objMemberDocents->id] = $objDocents->title;
 				$arrItems['d' . $objDocents->id] = $objDocents->title;
 			}
 		}
 
+		$arrOrder = array();
+		
 		if($objMemberDocents !== null)
 		{
 			while($objMemberDocents->next())
@@ -49,9 +52,15 @@ class EventFilterHelper extends \Frontend
 					continue;
 				}
 
-				$arrItems['m' . $objMemberDocents->id] = implode(' ', $arrTitle);
+				$arrOrder['m' . $objMemberDocents->id] = $objMemberDocents->lastname;
+				$arrItems['m' . $objMemberDocents->id] = trim(implode(' ', $arrTitle));
 			}
 		}
+
+		// sort by lastname
+		asort($arrOrder);
+		
+		$arrItems = array_replace($arrOrder, $arrItems);
 
 		return $arrItems;
 	}
@@ -88,34 +97,7 @@ class EventFilterHelper extends \Frontend
 
 		if($dc->objModule->cal_combineEventTypesArchive === "1")
 		{
-			$varMultiple = false;
-			$arrSelected = array();
-
-			$arrOptions = static::getEventTypesSelectOptions($dc);
-
-			if($dc->objModule->cal_combineEventTypesArchiveMultiple === "1") {
-				$varMultiple = true;
-			}
-
-			$arrSubmitted = \Input::get('eventtypes');
-			if(is_array($arrSubmitted) && !empty($arrSubmitted))
-			{
-				$arrSelected = array_intersect($arrSubmitted, array_keys($arrOptions));
-			}
-			else
-			{
-				$arrSelected = array(\Input::get('eventtypes'));
-			}
-
-			$objTemplate = new \FrontendTemplate(static::$strTemplate);
-			$objTemplate->name = "eventtypes";
-			$objTemplate->alias = "eventtypes";
-			$objTemplate->label = "Veranstaltungsart";
-			$objTemplate->options = $arrOptions;
-			$objTemplate->multiple = $varMultiple;
-			$objTemplate->arrSelected = $arrSelected;
-
-			$arrArchives[] = $objTemplate->parse();
+			return static::getEventTypesSelectOptions($dc);
 		}
 		else
 		{
@@ -124,7 +106,7 @@ class EventFilterHelper extends \Frontend
 				return $arrItems;
 			}
 
-			$arrEventTypesArchivesMultiple = deserialize($dc->objModule->cal_eventTypesArchiveMultiple);
+			$arrEventTypesArchivesMultiple = deserialize($dc->objModule->cal_eventTypesArchiveMultiple, true);
 
 			foreach($arrEventTypesArchives as $value)
 			{
@@ -158,10 +140,13 @@ class EventFilterHelper extends \Frontend
 					$arrOptions[$objEventTypes->id] = $objEventTypes->current();
 				}
 
+				$strName = sprintf("eventtypes_%d", $value);
+				
 				$objTemplate = new \FrontendTemplate(static::$strTemplate);
-				$objTemplate->name = "eventtypes[]";
-
-				$arrSubmitted = \Input::get('eventtypes');
+				$objTemplate->name = $strName . '[]';
+				
+				$arrSubmitted = \Input::get($strName);
+				
 				if(is_array($arrSubmitted) && !empty($arrSubmitted))
 				{
 					$arrSelected = array_intersect($arrSubmitted, array_keys($arrOptions));
@@ -177,10 +162,14 @@ class EventFilterHelper extends \Frontend
 				$objTemplate->options = $arrOptions;
 				$objTemplate->multiple = $varMultiple;
 
-				$arrArchives[] = $objTemplate->parse();
+				$arrArchives[] = array
+				(
+					'options' => array_keys($arrOptions),
+					'output' => $objTemplate->parse(),
+				);
 			}
 		}
-
+		
 		return $arrArchives;
 	}
 
@@ -200,6 +189,9 @@ class EventFilterHelper extends \Frontend
 		{
 			$arrItems = $objPromoters->fetchEach('title');
 		}
+
+		// sort
+		asort($arrItems);
 
 		return $arrItems;
 	}
@@ -275,7 +267,7 @@ class EventFilterHelper extends \Frontend
 	}
 
 
-	public static function getValueByDca($value, $arrData)
+	public function getValueByDca($value, $arrData)
 	{
 		$value = deserialize($value);
 		$rgxp = $arrData['eval']['rgxp'];
@@ -317,6 +309,7 @@ class EventFilterHelper extends \Frontend
 		elseif (is_array($value))
 		{
 			$value = array_filter($value); // remove empty elements
+
 			$value = implode(', ', $value);
 		}
 		elseif (is_array($opts) && array_is_assoc($opts))

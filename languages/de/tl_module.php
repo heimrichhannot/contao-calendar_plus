@@ -21,4 +21,11 @@ $GLOBALS['TL_LANG']['tl_module']['cal_combineEventTypesArchive'] = array('Eventt
 $GLOBALS['TL_LANG']['tl_module']['cal_combineEventTypesArchiveMultiple'] = array('Mehrfachauswahl für zusammengefasste Archive', 'Lässt die Suche nach mehreren Eventtypen zu.');
 $GLOBALS['TL_LANG']['tl_module']['cal_eventTypesArchive'] = array('Eventtyp-Archive auswählen', 'Aus welchen Eventtyp-Archiven sollen die Eventtypen bezogen werden?');
 $GLOBALS['TL_LANG']['tl_module']['cal_eventTypesArchiveMultiple'] = array('Mehrfachauswahl für Eventtyp-Archive', 'In aktivierten Archiven ist eine Mehrfachauswahl der Eventtypen möglich.');
+$GLOBALS['TL_LANG']['tl_module']['cal_restrictedValueFields'] = array('Ergebnisse eingrenzen (Feldoptionen)', 'Die Veranstaltungen anhand der Optionswerte eingrenzen.');
+$GLOBALS['TL_LANG']['tl_module']['cal_subeventDocentTemplate'] = array('Mitglieder-Dozenten-Template für untergeordnete Events', 'Hier können Sie ein individuelles Template zur Anzeige des Dozenten für untergeordnete Veranstaltungen auswählen.');
+$GLOBALS['TL_LANG']['tl_module']['cal_subeventHostTemplate'] = array('Mitglieder-Moratoren-Template für untergeordnete Events', 'Hier können Sie ein individuelles Template zur Anzeige des Moderators für untergeordnete Veranstaltungen auswählen.');
+/**
+ * Legends
+ */
 
+$GLOBALS['TL_LANG']['tl_module']['memberdocent_legend'] = 'Mitglieder-Dozenten';

@@ -3,8 +3,9 @@
  * Contao Open Source CMS
  *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
+ *
  * @package calendar_plus
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
@@ -30,11 +31,13 @@ $dc['palettes']['eventreader_plus'] = '
 										{config_legend},cal_calendar;
 										{template_legend:hide},cal_template,cal_template_modal,cal_templateSubevent,customTpl;
 										{image_legend},imgSize;{protected_legend:hide},protected;
+										{memberdocent_legend},mlTemplate,mlLoadContent,mlImgSize,mlDisableImages,cal_subeventDocentTemplate,cal_subeventHostTemplate;
+										{share_legend},addShare;
 										{expert_legend:hide},guests,cssID,space';
 
 $dc['palettes']['eventfilter'] = '
 									{title_legend},name,headline,type;
-									{config_legend},cal_calendar,cal_eventTypesArchive,cal_eventTypesArchiveMultiple,cal_combineEventTypesArchive,cal_combineEventTypesArchiveMultiple,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues,formHybridTemplate;
+									{config_legend},cal_calendar,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues,formHybridTemplate,cal_eventTypesArchive,cal_eventTypesArchiveMultiple,cal_combineEventTypesArchive,cal_combineEventTypesArchiveMultiple,cal_restrictedValueFields;
 									{template_legend:hide},customTpl;
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';
@@ -45,14 +48,14 @@ $dc['palettes']['eventfilter'] = '
  */
 $arrFields = array
 (
-	'hideSubEvents'      => array
+	'hideSubEvents'                        => array
 	(
 		'label'     => &$GLOBALS['TL_LANG']['tl_module']['hideSubEvents'],
 		'exclude'   => true,
 		'inputType' => 'checkbox',
 		'sql'       => "char(1) NOT NULL default ''"
 	),
-	'cal_filterModule'   => array
+	'cal_filterModule'                     => array
 	(
 		'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_filterModule'],
 		'exclude'          => true,
@@ -62,7 +65,7 @@ $arrFields = array
 		'eval'             => array('includeBlankOption' => true, 'tl_class' => 'w50'),
 		'sql'              => "int(10) unsigned NOT NULL default '0'"
 	),
-	'cal_template_modal' => array
+	'cal_template_modal'                   => array
 	(
 		'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_template_modal'],
 		'exclude'          => true,
@@ -71,15 +74,15 @@ $arrFields = array
 		'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
 		'sql'              => "varchar(64) NOT NULL default ''"
 	),
-	'cal_showInModal'	=> array
+	'cal_showInModal'                      => array
 	(
 		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_showInModal'],
 		'exclude'   => true,
 		'inputType' => 'checkbox',
-		'eval'		=> array('tl_class' => 'w50'),
+		'eval'      => array('tl_class' => 'w50'),
 		'sql'       => "char(1) NOT NULL default ''",
 	),
-	'cal_eventTypesArchive' => array
+	'cal_eventTypesArchive'                => array
 	(
 		'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_eventTypesArchive'],
 		'exclude'          => true,
@@ -88,23 +91,23 @@ $arrFields = array
 		'eval'             => array('tl_class' => 'w50', 'multiple' => true),
 		'sql'              => "blob NULL"
 	),
-	'cal_combineEventTypesArchive'	=> array
+	'cal_combineEventTypesArchive'         => array
 	(
 		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_combineEventTypesArchive'],
 		'exclude'   => true,
 		'inputType' => 'checkbox',
-		'eval'		=> array('tl_class' => 'w50'),
+		'eval'      => array('tl_class' => 'w50'),
 		'sql'       => "char(1) NOT NULL default ''",
 	),
-	'cal_combineEventTypesArchiveMultiple'	=> array
+	'cal_combineEventTypesArchiveMultiple' => array
 	(
 		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_combineEventTypesArchiveMultiple'],
 		'exclude'   => true,
 		'inputType' => 'checkbox',
-		'eval'		=> array('tl_class' => 'w50'),
+		'eval'      => array('tl_class' => 'w50'),
 		'sql'       => "char(1) NOT NULL default ''",
 	),
-	'cal_eventTypesArchiveMultiple' => array
+	'cal_eventTypesArchiveMultiple'        => array
 	(
 		'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_eventTypesArchiveMultiple'],
 		'exclude'          => true,
@@ -113,42 +116,72 @@ $arrFields = array
 		'eval'             => array('tl_class' => 'w50', 'multiple' => true),
 		'sql'              => "blob NULL"
 	),
-	'cal_ungroupSubevents'	=> array
+	'cal_ungroupSubevents'                 => array
 	(
 		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_ungroupSubevents'],
 		'exclude'   => true,
 		'inputType' => 'checkbox',
-		'eval'		=> array('tl_class' => 'w50'),
+		'eval'      => array('tl_class' => 'w50'),
 		'sql'       => "char(1) NOT NULL default ''",
 	),
-	'cal_templateSubevent' => array
+	'cal_templateSubevent'                 => array
 	(
 		'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_templateSubevent'],
 		'exclude'          => true,
 		'inputType'        => 'select',
-		'default'		   => 'event_subevent',
+		'default'          => 'event_subevent',
 		'options_callback' => array('tl_module_calendar_plus', 'getSubeventTemplates'),
 		'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
 		'sql'              => "varchar(64) NOT NULL default ''"
 	),
+	'cal_restrictedValueFields'            => array
+	(
+		'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_restrictedValueFields'],
+		'inputType'        => 'checkboxWizard',
+		'options_callback' => array('tl_form_hybrid_module', 'getFields'),
+		'exclude'          => true,
+		'eval'             => array('multiple' => true, 'includeBlankOption' => true, 'tl_class' => 'w50 autoheight clr'),
+		'sql'              => "blob NULL"
+	),
+	'cal_subeventDocentTemplate'                   => array
+	(
+		'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_subeventDocentTemplate'],
+		'exclude'          => true,
+		'inputType'        => 'select',
+		'options_callback' => array('tl_module_member_plus', 'getMemberlistTemplates'),
+		'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
+		'sql'              => "varchar(64) NOT NULL default ''"
+	),
+	'cal_subeventHostTemplate'                     => array
+	(
+		'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_subeventHostTemplate'],
+		'exclude'          => true,
+		'inputType'        => 'select',
+		'options_callback' => array('tl_module_member_plus', 'getMemberlistTemplates'),
+		'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
+		'sql'              => "varchar(64) NOT NULL default ''"
+	)
 );
 
 
 $dc['fields'] = array_merge($dc['fields'], $arrFields);
 
-$dc['fields']['cal_readerModule']['options_callback'] = array('tl_module_calendar_plus', 'getReaderModules');
+$dc['fields']['cal_readerModule']['options_callback']   = array('tl_module_calendar_plus', 'getReaderModules');
 $dc['fields']['cal_calendar']['eval']['submitOnChange'] = true;
 
 class tl_module_calendar_plus extends \Backend
 {
 	/**
 	 * Get all event filter modules and return them as array
+	 *
 	 * @return array
 	 */
 	public function getFilterModules()
 	{
 		$arrModules = array();
-		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='eventfilter' ORDER BY t.name, m.name");
+		$objModules = $this->Database->execute(
+			"SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type='eventfilter' ORDER BY t.name, m.name"
+		);
 
 		while ($objModules->next()) {
 			$arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
@@ -159,6 +192,7 @@ class tl_module_calendar_plus extends \Backend
 
 	/**
 	 * Return all event modal templates as array
+	 *
 	 * @return array
 	 */
 	public function getEventModalTemplates()
@@ -168,6 +202,7 @@ class tl_module_calendar_plus extends \Backend
 
 	/**
 	 * Return all event modal templates as array
+	 *
 	 * @return array
 	 */
 	public function getSubeventTemplates()
@@ -177,15 +212,17 @@ class tl_module_calendar_plus extends \Backend
 
 	/**
 	 * Get all event reader modules and return them as array
+	 *
 	 * @return array
 	 */
 	public function getReaderModules()
 	{
 		$arrModules = array();
-		$objModules = $this->Database->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type LIKE 'eventreader%' ORDER BY t.name, m.name");
+		$objModules = $this->Database->execute(
+			"SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type LIKE 'eventreader%' ORDER BY t.name, m.name"
+		);
 
-		while ($objModules->next())
-		{
+		while ($objModules->next()) {
 			$arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
 		}
 
@@ -194,6 +231,7 @@ class tl_module_calendar_plus extends \Backend
 
 	/**
 	 * Get all eventtypesarchives and return them as array
+	 *
 	 * @return array
 	 */
 	public function getEventTypesArchive($dc)
@@ -201,9 +239,11 @@ class tl_module_calendar_plus extends \Backend
 		$arrOptions = array();
 
 		$arrCalendars = deserialize($dc->activeRecord->cal_calendar, true);
-		$objArchives = \HeimrichHannot\CalendarPlus\CalendarEventtypesArchiveModel::findByPids($arrCalendars);
+		$objArchives  = \HeimrichHannot\CalendarPlus\CalendarEventtypesArchiveModel::findByPids($arrCalendars);
 
-		if($objArchives === null) return $arrOptions;
+		if ($objArchives === null) {
+			return $arrOptions;
+		}
 
 		return $objArchives->fetchEach('title');
 	}

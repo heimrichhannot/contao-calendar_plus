@@ -11,6 +11,8 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
+
 abstract class EventsPlus extends \Events
 {
 	/**
@@ -18,6 +20,31 @@ abstract class EventsPlus extends \Events
 	 * @var array
 	 */
 	protected $arrSubEvents = array();
+
+	public function getPossibleFilterOptions($objModule)
+	{
+		\Controller::loadDataContainer('tl_calendar_events');
+
+		$arrOptions = array();
+
+		$arrFields = deserialize($objModule->formHybridEditable, true);
+
+		// Return if there are no fields
+		if (!is_array($arrFields) || empty($arrFields))
+		{
+			return $arrOptions;
+		}
+
+		$strClass = \Module::findClass($objModule->type);
+
+		if(class_exists($strClass))
+		{
+			$objFilterModule = new $strClass($objModule);
+			$arrOptions = $objFilterModule->getFilterOptions();
+		}
+
+		return $arrOptions;
+	}
 
 	public function getFilter($objModule)
 	{
@@ -32,13 +59,30 @@ abstract class EventsPlus extends \Events
 			return $arrFilter;
 		}
 
+		$objHelper = new EventFilterHelper();
+		
+		$arrEventTypeArchives  = deserialize($objModule->cal_eventTypesArchive, true);
+
 		foreach($arrFields as $strKey)
 		{
 			$arrData = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$strKey];
 
 			if(!is_array($arrData) || empty($arrData)) continue;
+			
+			$arrFilter[$strKey] = $objHelper->getValueByDca(\Input::get($strKey), $arrData);
 
-			$arrFilter[$strKey] = EventFilterHelper::getValueByDca(\Input::get($strKey), $arrData);
+			if(!$objModule->cal_combineEventTypesArchive && count($arrEventTypeArchives) > 0 && strrpos($strKey, 'eventtypes', -strlen($strKey)) !== FALSE)
+			{
+				// unset eventtypes
+				unset($arrFilter[$strKey]);
+
+				// use multiple eventtypes
+				foreach($arrEventTypeArchives as $intArchive)
+				{
+					$strArchiveKey = $strKey . '_' . $intArchive;
+					$arrFilter[$strArchiveKey] = $objHelper->getValueByDca(\Input::get($strArchiveKey), $arrData);
+				}
+			}
 		}
 
 		return $arrFilter;
@@ -51,7 +95,7 @@ abstract class EventsPlus extends \Events
 	 * @param integer
 	 * @return array
 	 */
-	protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter=array())
+	protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter=array(), $arrFilterOptions=array())
 	{
 		if (!is_array($arrCalendars))
 		{
@@ -83,7 +127,7 @@ abstract class EventsPlus extends \Events
 			}
 
 			// Get the events of the current period
-			$objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter);
+			$objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter, $arrFilterOptions);
 
 			if ($objEvents === null)
 			{
@@ -155,6 +199,9 @@ abstract class EventsPlus extends \Events
 			{
 				foreach($arrEvents as $arrEvent)
 				{
+					// do not add childevents to prev/next nav
+					if(!$this->cal_ungroupSubevents && $arrEvent['parentEvent'] > 0) continue;
+
 					$arrIds[] = $arrEvent['id'];
 				}
 			}
@@ -183,6 +230,7 @@ abstract class EventsPlus extends \Events
 		$strDate = \Date::parse($objPage->dateFormat, $intStart);
 		$strDay = $GLOBALS['TL_LANG']['DAYS'][date('w', $intStart)];
 		$strMonth = $GLOBALS['TL_LANG']['MONTHS'][(date('n', $intStart)-1)];
+		$strMemberTemplate = $this->mlTemplate;
 
 		if ($span > 0)
 		{
@@ -227,6 +275,7 @@ abstract class EventsPlus extends \Events
 			if(($objParentEvent = CalendarPlusEventsModel::findPublishedByParentAndIdOrAlias($intParentEvent, array($objEvent->pid))) !== null)
 			{
 				$arrEvent['parentHref'] = $this->generateEventUrl($objParentEvent, $strUrl);
+				$arrEvent['isSubEvent'] = true;
 			}
 		}
 
@@ -288,6 +337,59 @@ abstract class EventsPlus extends \Events
 			}
 		}
 
+		$objEvent->memberDocents = deserialize($objEvent->memberDocents, true);
+
+		if(is_array($objEvent->memberDocents) && !empty($objEvent->memberDocents))
+		{
+			$objMembers = MemberPlusMemberModel::findMultipleByIds($objEvent->memberDocents);
+
+			if($objMembers !== null)
+			{
+				while($objMembers->next())
+				{
+					$objMemberPlus = new \HeimrichHannot\MemberPlus\MemberPlus($this->objModel);
+					// custom subevent memberlist template
+					$objMemberPlus->mlTemplate = ($arrEvent['isSubEvent'] && $this->cal_subeventDocentTemplate != '') ? $this->cal_subeventDocentTemplate : $objMemberPlus->mlTemplate;
+					$arrEvent['memberDocentList'][] = $objMemberPlus->parseMember($objMembers);
+				}
+			}
+		}
+
+
+		$objEvent->hosts = deserialize($objEvent->hosts, true);
+
+		if(is_array($objEvent->hosts) && !empty($objEvent->hosts))
+		{
+			$objDocents = CalendarDocentsModel::findMultipleByIds($objEvent->hosts);
+
+			if($objDocents !== null)
+			{
+				while($objDocents->next())
+				{
+					$arrEvent['hostList'][] = $objDocents->current();
+				}
+			}
+		}
+
+		$objEvent->memberHosts = deserialize($objEvent->memberHosts, true);
+
+		if(is_array($objEvent->memberHosts) && !empty($objEvent->memberHosts))
+		{
+			$objMembers = MemberPlusMemberModel::findMultipleByIds($objEvent->memberHosts);
+
+			if($objMembers !== null)
+			{
+				while($objMembers->next())
+				{
+					$objMemberPlus = new \HeimrichHannot\MemberPlus\MemberPlus($this->objModel);
+					// custom subevent memberlist template
+					$objMemberPlus->mlTemplate = ($arrEvent['isSubEvent'] && $this->cal_subeventHostTemplate != '') ? $this->cal_subeventHostTemplate : $objMemberPlus->mlTemplate;
+					$arrEvent['memberHostList'][] = $objMemberPlus->parseMember($objMembers);
+				}
+			}
+
+		}
+		
 
 		$objEvent->eventtypes = deserialize($objEvent->eventtypes, true);
 

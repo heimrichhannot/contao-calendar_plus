@@ -36,6 +36,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$dc['fields']['startDate']['eval']['placeholder'] = &$GLOBALS['TL_LANG']['eventfilter']['startDatePlaceholder'];
 		$dc['fields']['startDate']['eval']['autocomplete'] = false;
 		$dc['fields']['startDate']['eval']['linkedEnd'] = '#ctrl_endDate';
+		$dc['fields']['startDate']['eval']['data-toggle'] = 'tooltip';
 
 		// adjust end date
 		$dc['fields']['endDate']['eval']['mandatory'] = false;
@@ -99,5 +100,10 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		);
 
 		$this->arrFields[FORMHYBRID_NAME_SUBMIT] = $this->generateField(FORMHYBRID_NAME_SUBMIT, $arrData);
+	}
+
+	public function getFilterFields()
+	{
+		return $this->arrFields;
 	}
 }

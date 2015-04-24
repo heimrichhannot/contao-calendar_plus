@@ -38,10 +38,19 @@
 					<div class="bottom-row">
 						<div class="fields-container">
 							<?php if(isset($this->fields['eventtypes'])): ?>
-								<?php foreach($this->fields['eventtypes']->arrOptions as $arrSelects): ?>
-									<?php echo $arrSelects['value']; ?>
-								<?php endforeach; ?>
+								<?php if(is_array($this->fields['eventtypes']->arrOptions[0][0])): ?>
+									<?php foreach($this->fields['eventtypes']->arrOptions as $arrSelects): ?>
+										<?php if(!is_array($arrSelects)) continue; ?>
+										<?php foreach($arrSelects as $arrSelect): ?>
+											<?php if(!is_array($arrSelect) || $arrSelect['value'] != 'output') continue; ?>
+											<?php echo $arrSelect['label']; ?>
+										<?php endforeach; ?>
+									<?php endforeach; ?>
+								<?php else: ?>
+									<?php echo $this->fields['eventtypes']->parse(); ?>
+								<?php endif; ?>
 							<?php endif; ?>
+
 							<?php echo isset($this->fields['areasoflaw']) ? $this->fields['areasoflaw']->parse() : ''; ?>
 							<?php echo isset($this->fields['promoter']) ? $this->fields['promoter']->parse() : ''; ?>
 							<div class="form-submit">

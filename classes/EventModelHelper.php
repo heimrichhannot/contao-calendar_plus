@@ -10,21 +10,26 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
+define('EVENTMODEL_CONDITION_OR', 'OR');
+define('EVENTMODEL_CONDITION_AND', 'AND');
 
 class EventModelHelper extends EventsPlusHelper
 {
-	public static function createMySQLRegexpForMultipleIds($strField, array $arrIds)
+	public static function createMySQLRegexpForMultipleIds($strField, array $arrIds, $strCondition = EVENTMODEL_CONDITION_OR)
 	{
 		$strRegexp = null;
+
+		if(!in_array($strCondition, array(EVENTMODEL_CONDITION_OR, EVENTMODEL_CONDITION_AND))) return '';
 
 		foreach($arrIds as $val)
 		{
 			if($strRegexp !== null)
 			{
-				$strRegexp .= " OR ";
+				$strRegexp .= " $strCondition ";
 			}
 
 			$strRegexp .= "$strField REGEXP (':\"$val\"')";
+			$strRegexp .= " OR $strField=$val"; // backwards compatibility (if field was no array before)
 		}
 
 		return "($strRegexp)";

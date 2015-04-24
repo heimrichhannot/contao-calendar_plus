@@ -381,7 +381,7 @@ class ModuleEventReaderPlus extends EventsPlus
 		}
 
 
-		if(in_array('share',$this->Config->getActiveModules()))
+		if($this->addShare && in_array('share',$this->Config->getActiveModules()))
 		{
 			$objShare = new \HeimrichHannot\Share\Share($this->objModel, $objEvent);
 			$objTemplate->share = $objShare->generate();

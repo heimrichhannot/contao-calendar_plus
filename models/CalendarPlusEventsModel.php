@@ -109,7 +109,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
 		$objEvents = static::findBy($arrColumns, null, $arrOptions);
 
-		if($objEvents === null) return $objEvents;
+		if($objEvents === null) return null;
 
 		$arrDocents = array();
 
@@ -120,7 +120,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
 		$arrDocents = array_unique($arrDocents);
 
-		return CalendarDocentsModel::findMultipleByIds($arrDocents);
+		return CalendarDocentsModel::findMultipleByIds($arrDocents, array('order' => 'title'));
 	}
 
 	public static function getUniqueMemberDocentsByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
@@ -149,7 +149,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
 		$objEvents = static::findBy($arrColumns, null, $arrOptions);
 
-		if($objEvents === null) return $objEvents;
+		if($objEvents === null) return null;
 
 		$arrDocents = array();
 
@@ -160,7 +160,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
 		$arrDocents = array_unique($arrDocents);
 
-		return MemberPlusMemberModel::findMultipleByIds($arrDocents, array('order' => 'lastname'));
+		return MemberPlusMemberModel::findMultipleByIds($arrDocents, array('order' => 'lastname ASC'));
 	}
 
 
@@ -271,7 +271,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return static::findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, $arrFilter, $arrOptions, true);
 	}
 
-	public static function findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), $arrOptions = array(), $count = false)
+	public static function findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), array $arrFilterOptions = array(), $arrOptions = array(), $count = false)
 	{
 		$t        = static::$strTable;
 		$intStart = intval($intStart);
@@ -282,6 +282,9 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
 
 		foreach ($arrFilter as $key => $value) {
+
+			$arrValueOptions = (isset($arrFilterOptions[$key]) && is_array($arrFilterOptions[$key])) ? $arrFilterOptions[$key] : array();
+			
 			switch ($key) {
 				case 'startDate':
 					if ($value && $value >= $intStart) {
@@ -298,26 +301,47 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 					if ($value != '') {
 						$valueArray = trimsplit(',', $value);
 
-						if(is_array($valueArray) && !empty($valueArray))
+						// permit intersections only
+						if(!empty($arrValueOptions))
 						{
-							$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $valueArray);
+							$valueArray = array_intersect($valueArray, $arrValueOptions);
 						}
-					}
-					break;
-				case 'eventtypes':
-					if ($value != '') {
-						$valueArray = trimsplit(',', $value);
 						
 						if(is_array($valueArray) && !empty($valueArray))
 						{
 							$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $valueArray);
 						}
+					}
+					else if(!empty($arrValueOptions))
+					{
+						$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrValueOptions);
+					}
+					break;
+				case strrpos($key, 'eventtypes', -strlen($key)) !== FALSE :
+					
+					if ($value != '') {
+						$valueArray = trimsplit(',', $value);
+						
+						// permit intersections only
+						if(!empty($arrValueOptions))
+						{
+							$valueArray = array_intersect($valueArray, $arrValueOptions);
+						}
+						
+						if(is_array($valueArray) && !empty($valueArray))
+						{
+							$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_AND);
+						}
+					}
+					else if(!empty($arrValueOptions))
+					{
+						$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $arrValueOptions);
 					}
 					break;
 				case 'docents':
 					if ($value != '') {
 						$valueArray = trimsplit(',', $value);
-						
+
 						if(is_array($valueArray) && !empty($valueArray))
 						{
 							$arrDocents = array();
@@ -427,6 +451,11 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 	{
 		$t          = static::$strTable;
 		$arrColumns = array("($t.parentEvent=?)");
+
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order'] = "$t.startTime";
+		}
 
 		if (!BE_USER_LOGGED_IN) {
 			$time         = time();

@@ -129,6 +129,7 @@ class ModuleEventListPlus extends EventsPlus
 		list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->cal_format);
 
 		$arrFilter = array();
+		$arrOptions = array();
 
 		if($this->cal_filterModule)
 		{
@@ -137,6 +138,7 @@ class ModuleEventListPlus extends EventsPlus
 			if($objFilterModule !== null)
 			{
 				$arrFilter = $this->getFilter($objFilterModule);
+				$arrOptions = $this->getPossibleFilterOptions($objFilterModule);
 
 				if(!empty($arrFilter))
 				{
@@ -146,7 +148,7 @@ class ModuleEventListPlus extends EventsPlus
 		}
 
 		// Get all events
-		$arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter);
+		$arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions);
 		
 		$sort = ($this->cal_order == 'descending') ? 'krsort' : 'ksort';
 
@@ -366,6 +368,7 @@ class ModuleEventListPlus extends EventsPlus
 		if ($strEvents == '')
 		{
 			$strEvents = "\n" . '<div class="empty">' . $strEmpty . '</div>' . "\n";
+			$this->Template->empty = true;
 		}
 
 		// See #3672
