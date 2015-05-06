@@ -24,6 +24,8 @@ $GLOBALS['TL_LANG']['tl_module']['cal_eventTypesArchiveMultiple'] = array('Mehrf
 $GLOBALS['TL_LANG']['tl_module']['cal_restrictedValueFields'] = array('Ergebnisse eingrenzen (Feldoptionen)', 'Die Veranstaltungen anhand der Optionswerte eingrenzen.');
 $GLOBALS['TL_LANG']['tl_module']['cal_subeventDocentTemplate'] = array('Mitglieder-Dozenten-Template für untergeordnete Events', 'Hier können Sie ein individuelles Template zur Anzeige des Dozenten für untergeordnete Veranstaltungen auswählen.');
 $GLOBALS['TL_LANG']['tl_module']['cal_subeventHostTemplate'] = array('Mitglieder-Moratoren-Template für untergeordnete Events', 'Hier können Sie ein individuelles Template zur Anzeige des Moderators für untergeordnete Veranstaltungen auswählen.');
+$GLOBALS['TL_LANG']['tl_module']['cal_filterRelatedOnEmpty'] = array('Verwandte Veranstaltungen bei keinen Ergebnissen anzeigen', 'Wenn keine Veranstaltungen mit den Filtereinstellungen gefunden werden, wird die Liste mit verwandten Veranstaltungen zurückgeliefert.');
+
 /**
  * Legends
  */

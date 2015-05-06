@@ -26,7 +26,7 @@
 							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
 							</span>
 						<?php endif; ?>
-						<?php if($this->addTime && $this->endTimeFormated): ?>
+						<?php if($this->addTime && $this->endTimeFormated && $this->endTimeFormated != $this->startTimeFormated): ?>
 							<span class="time-end">
 							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
 							</span>

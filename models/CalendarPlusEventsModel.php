@@ -266,12 +266,12 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return $this;
 	}
 
-	public static function countCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), $arrOptions = array())
+	public static function countCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), $arrFilterOptions = array(), $arrFilterConfig = array(), $arrOptions = array())
 	{
-		return static::findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, $arrFilter, $arrOptions, true);
+		return static::findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig, $arrOptions, true);
 	}
 
-	public static function findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), array $arrFilterOptions = array(), $arrOptions = array(), $count = false)
+	public static function findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), array $arrFilterOptions = array(), $arrFilterConfig = array(), $arrOptions = array(), $count = false)
 	{
 		$t        = static::$strTable;
 		$intStart = intval($intStart);
@@ -280,6 +280,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		$arrPids = !is_array($arrPids) ? array($arrPids) : $arrPids;
 
 		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumnsOr = array();
 
 		foreach ($arrFilter as $key => $value) {
 
@@ -330,7 +331,15 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 						
 						if(is_array($valueArray) && !empty($valueArray))
 						{
-							$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_AND);
+							if ($arrFilterConfig['show_related'])
+							{
+								$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_OR);
+							}
+							else
+							{
+								$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_AND);
+							}
+							
 						}
 					}
 					else if(!empty($arrValueOptions))
@@ -406,10 +415,17 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 		
-		if (!isset($arrOptions['order'])) {
+		// for related search
+		if(!empty($arrColumnsOr))
+		{
+			$arrColumns[] = implode(' OR ', $arrColumnsOr);
+		}
+		
+		if (!isset($arrOptions['order']))
+		{
 			$arrOptions['order'] = "$t.startTime";
 		}
-
+		
 		if($count)
 		{
 			return static::countBy($arrColumns, $arrValues, $arrOptions);

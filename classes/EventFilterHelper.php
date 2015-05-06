@@ -308,6 +308,8 @@ class EventFilterHelper extends \Frontend
 		}
 		elseif (is_array($value))
 		{
+			$value = static::flattenArray($value);
+			
 			$value = array_filter($value); // remove empty elements
 
 			$value = implode(', ', $value);
@@ -327,5 +329,11 @@ class EventFilterHelper extends \Frontend
 
 		// Convert special characters (see #1890)
 		return specialchars($value);
+	}
+
+	public static function flattenArray(array $array) {
+		$return = array();
+		array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+		return $return;
 	}
 }

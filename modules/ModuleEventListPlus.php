@@ -130,6 +130,7 @@ class ModuleEventListPlus extends EventsPlus
 
 		$arrFilter = array();
 		$arrOptions = array();
+		$arrFilterConfig = array();
 
 		if($this->cal_filterModule)
 		{
@@ -148,8 +149,17 @@ class ModuleEventListPlus extends EventsPlus
 		}
 
 		// Get all events
-		$arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions);
-		
+		$arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig);
+
+		$isRelatedList = false;
+
+		if(empty($arrAllEvents) && $objFilterModule->cal_filterRelatedOnEmpty)
+		{
+			$arrFilterConfig['show_related'] = true;
+			$arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig);
+			$isRelatedList = true;
+		}
+
 		$sort = ($this->cal_order == 'descending') ? 'krsort' : 'ksort';
 
 		// Sort the days
@@ -364,16 +374,20 @@ class ModuleEventListPlus extends EventsPlus
 			++$headerCount;
 		}
 
+		$strEmpty = "\n" . '<div class="empty">' . $strEmpty . '</div>' . "\n";
+		$this->Template->emptyMessage = $strEmpty;
+
 		// No events found
 		if ($strEvents == '')
 		{
-			$strEvents = "\n" . '<div class="empty">' . $strEmpty . '</div>' . "\n";
+			$strEvents = $strEmpty;
 			$this->Template->empty = true;
 		}
 
 		// See #3672
 		$this->Template->headline = $this->headline;
 		$this->Template->events = $strEvents;
+		$this->Template->isRelated = $isRelatedList && !$this->Template->empty;
 
 		// Clear the $_GET array (see #2445)
 		if ($blnClearInput)

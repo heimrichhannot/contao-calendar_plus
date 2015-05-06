@@ -28,8 +28,11 @@ class EventModelHelper extends EventsPlusHelper
 				$strRegexp .= " $strCondition ";
 			}
 
+			$strRegexp .= $strCondition == EVENTMODEL_CONDITION_AND ? "(" : "";
+
 			$strRegexp .= "$strField REGEXP (':\"$val\"')";
 			$strRegexp .= " OR $strField=$val"; // backwards compatibility (if field was no array before)
+			$strRegexp .= $strCondition == EVENTMODEL_CONDITION_AND ? ")" : "";
 		}
 
 		return "($strRegexp)";

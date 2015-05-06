@@ -37,7 +37,7 @@ $dc['palettes']['eventreader_plus'] = '
 
 $dc['palettes']['eventfilter'] = '
 									{title_legend},name,headline,type;
-									{config_legend},cal_calendar,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues,formHybridTemplate,cal_eventTypesArchive,cal_eventTypesArchiveMultiple,cal_combineEventTypesArchive,cal_combineEventTypesArchiveMultiple,cal_restrictedValueFields;
+									{config_legend},cal_calendar,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues,formHybridTemplate,cal_eventTypesArchive,cal_eventTypesArchiveMultiple,cal_combineEventTypesArchive,cal_combineEventTypesArchiveMultiple,cal_filterRelatedOnEmpty,cal_restrictedValueFields;
 									{template_legend:hide},customTpl;
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';
@@ -160,6 +160,14 @@ $arrFields = array
 		'options_callback' => array('tl_module_member_plus', 'getMemberlistTemplates'),
 		'eval'             => array('tl_class' => 'w50', 'includeBlankOption' => true),
 		'sql'              => "varchar(64) NOT NULL default ''"
+	),
+	'cal_filterRelatedOnEmpty' => array
+	(
+		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_filterRelatedOnEmpty'],
+		'exclude'   => true,
+		'inputType' => 'checkbox',
+		'eval'      => array('tl_class' => 'clr w50'),
+		'sql'       => "char(1) NOT NULL default ''",
 	)
 );
 

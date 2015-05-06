@@ -68,7 +68,7 @@ abstract class EventsPlus extends \Events
 			$arrData = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$strKey];
 
 			if(!is_array($arrData) || empty($arrData)) continue;
-			
+
 			$arrFilter[$strKey] = $objHelper->getValueByDca(\Input::get($strKey), $arrData);
 
 			if(!$objModule->cal_combineEventTypesArchive && count($arrEventTypeArchives) > 0 && strrpos($strKey, 'eventtypes', -strlen($strKey)) !== FALSE)
@@ -95,7 +95,7 @@ abstract class EventsPlus extends \Events
 	 * @param integer
 	 * @return array
 	 */
-	protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter=array(), $arrFilterOptions=array())
+	protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter=array(), $arrFilterOptions=array(), $arrFilterConfig = array())
 	{
 		if (!is_array($arrCalendars))
 		{
@@ -127,7 +127,7 @@ abstract class EventsPlus extends \Events
 			}
 
 			// Get the events of the current period
-			$objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter, $arrFilterOptions);
+			$objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig);
 
 			if ($objEvents === null)
 			{
@@ -283,9 +283,8 @@ abstract class EventsPlus extends \Events
 		$arrEvent['begin'] = $intStart;
 		$arrEvent['end'] = $intEnd;
 		$arrEvent['details'] = '';
-		$arrEvent['startTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvent->startTime);
-		$arrEvent['endTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvent->endTime);
-
+		$arrEvent['startTimeFormated'] = $objEvent->startTime > 0 ? \Date::parse($objPage->timeFormat, $objEvent->startTime) : null;
+		$arrEvent['endTimeFormated'] = $objEvent->endTime > 0 ? \Date::parse($objPage->timeFormat, $objEvent->endTime) : null;
 
 		// modal
 		if($this->cal_showInModal && $objEvent->source == 'default' && $this->cal_readerModule)
