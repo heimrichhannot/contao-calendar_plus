@@ -135,11 +135,13 @@ class ModuleEventListPlus extends EventsPlus
 		if($this->cal_filterModule)
 		{
 			$objFilterModule = \ModuleModel::findByPk($this->cal_filterModule);
-
+			
 			if($objFilterModule !== null)
 			{
+				$objFilterModule = $this->prepareFilterModel($objFilterModule);
 				$arrFilter = $this->getFilter($objFilterModule);
 				$arrOptions = $this->getPossibleFilterOptions($objFilterModule);
+				$arrFilterConfig['module'] = $objFilterModule->row();
 
 				if(!empty($arrFilter))
 				{

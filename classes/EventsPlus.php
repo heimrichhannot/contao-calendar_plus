@@ -21,6 +21,18 @@ abstract class EventsPlus extends \Events
 	 */
 	protected $arrSubEvents = array();
 
+	protected function prepareFilterModel($objModel)
+	{
+		// add keyword support
+		if($objModel->cal_addKeywordSearch)
+		{
+			$objModel->formHybridEditable = deserialize($objModel->formHybridEditable, true);
+			$objModel->formHybridEditable = array_unique(array_merge($objModel->formHybridEditable, array('q')));
+		}
+		
+		return $objModel;
+	}
+
 	public function getPossibleFilterOptions($objModule)
 	{
 		\Controller::loadDataContainer('tl_calendar_events');
@@ -55,22 +67,23 @@ abstract class EventsPlus extends \Events
 		$arrFields = deserialize($objModule->formHybridEditable, true);
 
 		// Return if there are no fields
-		if (!is_array($arrFields) || empty($arrFields)) {
+		if (!is_array($arrFields) || empty($arrFields))
+		{
 			return $arrFilter;
 		}
-
+		
 		$objHelper = new EventFilterHelper();
 		
 		$arrEventTypeArchives  = deserialize($objModule->cal_eventTypesArchive, true);
-
+		
 		foreach($arrFields as $strKey)
 		{
 			$arrData = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$strKey];
-
+			
 			if(!is_array($arrData) || empty($arrData)) continue;
 
 			$arrFilter[$strKey] = $objHelper->getValueByDca(\Input::get($strKey), $arrData);
-
+			
 			if(!$objModule->cal_combineEventTypesArchive && count($arrEventTypeArchives) > 0 && strrpos($strKey, 'eventtypes', -strlen($strKey)) !== FALSE)
 			{
 				// unset eventtypes
@@ -84,7 +97,7 @@ abstract class EventsPlus extends \Events
 				}
 			}
 		}
-
+		
 		return $arrFilter;
 	}
 
@@ -124,8 +137,9 @@ abstract class EventsPlus extends \Events
 			if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
 			{
 				$strUrl = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/%s' : '/events/%s'));
+				$arrFilterConfig['jumpTo'] = array($objTarget->id);
 			}
-
+			
 			// Get the events of the current period
 			$objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig);
 

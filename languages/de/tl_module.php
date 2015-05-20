@@ -25,9 +25,13 @@ $GLOBALS['TL_LANG']['tl_module']['cal_restrictedValueFields'] = array('Ergebniss
 $GLOBALS['TL_LANG']['tl_module']['cal_subeventDocentTemplate'] = array('Mitglieder-Dozenten-Template für untergeordnete Events', 'Hier können Sie ein individuelles Template zur Anzeige des Dozenten für untergeordnete Veranstaltungen auswählen.');
 $GLOBALS['TL_LANG']['tl_module']['cal_subeventHostTemplate'] = array('Mitglieder-Moratoren-Template für untergeordnete Events', 'Hier können Sie ein individuelles Template zur Anzeige des Moderators für untergeordnete Veranstaltungen auswählen.');
 $GLOBALS['TL_LANG']['tl_module']['cal_filterRelatedOnEmpty'] = array('Verwandte Veranstaltungen bei keinen Ergebnissen anzeigen', 'Wenn keine Veranstaltungen mit den Filtereinstellungen gefunden werden, wird die Liste mit verwandten Veranstaltungen zurückgeliefert.');
-
+$GLOBALS['TL_LANG']['tl_module']['cal_addKeywordSearch'] = array('Stichwortsuche aktivieren', 'Ein Suchfeld für die Stichwortsuche über Titel und Teaser von Veranstaltungen hinzufügen.');
 /**
  * Legends
  */
 
 $GLOBALS['TL_LANG']['tl_module']['memberdocent_legend'] = 'Mitglieder-Dozenten';
+$GLOBALS['TL_LANG']['tl_module']['eventtype_legend'] = 'Veranstaltungsarten';
+$GLOBALS['TL_LANG']['tl_module']['related_legend'] = 'Verwandte Veranstaltungen';
+$GLOBALS['TL_LANG']['tl_module']['keyword_legend'] = 'Stichwortsuche';
+$GLOBALS['TL_LANG']['tl_module']['restrict_legend'] = 'Eingrenzung';

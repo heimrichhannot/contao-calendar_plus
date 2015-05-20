@@ -30,6 +30,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['addMap'] = array('Anfahrtsplan hinzuf
 $GLOBALS['TL_LANG']['tl_calendar_events']['map'] = array('Anfahrtplan', 'Bitte wählen Sie die Dateien aus, die Sie hinzufügen möchten.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['mapText'] = array('Text', 'Bitte geben Sie hier einen Text für die Überschrift ein, falls er von "Abfahrtsplan" abweicht.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['website'] = array('Webseite', 'Hier können Sie eine Web-Adresse eingeben.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['q'] = array('Stichwortsuche', 'Suchen Sie über alle Veranstaltungen');
 
 /**
  * Legends
@@ -39,7 +40,6 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['docents_legend'] = 'Dozenten';
 $GLOBALS['TL_LANG']['tl_calendar_events']['hosts_legend'] = 'Moderatoren';
 $GLOBALS['TL_LANG']['tl_calendar_events']['eventtypes_legend'] = 'Veranstaltungsarten';
 $GLOBALS['TL_LANG']['tl_calendar_events']['contact_legend'] = 'Kontakt';
-
 
 
 /**
@@ -53,3 +53,9 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['event'] = 'Veranstaltung';
  */
 $GLOBALS['TL_LANG']['tl_calendar_events']['editpromoter'] = array('Veranstalter bearbeiten', 'Veranstalter ID %s bearbeiten');
 $GLOBALS['TL_LANG']['tl_calendar_events']['editparentevent'] = array('Elternevent bearbeiten', 'Elternevent ID %s bearbeiten');
+
+
+/**
+ * Placeholders
+ */
+$GLOBALS['TL_LANG']['tl_calendar_events']['placeholders']['q'] = 'Stichwortsuche';

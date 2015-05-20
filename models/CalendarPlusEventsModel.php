@@ -310,7 +310,15 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 						
 						if(is_array($valueArray) && !empty($valueArray))
 						{
-							$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $valueArray);
+							if ($arrFilterConfig['show_related'])
+							{
+								$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $valueArray, EVENTMODEL_CONDITION_OR);
+							}
+							else
+							{
+								$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $valueArray);
+							}
+
 						}
 					}
 					else if(!empty($arrValueOptions))
@@ -372,7 +380,14 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 							{
 								if(is_array($valueArray) && !empty($valueArray))
 								{
-									$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrDocents);
+									if ($arrFilterConfig['show_related'])
+									{
+										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrDocents, EVENTMODEL_CONDITION_OR);
+									}
+									else
+									{
+										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrDocents);
+									}
 								}
 							}
 
@@ -380,7 +395,14 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 							{
 								if(is_array($valueArray) && !empty($valueArray))
 								{
-									$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMemberDocents);
+									if ($arrFilterConfig['show_related'])
+									{
+										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMemberDocents, EVENTMODEL_CONDITION_OR);
+									}
+									else
+									{
+										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMemberDocents);
+									}
 								}
 							}
 
@@ -397,6 +419,38 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 					if ($value != '') {
 						$arrColumns[] = "($t.$key >= $value AND $t.$key < ($value + 1))";
 					}
+					break;
+				case 'q':
+						if ($value != '' && is_array($arrFilterConfig['jumpTo'])) {
+
+							try
+							{
+								$objSearch = \Search::searchFor($value, ($arrFilterConfig['module']['queryType'] == 'or'), $arrFilterConfig['jumpTo'], 0, 0, $arrFilterConfig['module']['fuzzy']);
+
+								if($objSearch->numRows > 0)
+								{
+									$arrUrls = $objSearch->fetchEach('url');
+
+									$strKeyWordColumns = "";
+
+									$n = 0;
+
+									foreach($arrUrls as $i => $strAlias)
+									{
+										$strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$t.alias = ?";
+										$arrValues[] = basename($strAlias);
+										$n++;
+									}
+
+									$arrColumns[] = "($strKeyWordColumns)";
+								}
+
+							}
+							catch (\Exception $e)
+							{
+								\System::log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
+							}
+						}
 					break;
 				default:
 					if ($value != '') {
@@ -420,7 +474,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		{
 			$arrColumns[] = implode(' OR ', $arrColumnsOr);
 		}
-		
+
 		if (!isset($arrOptions['order']))
 		{
 			$arrOptions['order'] = "$t.startTime";

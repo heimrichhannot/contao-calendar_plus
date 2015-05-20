@@ -21,6 +21,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 	{
 		$this->strPalette = $objModule->formHybridPalette;
 		$this->strMethod = FORMHYBRID_METHOD_GET;
+		$this->isFilterForm = true;
 
 		parent::__construct($objModule);
 	}

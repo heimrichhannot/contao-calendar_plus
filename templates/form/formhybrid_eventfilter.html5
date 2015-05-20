@@ -53,14 +53,18 @@
 
 							<?php echo isset($this->fields['areasoflaw']) ? $this->fields['areasoflaw']->parse() : ''; ?>
 							<?php echo isset($this->fields['promoter']) ? $this->fields['promoter']->parse() : ''; ?>
+							<?php echo isset($this->fields['q']) ? $this->fields['q']->parse() : ''; ?>
 							<div class="form-submit">
-								<?php echo isset($this->fields['submit']) ? $this->fields['submit']->parse() : ''; ?>
+								<div class="btn-group" role="group">
+									<a href="{{page::alias}}" class="reset btn btn-default" data-toggle="tooltip" title="Filter zurücksetzen"><i class="ei ei-close_alt2"></i></a>
+									<?php echo isset($this->fields['submit']) ? $this->fields['submit']->generate() : ''; ?>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<?php foreach($this->fields as $name => $objField): ?>
-					<?php if(in_array($name, array('startDate', 'endDate', 'docents', 'city', 'postal', 'areasoflaw', 'promoter', 'timeHours', 'eventtypes', 'submit'))) continue; ?>
+					<?php if(in_array($name, array('startDate', 'endDate', 'docents', 'city', 'postal', 'areasoflaw', 'promoter', 'timeHours', 'eventtypes', 'q', 'submit'))) continue; ?>
 					<?php echo $objField->parse(); ?>
 				<?php endforeach; ?>
 			</div>

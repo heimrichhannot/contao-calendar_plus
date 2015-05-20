@@ -14,6 +14,8 @@ $dc = &$GLOBALS['TL_DCA']['tl_module'];
 /**
  * Palettes
  */
+$dc['palettes']['__selector__'][] = 'cal_addKeywordSearch';
+
 
 $dc['palettes']['event_chooser'] = '{title_legend},name,headline,type;{redirect_legend},jumpTo';
 $dc['palettes']['eventlist']     = str_replace('cal_noSpan', 'hideSubEvents,cal_noSpan', $dc['palettes']['eventlist']);
@@ -37,11 +39,20 @@ $dc['palettes']['eventreader_plus'] = '
 
 $dc['palettes']['eventfilter'] = '
 									{title_legend},name,headline,type;
-									{config_legend},cal_calendar,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues,formHybridTemplate,cal_eventTypesArchive,cal_eventTypesArchiveMultiple,cal_combineEventTypesArchive,cal_combineEventTypesArchiveMultiple,cal_filterRelatedOnEmpty,cal_restrictedValueFields;
+									{config_legend},cal_calendar,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues,formHybridTemplate;
+									{keyword_legend},cal_addKeywordSearch;
+									{eventtype_legend},cal_eventTypesArchive,cal_eventTypesArchiveMultiple,cal_combineEventTypesArchive,cal_combineEventTypesArchiveMultiple;
+									{related_legend},cal_filterRelatedOnEmpty;
+									{restrict_legend},cal_restrictedValueFields;
 									{template_legend:hide},customTpl;
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';
 
+
+/**
+ * Subpalettes
+ */
+$dc['subpalettes']['cal_addKeywordSearch'] = 'queryType,fuzzy';
 
 /**
  * Fields
@@ -167,6 +178,14 @@ $arrFields = array
 		'exclude'   => true,
 		'inputType' => 'checkbox',
 		'eval'      => array('tl_class' => 'clr w50'),
+		'sql'       => "char(1) NOT NULL default ''",
+	),
+	'cal_addKeywordSearch' => array
+	(
+		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_addKeywordSearch'],
+		'exclude'   => true,
+		'inputType' => 'checkbox',
+		'eval'      => array('tl_class' => 'clr w50', 'submitOnChange' => true),
 		'sql'       => "char(1) NOT NULL default ''",
 	)
 );

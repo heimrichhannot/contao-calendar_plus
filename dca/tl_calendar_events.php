@@ -220,6 +220,14 @@ $dc['fields']['website'] = array
 	'sql'       => "varchar(255) NOT NULL default ''"
 );
 
+// keyword field
+$dc['fields']['q'] = array
+(
+	'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['q'],
+	'inputType' => 'text',
+	'eval'      => array('placeholder' => &$GLOBALS['TL_LANG']['tl_calendar_events']['placeholders']['q'])
+);
+
 /**
  * Filter list / show subevents
  */

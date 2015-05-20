@@ -26,6 +26,12 @@ class ModuleEventFilter extends EventsPlus
 	 */
 	protected $strTemplate = 'mod_eventfilter';
 
+	public function __construct($objModule, $strColumn='main')
+	{
+		$objModule = $this->prepareFilterModel($objModule);
+		parent::__construct($objModule, $strColumn);
+	}
+
 	/**
 	 * Display a wildcard in the back end
 	 * @return string
@@ -52,7 +58,8 @@ class ModuleEventFilter extends EventsPlus
 		}
 
 		// Show the event reader if an item has been selected
-		if ($this->cal_readerModule > 0 && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item'])))) {
+		if ($this->cal_readerModule > 0 && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
+		{
 			return $this->getFrontendModule($this->cal_readerModule, $this->strColumn);
 		}
 
