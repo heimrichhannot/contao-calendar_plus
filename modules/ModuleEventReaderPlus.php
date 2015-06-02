@@ -145,9 +145,15 @@ class ModuleEventReaderPlus extends EventsPlus
 
 		$arrIds = array();
 
+		\Session::getInstance()->remove(CALENDARPLUS_SESSION_EVENT_IDS);
+
 		// get ids from EventsPlus::getAllEvents
 		$session = \Session::getInstance()->getData();
 		$arrIds = $session[CALENDARPLUS_SESSION_EVENT_IDS];
+
+		// EventsPlus::getAllEvents did not run before the reader
+		// TODO: run EventsPlus::getAllEvents before
+		if(!is_array($arrIds) || empty($arrIds)) return;
 
 		$prevID = null;
 		$nextID = null;
