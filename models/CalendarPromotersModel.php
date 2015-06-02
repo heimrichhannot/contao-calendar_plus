@@ -18,6 +18,20 @@ class CalendarPromotersModel extends \Model
 	protected static $strCode = 'code';
 
 	/**
+	 * Find all item by title
+	 *
+	 * @param string  $varValue   The title value
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return \Model\Collection|null A collection of models or null if the title was not found
+	 */
+	public static function findByTitle($title, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		return static::findBy(array("LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'"), null, $arrOptions);
+	}
+
+	/**
 	 * Helper method to generate the alias for the current model
 	 * @return $this
 	 */

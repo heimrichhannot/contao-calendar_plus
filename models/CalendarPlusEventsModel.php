@@ -427,23 +427,23 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 							{
 								$objSearch = \Search::searchFor($value, ($arrFilterConfig['module']['queryType'] == 'or'), $arrFilterConfig['jumpTo'], 0, 0, $arrFilterConfig['module']['fuzzy']);
 
-								if($objSearch->numRows > 0)
+								// return if keyword not found
+								if($objSearch->numRows < 1) return null;
+
+								$arrUrls = $objSearch->fetchEach('url');
+
+								$strKeyWordColumns = "";
+
+								$n = 0;
+
+								foreach($arrUrls as $i => $strAlias)
 								{
-									$arrUrls = $objSearch->fetchEach('url');
-
-									$strKeyWordColumns = "";
-
-									$n = 0;
-
-									foreach($arrUrls as $i => $strAlias)
-									{
-										$strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$t.alias = ?";
-										$arrValues[] = basename($strAlias);
-										$n++;
-									}
-
-									$arrColumns[] = "($strKeyWordColumns)";
+									$strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$t.alias = ?";
+									$arrValues[] = basename($strAlias);
+									$n++;
 								}
+
+								$arrColumns[] = "($strKeyWordColumns)";
 
 							}
 							catch (\Exception $e)
