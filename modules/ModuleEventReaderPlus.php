@@ -145,8 +145,6 @@ class ModuleEventReaderPlus extends EventsPlus
 
 		$arrIds = array();
 
-		\Session::getInstance()->remove(CALENDARPLUS_SESSION_EVENT_IDS);
-
 		// get ids from EventsPlus::getAllEvents
 		$session = \Session::getInstance()->getData();
 		$arrIds = $session[CALENDARPLUS_SESSION_EVENT_IDS];
