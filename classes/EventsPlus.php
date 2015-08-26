@@ -402,7 +402,7 @@ abstract class EventsPlus extends \Events
 			}
 
 		}
-		
+
 
 		$objEvent->eventtypes = deserialize($objEvent->eventtypes, true);
 
@@ -422,7 +422,7 @@ abstract class EventsPlus extends \Events
 					$strClass .= (($objEventtypesArchive->cssClass != '') ? ' ' . $objEventtypesArchive->cssClass : '');
 
 					$objEventTypes->class = $strClass;
-					
+
 					$arrEvent['eventtypeList'][] = $objEventTypes->current();
 				}
 			}

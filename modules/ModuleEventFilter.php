@@ -57,12 +57,6 @@ class ModuleEventFilter extends EventsPlus
 			return '';
 		}
 
-		// Show the event reader if an item has been selected
-		if ($this->cal_readerModule > 0 && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
-		{
-			return $this->getFrontendModule($this->cal_readerModule, $this->strColumn);
-		}
-
 		return parent::generate();
 	}
 
