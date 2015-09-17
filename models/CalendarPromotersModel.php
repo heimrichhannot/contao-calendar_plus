@@ -62,17 +62,6 @@ class CalendarPromotersModel extends \Model
 	 */
 	public static function findByCode($varValue, array $arrOptions=array())
 	{
-		// Try to load from the registry
-		if (empty($arrOptions))
-		{
-			$objModel = \Model\Registry::getInstance()->fetch(static::$strCode, $varValue);
-
-			if ($objModel !== null)
-			{
-				return $objModel;
-			}
-		}
-
 		$arrOptions = array_merge
 		(
 			array

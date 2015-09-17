@@ -65,5 +65,5 @@ $GLOBALS['EFG']['storable_fields'][] = 'subEventList';
  * JS
  */
 if (TL_MODE == 'FE') {
-	$GLOBALS['TL_JAVASCRIPT']['calendarplus'] = '/system/modules/calendar_plus/assets/js/jquery.calendarplus.js';
+	$GLOBALS['TL_JAVASCRIPT']['calendarplus'] = '/system/modules/calendar_plus/assets/js/jquery.calendarplus' . (!$GLOBALS['TL_CONFIG']['debugMode'] ? '.min' : '') . '.js|static';
 }
