@@ -87,7 +87,7 @@ class ModuleEventReaderPlus extends EventsPlus
 		if($this->checkConditions())
 		{
 			parent::generate();
-			die($this->replaceInsertTags($this->Template->parse()));
+			die($this->replaceInsertTags($this->Template->output())); // use output, otherwise page will not be added to search index
 		}
 	}
 
