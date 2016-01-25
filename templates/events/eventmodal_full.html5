@@ -94,6 +94,15 @@
 				</div>
 			<?php endif; ?>
 
+			<?php if($this->city && ($this->street || $this->location)): ?>
+				<div class="label label-default location-full">
+					<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['addressLabel']; ?></span><br />
+					<?= $this->location ? $this->location . '<br />' : '' ?>
+					<?= $this->street ? $this->street . '<br />' : '' ?>
+					<?= $this->postal ? $this->postal . ' ' : '' ?><?= $this->city; ?>
+				</div>
+			<?php endif; ?>
+
 		</div>
 	</div>
 </div>

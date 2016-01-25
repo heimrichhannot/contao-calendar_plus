@@ -38,6 +38,7 @@ $GLOBALS['TL_LANG']['event']['startTimeLabel'] = 'Beginn';
 $GLOBALS['TL_LANG']['event']['endTimeLabel'] = 'Ende';
 $GLOBALS['TL_LANG']['event']['timeSuffix'] = 'Uhr';
 $GLOBALS['TL_LANG']['event']['cityLabel'] = 'Ort';
+$GLOBALS['TL_LANG']['event']['addressLabel'] = 'Adresse';
 $GLOBALS['TL_LANG']['event']['locationLabel'] = 'Veranstaltungsort';
 $GLOBALS['TL_LANG']['event']['promoterLabel'] = 'Veranstalter';
 $GLOBALS['TL_LANG']['event']['timeHoursLabel'] = 'Zeitstunden';
