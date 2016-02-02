@@ -239,6 +239,13 @@ class ModuleEventReaderPlus extends EventsPlus
 			// Send a 404 header
 			header('HTTP/1.1 404 Not Found');
 			$this->Template->event = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('events')) . '</p>';
+			
+			// remove page from search index
+			if($this->cal_showInModal)
+			{
+				\HeimrichHannot\SearchPlus\Search::removePageFromIndex(\Environment::get('request'));
+			}
+			
 			return;
 		}
 
