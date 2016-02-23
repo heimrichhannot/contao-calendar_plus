@@ -26,7 +26,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		parent::__construct($objModule);
 	}
 	
-	protected function modifyDC()
+	public function modifyDC()
 	{
 		// adjust start date
 		$this->dca['fields']['startDate']['eval']['mandatory'] = false;
