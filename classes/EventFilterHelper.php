@@ -44,19 +44,19 @@ class EventFilterHelper extends \Frontend
 		}
 
 		$objArchives = CalendarEventtypesArchiveModel::findByPids($dc->objModule->cal_calendar);
-		
+
 		if($objArchives === null)
 		{
 			return $arrItems;
 		}
 
 		$objEvenTypes = CalendarEventtypesModel::findByPids($objArchives->fetchEach('id'));
-		
+
 		if($objEvenTypes === null)
 		{
 			return $arrItems;
 		}
-		
+
 
 		return $objEvenTypes->fetchEach('title');
 	}
