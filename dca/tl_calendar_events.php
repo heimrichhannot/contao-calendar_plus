@@ -13,7 +13,7 @@ $dc['palettes']['default']      = str_replace(
 	$dc['palettes']['default']
 );
 $dc['palettes']['default']      =
-	str_replace('location', '{location_legend},location,locationAdditional,street,postal,city,coordinates,addMap', $dc['palettes']['default']);
+	str_replace('location', '{location_legend},location,locationAdditional,street,postal,city,coordinates,rooms,addMap', $dc['palettes']['default']);
 $dc['palettes']['default']      = str_replace('{location_legend}', '{contact_legend},website;{location_legend}', $dc['palettes']['default']);
 $dc['palettes']['__selector__'] = array_merge($dc['palettes']['__selector__'], array('addMap'));
 $dc['subpalettes']['addMap']    = 'map,mapText';
@@ -107,6 +107,17 @@ $dc['fields']['coordinates'] = array
 	'exclude'   => true,
 	'eval'      => array('tl_class' => 'w50'),
 	'sql'       => "varchar(255) NOT NULL default ''"
+);
+
+$dc['fields']['rooms'] = array
+(
+	'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['rooms'],
+	'inputType'  => 'select',
+	'foreignKey' => 'tl_calendar_room.title',
+	'exclude'    => true,
+	'options_callback' => array('tl_extended_events_calendar_events', 'getRooms'),
+	'eval'       => array('chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'w50 clr'),
+	'sql'        => "blob NULL" // ready for multiple
 );
 
 $dc['fields']['addMap'] = array
@@ -327,6 +338,29 @@ class tl_extended_events_calendar_events extends Backend
 			}
 		}
 	}
+
+
+	public function getRooms(\DataContainer $dc)
+	{
+		$arrRooms = array();
+
+		if (($objRoomArchives = \HeimrichHannot\CalendarPlus\CalendarRoomArchiveModel::findByPid($dc->activeRecord->pid)) !== null)
+		{
+			foreach ($objRoomArchives as $objRoomArchive)
+			{
+				if (($objRooms = \HeimrichHannot\CalendarPlus\CalendarRoomModel::findByPid($objRoomArchive->id)) !== null)
+				{
+					foreach ($objRooms as $objRoom)
+					{
+						$arrRooms[$objRoomArchive->title][$objRoom->id] = $objRoom->title;
+					}
+				}
+			}
+		}
+
+		return $arrRooms;
+	}
+
 
 	public function getMemberDocents(DataContainer $dc)
 	{

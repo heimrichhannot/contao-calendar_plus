@@ -25,6 +25,10 @@ $GLOBALS['TL_DCA']['tl_calendar_docents'] = array
 		(
 			array('tl_calendar_docents', 'checkPermission'),
 		),
+		'onsubmit_callback' => array
+		(
+			'setDateAdded' => array('HeimrichHannot\\HastePlus\\Utilities', 'setDateAdded'),
+		),
 		'sql' => array
 		(
 			'keys' => array
@@ -129,6 +133,14 @@ $GLOBALS['TL_DCA']['tl_calendar_docents'] = array
 		'tstamp' => array
 		(
 			'sql'                     => "int(10) unsigned NOT NULL default '0'"
+		),
+		'dateAdded' => array
+		(
+			'label'   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
+			'sorting' => true,
+			'flag'    => 6,
+			'eval'    => array('rgxp' => 'datim', 'doNotCopy' => true),
+			'sql'     => "int(10) unsigned NOT NULL default '0'",
 		),
 		'title' => array
 		(

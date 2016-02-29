@@ -46,3 +46,6 @@ $GLOBALS['TL_LANG']['tl_calendar']['eventtypes'][1] = 'Veranstaltungsarten für 
 
 $GLOBALS['TL_LANG']['tl_calendar']['eventtypearchives'][0] = 'Veranstaltungsarchiv';
 $GLOBALS['TL_LANG']['tl_calendar']['eventtypearchives'][1] = 'Veranstaltungsarchiv für Kalender ID %s anzeigen';
+
+$GLOBALS['TL_LANG']['tl_calendar']['calendarroomarchives'][0] = 'Veranstaltunsräume anzeigen';
+$GLOBALS['TL_LANG']['tl_calendar']['calendarroomarchives'][1] = 'Veranstaltunsräume für Kalender ID %s anzeigen';

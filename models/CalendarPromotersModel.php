@@ -78,4 +78,20 @@ class CalendarPromotersModel extends \Model
 		return static::find($arrOptions);
 	}
 
+	public static function findPublishedByPidsAndTypes(array $arrPids, array $arrTypes, $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+		$arrColumns[] = "$t.type IN('" . implode("','", $arrTypes) . "')";
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+
+		return static::findBy($arrColumns, null, $arrOptions);
+	}
 }

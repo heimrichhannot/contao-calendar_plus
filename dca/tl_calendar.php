@@ -60,6 +60,13 @@ array_insert(
 			'href'            => 'table=tl_calendar_eventtypes_archive',
 			'icon'            => 'system/modules/calendar_plus/assets/img/icons/eventtypes.png',
 			'button_callback' => array('tl_calendar_plus', 'editEventtypeArchives'),
+		),
+		'calendar_room_archives' => array
+		(
+			'label'           => &$GLOBALS['TL_LANG']['tl_calendar']['calendarroomarchives'],
+			'href'            => 'table=tl_calendar_room_archive',
+			'icon'            => 'system/modules/calendar_plus/assets/img/icons/rooms.png',
+			'button_callback' => array('tl_calendar_plus', 'editCalendarRoomArchives'),
 		)
 	)
 );
@@ -123,6 +130,23 @@ class tl_calendar_plus extends Backend
 		$this->import('BackendUser', 'User');
 	}
 
+	/**
+	 * Return the manage room archives button
+	 *
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @param string
+	 *
+	 * @return string
+	 */
+	public function editCalendarRoomArchives($row, $href, $label, $title, $icon, $attributes)
+	{
+		return $this->User->hasAccess('rooms', 'calendarp') ?
+			'<a href="' . $this->addToUrl($href . '&amp;id=' . $row['id']) . '" title="' . specialchars($title) . '"' . $attributes . '>'
+			. Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.png/i', '_.png', $icon)) . ' ';
+	}
 
 	/**
 	 * Return the manage promoters button

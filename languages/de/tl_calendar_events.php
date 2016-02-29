@@ -24,6 +24,7 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['street'] = array('Straße', 'Geben Si
 $GLOBALS['TL_LANG']['tl_calendar_events']['postal'] = array('Postleitzahl', 'Geben Sie die PLZ der Stadt ein, in der das Event stattfindet.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['city'] = array('Stadt', 'Geben Sie die Stadt ein, in der das Event stattfindet.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['coordinates'] = array('Koordinaten', 'Geben Sie hier die Koordinaten des Event-Orts in der Form "Latitude,Longitude" ein (ohne Anführungsstriche).');
+$GLOBALS['TL_LANG']['tl_calendar_events']['rooms'] = array('Raum', 'Wählen Sie den Raum, in dem das Event stattfindet.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['addAgenda'] = array('Programm hinzufügen', 'Wählen Sie ein Programm zum Ablauf des Events aus.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['agenda'] = array('Programm', 'Bitte wählen Sie die Dateien aus, die Sie hinzufügen möchten.');
 $GLOBALS['TL_LANG']['tl_calendar_events']['addMap'] = array('Anfahrtsplan hinzufügen', 'Wählen einen Anfahrtsplan aus.');
@@ -41,7 +42,6 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['hosts_legend'] = 'Moderatoren';
 $GLOBALS['TL_LANG']['tl_calendar_events']['eventtypes_legend'] = 'Veranstaltungsarten';
 $GLOBALS['TL_LANG']['tl_calendar_events']['contact_legend'] = 'Kontakt';
 
-
 /**
  * Event Chooser
  */
@@ -53,7 +53,6 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['event'] = 'Veranstaltung';
  */
 $GLOBALS['TL_LANG']['tl_calendar_events']['editpromoter'] = array('Veranstalter bearbeiten', 'Veranstalter ID %s bearbeiten');
 $GLOBALS['TL_LANG']['tl_calendar_events']['editparentevent'] = array('Elternevent bearbeiten', 'Elternevent ID %s bearbeiten');
-
 
 /**
  * Placeholders

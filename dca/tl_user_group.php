@@ -17,3 +17,4 @@ $dc['fields']['calendarp']['options'][] = 'subevents';
 $dc['fields']['calendarp']['options'][] = 'promoters';
 $dc['fields']['calendarp']['options'][] = 'docents';
 $dc['fields']['calendarp']['options'][] = 'eventtypes';
+$dc['fields']['calendarp']['options'][] = 'rooms';

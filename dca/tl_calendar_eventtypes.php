@@ -425,7 +425,7 @@ class tl_calendar_eventtypes extends Backend
 
 
 	/**
-	 * Disable/enable a promoter
+	 * Disable/enable a eventtype
 	 * @param integer
 	 * @param boolean
 	 * @param \DataContainer
@@ -440,7 +440,7 @@ class tl_calendar_eventtypes extends Backend
 		// Check permissions to publish
 		if (!$this->User->hasAccess('tl_calendar_eventtypes::published', 'alexf'))
 		{
-			$this->log('Not enough permissions to publish/unpublish promoters ID "'.$intId.'"', __METHOD__, TL_ERROR);
+			$this->log('Not enough permissions to publish/unpublish eventtype ID "'.$intId.'"', __METHOD__, TL_ERROR);
 			$this->redirect('contao/main.php?act=error');
 		}
 

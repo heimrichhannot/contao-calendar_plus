@@ -7,16 +7,21 @@ $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_promoters';
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_docents';
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_eventtypes_archive';
 $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_eventtypes';
+$GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_room_archive';
+$GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_room';
 
 /**
  * Frontend modules
  */
-array_insert($GLOBALS['FE_MOD']['events'], 2, array
+array_insert(
+	$GLOBALS['FE_MOD']['events'],
+	2,
+	array
 	(
 		'eventlist_plus'   => 'HeimrichHannot\CalendarPlus\ModuleEventListPlus',
 		'eventreader_plus' => 'HeimrichHannot\CalendarPlus\ModuleEventReaderPlus',
 		'eventfilter'      => 'HeimrichHannot\CalendarPlus\ModuleEventFilter',
-		'event_chooser'    => 'HeimrichHannot\CalendarPlus\ModuleEventChooser'
+		'event_chooser'    => 'HeimrichHannot\CalendarPlus\ModuleEventChooser',
 	)
 );
 
@@ -40,11 +45,13 @@ $GLOBALS['TL_FFL']['subEventList'] = 'HeimrichHannot\CalendarPlus\SubEventList';
 /**
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_calendar_promoters']  = 'HeimrichHannot\CalendarPlus\CalendarPromotersModel';
-$GLOBALS['TL_MODELS']['tl_calendar_docents']    = 'HeimrichHannot\CalendarPlus\CalendarDocentsModel';
-$GLOBALS['TL_MODELS']['tl_calendar_events']     = 'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel';
-$GLOBALS['TL_MODELS']['tl_calendar_eventtypes'] = 'HeimrichHannot\CalendarPlus\CalendarEventtypesModel';
+$GLOBALS['TL_MODELS']['tl_calendar_promoters']          = 'HeimrichHannot\CalendarPlus\CalendarPromotersModel';
+$GLOBALS['TL_MODELS']['tl_calendar_docents']            = 'HeimrichHannot\CalendarPlus\CalendarDocentsModel';
+$GLOBALS['TL_MODELS']['tl_calendar_events']             = 'HeimrichHannot\CalendarPlus\CalendarPlusEventsModel';
+$GLOBALS['TL_MODELS']['tl_calendar_eventtypes']         = 'HeimrichHannot\CalendarPlus\CalendarEventtypesModel';
 $GLOBALS['TL_MODELS']['tl_calendar_eventtypes_archive'] = 'HeimrichHannot\CalendarPlus\CalendarEventtypesArchiveModel';
+$GLOBALS['TL_MODELS']['tl_calendar_room_archive']       = 'HeimrichHannot\CalendarPlus\CalendarRoomArchiveModel';
+$GLOBALS['TL_MODELS']['tl_calendar_room']               = 'HeimrichHannot\CalendarPlus\CalendarRoomModel';
 
 /**
  * Constants

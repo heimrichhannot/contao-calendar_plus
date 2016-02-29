@@ -489,6 +489,33 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 	}
 
 	/**
+	 * Find published events by their parent ID
+	 *
+	 * @param integer $intPid     The calendar ID
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return \CalendarEventsModel|\Model\Collection|null A collection of models or null if there are no events
+	 */
+	public static function findPublishedByPid($intPid, array $arrOptions=array())
+	{
+		$t = static::$strTable;
+		$arrColumns = array("$t.pid=?");
+
+		if (!BE_USER_LOGGED_IN)
+		{
+			$time = \Date::floorToMinute();
+			$arrColumns[] = "($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
+		}
+
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order']  = "$t.startTime DESC";
+		}
+
+		return static::findBy($arrColumns, $intPid, $arrOptions);
+	}
+
+	/**
 	 * Find published events by id or alias
 	 *
 	 * @param mixed $varId The numeric ID or alias name
