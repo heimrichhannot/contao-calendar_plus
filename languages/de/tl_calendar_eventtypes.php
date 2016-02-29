@@ -14,15 +14,20 @@
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['title'] = array('Titel', 'Bitte geben Sie einen Titel an.');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['archive'] = array('Veranstaltungsarchiv', 'Zu welchem Archiv gehört die Veranstaltungsart');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['alias'] = array('Veranstaltungsart-Alias', 'Der Veranstaltungsart-Alias ist eine eindeutige Referenz, die anstelle der numerischen Dozenten-ID aufgerufen werden kann.');
+$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['tooltipTitle'] = array('Tooltip-Titel', 'Bitte geben Sie einen Titel für den Tooltip an, wenn kein Titel vorhanden ist, wird kein Tooltip eingeblendet.');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['published'] = array('Veranstaltungsart veröffentlichen', 'Die Veranstaltungsart auf der Webseite anzeigen.');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['start'] = array('Anzeigen ab', 'Die Veranstaltungsart erst ab diesem Tag auf der Webseite anzeigen.');
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['stop'] = array('Anzeigen bis', 'Die Veranstaltungsart nur bis zu diesem Tag auf der Webseite anzeigen.');
+$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['cssClass'] = array('CSS-Klasse', 'Hier können Sie beliebig viele Klassen eingeben');
 
 /**
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['title_legend'] = 'Titel';
+$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['tooltip_legend'] = 'Tooltip';
 $GLOBALS['TL_LANG']['tl_calendar_eventtypes']['publish_legend'] = 'Veröffentlichung';
+$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['expert_legend'] = 'Experten-Einstellungen';
+
 
 /**
  * Buttons

@@ -11,8 +11,52 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
+
 abstract class EventsPlus extends \Events
 {
+	/**
+	 * Current subevents
+	 * @var array
+	 */
+	protected $arrSubEvents = array();
+
+	protected function prepareFilterModel($objModel)
+	{
+		// add keyword support
+		if($objModel->cal_addKeywordSearch)
+		{
+			$objModel->formHybridEditable = deserialize($objModel->formHybridEditable, true);
+			$objModel->formHybridEditable = array_unique(array_merge($objModel->formHybridEditable, array('q')));
+		}
+		
+		return $objModel;
+	}
+
+	public function getPossibleFilterOptions($objModule)
+	{
+		\Controller::loadDataContainer('tl_calendar_events');
+
+		$arrOptions = array();
+
+		$arrFields = deserialize($objModule->formHybridEditable, true);
+
+		// Return if there are no fields
+		if (!is_array($arrFields) || empty($arrFields))
+		{
+			return $arrOptions;
+		}
+
+		$strClass = \Module::findClass($objModule->type);
+
+		if(class_exists($strClass))
+		{
+			$objFilterModule = new $strClass($objModule);
+			$arrOptions = $objFilterModule->getFilterOptions();
+		}
+
+		return $arrOptions;
+	}
 
 	public function getFilter($objModule)
 	{
@@ -23,19 +67,37 @@ abstract class EventsPlus extends \Events
 		$arrFields = deserialize($objModule->formHybridEditable, true);
 
 		// Return if there are no fields
-		if (!is_array($arrFields) || empty($arrFields)) {
+		if (!is_array($arrFields) || empty($arrFields))
+		{
 			return $arrFilter;
 		}
-
+		
+		$objHelper = new EventFilterHelper();
+		
+		$arrEventTypeArchives  = deserialize($objModule->cal_eventTypesArchive, true);
+		
 		foreach($arrFields as $strKey)
 		{
 			$arrData = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$strKey];
-
+			
 			if(!is_array($arrData) || empty($arrData)) continue;
 
-			$arrFilter[$strKey] = EventFilterHelper::getValueByDca(\Input::get($strKey), $arrData);
-		}
+			$arrFilter[$strKey] = $objHelper->getValueByDca(\Input::get($strKey), $arrData);
+			
+			if(!$objModule->cal_combineEventTypesArchive && count($arrEventTypeArchives) > 0 && strrpos($strKey, 'eventtypes', -strlen($strKey)) !== FALSE)
+			{
+				// unset eventtypes
+				unset($arrFilter[$strKey]);
 
+				// use multiple eventtypes
+				foreach($arrEventTypeArchives as $intArchive)
+				{
+					$strArchiveKey = $strKey . '_' . $intArchive;
+					$arrFilter[$strArchiveKey] = $objHelper->getValueByDca(\Input::get($strArchiveKey), $arrData);
+				}
+			}
+		}
+		
 		return $arrFilter;
 	}
 
@@ -46,7 +108,7 @@ abstract class EventsPlus extends \Events
 	 * @param integer
 	 * @return array
 	 */
-	protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter=array())
+	protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter=array(), $arrFilterOptions=array(), $arrFilterConfig = array())
 	{
 		if (!is_array($arrCalendars))
 		{
@@ -75,10 +137,11 @@ abstract class EventsPlus extends \Events
 			if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
 			{
 				$strUrl = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/%s' : '/events/%s'));
+				$arrFilterConfig['jumpTo'] = array($objTarget->id);
 			}
-
+			
 			// Get the events of the current period
-			$objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter);
+			$objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig);
 
 			if ($objEvents === null)
 			{
@@ -114,7 +177,7 @@ abstract class EventsPlus extends \Events
 						$intStartTime = strtotime($strtotime, $intStartTime);
 						$intEndTime = strtotime($strtotime, $intEndTime);
 
-						// Skip events outside the scope
+										// Skip events outside the scope
 						if ($intEndTime < $intStart || $intStartTime > $intEnd)
 						{
 							continue;
@@ -150,11 +213,14 @@ abstract class EventsPlus extends \Events
 			{
 				foreach($arrEvents as $arrEvent)
 				{
+					// do not add childevents to prev/next nav
+					if(!$this->cal_ungroupSubevents && $arrEvent['parentEvent'] > 0) continue;
+
 					$arrIds[] = $arrEvent['id'];
 				}
 			}
 		}
-
+		
 		// store events ids in session
 		$session = \Session::getInstance()->getData();
 		$session[CALENDARPLUS_SESSION_EVENT_IDS] = array();
@@ -178,6 +244,7 @@ abstract class EventsPlus extends \Events
 		$strDate = \Date::parse($objPage->dateFormat, $intStart);
 		$strDay = $GLOBALS['TL_LANG']['DAYS'][date('w', $intStart)];
 		$strMonth = $GLOBALS['TL_LANG']['MONTHS'][(date('n', $intStart)-1)];
+		$strMemberTemplate = $this->mlTemplate;
 
 		if ($span > 0)
 		{
@@ -216,13 +283,22 @@ abstract class EventsPlus extends \Events
 		$arrEvent['target'] = '';
 		$arrEvent['title'] = specialchars($objEvent->title, true);
 		$arrEvent['href'] = $this->generateEventUrl($objEvent, $strUrl);
+
+		if(($intParentEvent = $objEvent->parentEvent) > 0)
+		{
+			if(($objParentEvent = CalendarPlusEventsModel::findPublishedByParentAndIdOrAlias($intParentEvent, array($objEvent->pid))) !== null)
+			{
+				$arrEvent['parentHref'] = $this->generateEventUrl($objParentEvent, $strUrl);
+				$arrEvent['isSubEvent'] = true;
+			}
+		}
+
 		$arrEvent['class'] = ($objEvent->cssClass != '') ? ' ' . $objEvent->cssClass : '';
 		$arrEvent['begin'] = $intStart;
 		$arrEvent['end'] = $intEnd;
 		$arrEvent['details'] = '';
-		$arrEvent['startTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvent->startTime);
-		$arrEvent['endTimeFormated'] = \Date::parse($objPage->timeFormat, $objEvent->endTime);
-
+		$arrEvent['startTimeFormated'] = $objEvent->startTime > 0 ? \Date::parse($objPage->timeFormat, $objEvent->startTime) : null;
+		$arrEvent['endTimeFormated'] = $objEvent->endTime > 0 ? \Date::parse($objPage->timeFormat, $objEvent->endTime) : null;
 
 		// modal
 		if($this->cal_showInModal && $objEvent->source == 'default' && $this->cal_readerModule)
@@ -231,24 +307,31 @@ abstract class EventsPlus extends \Events
 			$arrEvent['modalTarget'] = '#' . EventsPlusHelper::getCSSModalID($this->cal_readerModule);
 		}
 
-		if($objEvent->promoter != '')
+		$arrPromoters = deserialize($objEvent->promoter, true);
+
+		if(!empty($arrPromoters))
 		{
-			$objPromoter = CalendarPromotersModel::findByPk($objEvent->promoter);
+			$objPromoters = CalendarPromotersModel::findMultipleByIds($arrPromoters);
 
-			if($objPromoter !== null)
+			if($objPromoters !== null)
 			{
-				$arrEvent['promoterDetails'] = $objPromoter;
+				while($objPromoters->next())
+				{
+					$objPromoter = $objPromoters->current();
 
-                if($objPromoter->website != '')
-                {
-                    $strWebsiteLink = $objPromoter->website;
+					if($objPromoter->website != '')
+					{
+						$strWebsiteLink = $objPromoter->website;
 
-                    // Add http:// to the website
-                    if (($strWebsiteLink != '') && !preg_match('@^(https?://|ftp://|mailto:|#)@i', $strWebsiteLink))
-                    {
-                        $objPromoter->website = 'http://' . $strWebsiteLink;
-                    }
-                }
+						// Add http:// to the website
+						if (($strWebsiteLink != '') && !preg_match('@^(https?://|ftp://|mailto:|#)@i', $strWebsiteLink))
+						{
+							$objPromoter->website = 'http://' . $strWebsiteLink;
+						}
+					}
+
+					$arrEvent['promoterList'][] = $objPromoter;
+				}
 			}
 		}
 
@@ -267,6 +350,59 @@ abstract class EventsPlus extends \Events
 			}
 		}
 
+		$objEvent->memberDocents = deserialize($objEvent->memberDocents, true);
+
+		if(is_array($objEvent->memberDocents) && !empty($objEvent->memberDocents))
+		{
+			$objMembers = MemberPlusMemberModel::findMultipleByIds($objEvent->memberDocents);
+
+			if($objMembers !== null)
+			{
+				while($objMembers->next())
+				{
+					$objMemberPlus = new \HeimrichHannot\MemberPlus\MemberPlus($this->objModel);
+					// custom subevent memberlist template
+					$objMemberPlus->mlTemplate = ($arrEvent['isSubEvent'] && $this->cal_subeventDocentTemplate != '') ? $this->cal_subeventDocentTemplate : $objMemberPlus->mlTemplate;
+					$arrEvent['memberDocentList'][] = $objMemberPlus->parseMember($objMembers);
+				}
+			}
+		}
+
+
+		$objEvent->hosts = deserialize($objEvent->hosts, true);
+
+		if(is_array($objEvent->hosts) && !empty($objEvent->hosts))
+		{
+			$objDocents = CalendarDocentsModel::findMultipleByIds($objEvent->hosts);
+
+			if($objDocents !== null)
+			{
+				while($objDocents->next())
+				{
+					$arrEvent['hostList'][] = $objDocents->current();
+				}
+			}
+		}
+
+		$objEvent->memberHosts = deserialize($objEvent->memberHosts, true);
+
+		if(is_array($objEvent->memberHosts) && !empty($objEvent->memberHosts))
+		{
+			$objMembers = MemberPlusMemberModel::findMultipleByIds($objEvent->memberHosts);
+
+			if($objMembers !== null)
+			{
+				while($objMembers->next())
+				{
+					$objMemberPlus = new \HeimrichHannot\MemberPlus\MemberPlus($this->objModel);
+					// custom subevent memberlist template
+					$objMemberPlus->mlTemplate = ($arrEvent['isSubEvent'] && $this->cal_subeventHostTemplate != '') ? $this->cal_subeventHostTemplate : $objMemberPlus->mlTemplate;
+					$arrEvent['memberHostList'][] = $objMemberPlus->parseMember($objMembers);
+				}
+			}
+
+		}
+
 
 		$objEvent->eventtypes = deserialize($objEvent->eventtypes, true);
 
@@ -278,7 +414,16 @@ abstract class EventsPlus extends \Events
 			{
 				while($objEventTypes->next())
 				{
-					$arrEvent['eventtypeList'][] = $objEventTypes;
+					$objEventtypesArchive = $objEventTypes->getRelated('pid');
+
+					if($objEventtypesArchive === null) continue;
+
+					$strClass  = (($objEventTypes->cssClass != '') ? ' ' . $objEventTypes->cssClass : '');
+					$strClass .= (($objEventtypesArchive->cssClass != '') ? ' ' . $objEventtypesArchive->cssClass : '');
+
+					$objEventTypes->class = $strClass;
+
+					$arrEvent['eventtypeList'][] = $objEventTypes->current();
 				}
 			}
 		}
@@ -399,7 +544,6 @@ abstract class EventsPlus extends \Events
 
 		$this->arrEvents[$intKey][$intStart][] = $arrEvent;
 
-
 		// Multi-day event
 		for ($i=1; $i<=$span && $intDate<=$intLimit; $i++)
 		{
@@ -413,6 +557,105 @@ abstract class EventsPlus extends \Events
 			$intNextKey = date('Ymd', $intDate);
 
 			$this->arrEvents[$intNextKey][$intDate][] = $arrEvent;
+		}
+	}
+
+	protected function addSingleEvent($objEvent, $strBegin)
+	{
+		$strUrl = $this->strUrl;
+		$objCalendar = \CalendarModel::findByPk($objEvent->pid);
+
+		// Get the current "jumpTo" page
+		if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
+		{
+			$strUrl = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/%s' : '/events/%s'));
+		}
+
+		return $this->getEventDetails($objEvent, $objEvent->startTime, $objEvent->endTime, $strUrl, $strBegin, $objEvent->pid);
+	}
+
+
+	protected function getParentEventDetails($intParentEvent, $intCalendar, $strBegin)
+	{
+		$objParentEvent = CalendarPlusEventsModel::findPublishedByParentAndIdOrAlias($intParentEvent, array($intCalendar));
+
+		// do not show subevent, if parent event does not exist
+		if($objParentEvent === null) return null;
+
+		$strUrl = $this->strUrl;
+		$objCalendar = \CalendarModel::findByPk($objParentEvent->pid);
+
+		// Get the current "jumpTo" page
+		if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
+		{
+			$strUrl = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/%s' : '/events/%s'));
+		}
+
+		return $this->getEventDetails($objParentEvent, $objParentEvent->startTime, $objParentEvent->endTime, $strUrl, $strBegin, $objParentEvent->pid);
+	}
+
+	protected function addEventDetailsToTemplate($objTemplate, $event, $strClassList, $strClassUpcoming, $imgSize)
+	{
+		// Show the teaser text of redirect events (see #6315)
+		if (is_bool($event['details']))
+		{
+			$objTemplate->details = $event['teaser'];
+		}
+
+		// Add the template variables
+		$objTemplate->classList = $strClassList;
+		$objTemplate->classUpcoming = $strClassUpcoming;
+		$objTemplate->readMore = specialchars(sprintf($GLOBALS['TL_LANG']['MSC']['readMore'], $event['title']));
+		$objTemplate->more = $GLOBALS['TL_LANG']['MSC']['more'];
+		$objTemplate->locationLabel = $GLOBALS['TL_LANG']['MSC']['location'];
+
+
+		// Short view
+		if ($this->cal_noSpan)
+		{
+			$objTemplate->day = $event['day'];
+			$objTemplate->date = $event['date'];
+			$objTemplate->span = ($event['time'] == '' && $event['day'] == '') ? $event['date'] : '';
+		}
+		else
+		{
+			$objTemplate->day = $event['firstDay'];
+			$objTemplate->date = $event['firstDate'];
+			$objTemplate->span = '';
+		}
+
+		$objTemplate->addImage = false;
+
+		// Add an image
+		if ($event['addImage'] && $event['singleSRC'] != '')
+		{
+			$objModel = \FilesModel::findByUuid($event['singleSRC']);
+
+			if ($objModel === null)
+			{
+				if (!\Validator::isUuid($event['singleSRC']))
+				{
+					$objTemplate->text = '<p class="error">'.$GLOBALS['TL_LANG']['ERR']['version2format'].'</p>';
+				}
+			}
+			elseif (is_file(TL_ROOT . '/' . $objModel->path))
+			{
+				if ($imgSize)
+				{
+					$event['size'] = $imgSize;
+				}
+
+				$event['singleSRC'] = $objModel->path;
+				$this->addImageToTemplate($objTemplate, $event);
+			}
+		}
+
+		$objTemplate->enclosure = array();
+
+		// Add enclosure
+		if ($event['addEnclosure'])
+		{
+			$this->addEnclosuresToTemplate($objTemplate, $event);
 		}
 	}
 }

@@ -1,0 +1,8 @@
+<div class="form-group eventtypes <?php echo $this->alias ?>">
+	<label for="ctrl_eventtypes" class="select control-label"><?php ?></label>
+	<select data-actions-box="true" title="<?php echo $this->label ?>" name="<?php echo $this->name ?>" id="ctrl_<?php echo $this->alias ?>" class="select control-label form-control" style="display: none;"<?php if($this->multiple == true): ?> multiple="multiple"<?php endif; ?>>
+		<?php foreach($this->options as $key=> $objType): ?>
+			<option value="<?php echo $key; ?>"<?php if(in_array($key, $this->arrSelected)): ?> selected="selected"<?php endif; ?>><?php echo $objType->title; ?></option>
+		<?php endforeach; ?>
+	</select>
+</div>

@@ -20,5 +20,4 @@ class EventsPlusHelper extends \Controller
 
 		return $strID;
 	}
-
 }

@@ -2,8 +2,13 @@
 
 <?php $this->block('content'); ?>
 
-  <?php echo $this->events; ?>
+	<?php if($this->isRelated): ?>
+		<?php echo $this->emptyMessage; ?>
+		<h5>Das könnte Sie auch interessieren.</h5>
+	<?php endif; ?>
 
-  <?php echo $this->pagination; ?>
+ 	<?php echo $this->events; ?>
+
+  	<?php echo $this->pagination; ?>
 
 <?php $this->endblock(); ?>

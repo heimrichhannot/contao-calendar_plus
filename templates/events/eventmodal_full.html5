@@ -12,11 +12,11 @@
 
 			<div class="meta-row clearfix">
 				<?php if(is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
-					<div class="label label-default-dark eventtypes">
-						<?php foreach($this->eventtypeList as $eventType): ?>
+					<?php foreach($this->eventtypeList as $eventType): ?>
+						<div class="label label-default-dark eventtypes<?php echo $eventType->class; ?>"<?php if($eventType->tooltipTitle):?> data-toggle="tooltip" data-placement="right" title="<?php echo $eventType->tooltipTitle; ?>"<?php endif; ?>>
 							<span class="eventtpe"><?php echo $eventType->title; ?></span>
-						<?php endforeach; ?>
-					</div>
+						</div>
+					<?php endforeach; ?>
 				<?php endif; ?>
 
 				<?php if ($this->addTime || $this->city): ?>
@@ -26,7 +26,7 @@
 							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
 							</span>
 						<?php endif; ?>
-						<?php if($this->addTime && $this->endTimeFormated): ?>
+						<?php if($this->addTime && $this->endTimeFormated && $this->endTimeFormated != $this->startTimeFormated): ?>
 							<span class="time-end">
 							  <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
 							</span>
@@ -69,6 +69,12 @@
 				</div>
 			<?php endif; ?>
 
+			<?php if($this->subEvents): ?>
+				<div class="subevents">
+					<?php echo $this->subEvents; ?>
+				</div>
+			<?php endif; ?>
+
 			<?php if($this->websiteLink || $this->enclosure): ?>
 				<div class="links">
 					<?php if($this->websiteLink): ?>
@@ -85,6 +91,15 @@
 			<?php if($this->promoterDetails): ?>
 				<div class="promoter">
 					<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span>  <?php echo $this->promoterDetails->title; ?>
+				</div>
+			<?php endif; ?>
+
+			<?php if($this->city && ($this->street || $this->location)): ?>
+				<div class="label label-default location-full">
+					<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['addressLabel']; ?></span><br />
+					<?= $this->location ? $this->location . '<br />' : '' ?>
+					<?= $this->street ? $this->street . '<br />' : '' ?>
+					<?= $this->postal ? $this->postal . ' ' : '' ?><?= $this->city; ?>
 				</div>
 			<?php endif; ?>
 

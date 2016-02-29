@@ -11,6 +11,7 @@
 namespace HeimrichHannot\CalendarPlus;
 
 use HeimrichHannot\DavAreasOfLaw\AreasOfLawModel;
+use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
 
 class CalendarPlusEventsModel extends \CalendarEventsModel
 {
@@ -40,6 +41,126 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		}
 
 		return static::findBy($arrColumns, null, $arrOptions);
+	}
+
+	public static function getUniquePromotersByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "($t.promoter != '')";
+
+		if($currentOnly)
+		{
+			$arrColumns[] = "($t.startDate >= $time)";
+		}
+
+		$arrOptions['group'] = 'promoter';
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$objEvents = static::findBy($arrColumns, null, $arrOptions);
+
+		if($objEvents === null) return $objEvents;
+
+		$arrPromoters = array();
+
+		while($objEvents->next())
+		{
+			$arrPromoters = array_merge($arrPromoters, deserialize($objEvents->promoter, true));
+		}
+
+		$arrPromoters = array_unique($arrPromoters);
+
+		return CalendarPromotersModel::findMultipleByIds($arrPromoters);
+	}
+
+	public static function getUniqueDocentsByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "($t.docents != '')";
+
+		if($currentOnly)
+		{
+			$arrColumns[] = "($t.startDate >= $time)";
+		}
+
+		$arrOptions['group'] = 'docents';
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$objEvents = static::findBy($arrColumns, null, $arrOptions);
+
+		if($objEvents === null) return null;
+
+		$arrDocents = array();
+
+		while($objEvents->next())
+		{
+			$arrDocents = array_merge($arrDocents, deserialize($objEvents->docents, true));
+		}
+
+		$arrDocents = array_unique($arrDocents);
+
+		return CalendarDocentsModel::findMultipleByIds($arrDocents, array('order' => 'title'));
+	}
+
+	public static function getUniqueMemberDocentsByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "($t.memberDocents != '')";
+
+		if($currentOnly)
+		{
+			$arrColumns[] = "($t.startDate >= $time)";
+		}
+
+		$arrOptions['group'] = 'memberDocents';
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$objEvents = static::findBy($arrColumns, null, $arrOptions);
+
+		if($objEvents === null) return null;
+
+		$arrDocents = array();
+
+		while($objEvents->next())
+		{
+			$arrDocents = array_merge($arrDocents,  deserialize($objEvents->memberDocents, true));
+		}
+
+		$arrDocents = array_unique($arrDocents);
+
+		return MemberPlusMemberModel::findMultipleByIds($arrDocents, array('order' => 'lastname ASC'));
 	}
 
 
@@ -145,12 +266,12 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return $this;
 	}
 
-	public static function countCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), $arrOptions = array())
+	public static function countCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), $arrFilterOptions = array(), $arrFilterConfig = array(), $arrOptions = array())
 	{
-		return static::findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, $arrFilter, $arrOptions, true);
+		return static::findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig, $arrOptions, true);
 	}
 
-	public static function findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), $arrOptions = array(), $count = false)
+	public static function findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, array $arrFilter = array(), array $arrFilterOptions = array(), $arrFilterConfig = array(), $arrOptions = array(), $count = false)
 	{
 		$t        = static::$strTable;
 		$intStart = intval($intStart);
@@ -159,8 +280,12 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		$arrPids = !is_array($arrPids) ? array($arrPids) : $arrPids;
 
 		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumnsOr = array();
 
 		foreach ($arrFilter as $key => $value) {
+
+			$arrValueOptions = (isset($arrFilterOptions[$key]) && is_array($arrFilterOptions[$key])) ? $arrFilterOptions[$key] : array();
+			
 			switch ($key) {
 				case 'startDate':
 					if ($value && $value >= $intStart) {
@@ -172,10 +297,116 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 						$intEnd = strtotime(date('d.m.Y', $value) . ' 23:59:59'); // until last second of the day
 					}
 					break;
+				case 'promoter':
 				case 'areasoflaw':
-				case 'eventtypes':
 					if ($value != '') {
-						$arrColumns[] = "$t.$key REGEXP \"$value\"";
+						$valueArray = trimsplit(',', $value);
+
+						// permit intersections only
+						if(!empty($arrValueOptions))
+						{
+							$valueArray = array_intersect($valueArray, $arrValueOptions);
+						}
+						
+						if(is_array($valueArray) && !empty($valueArray))
+						{
+							if ($arrFilterConfig['show_related'])
+							{
+								$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $valueArray, EVENTMODEL_CONDITION_OR);
+							}
+							else
+							{
+								$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $valueArray);
+							}
+
+						}
+					}
+					else if(!empty($arrValueOptions))
+					{
+						$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrValueOptions);
+					}
+					break;
+				case strrpos($key, 'eventtypes', -strlen($key)) !== FALSE :
+					
+					if ($value != '') {
+						$valueArray = trimsplit(',', $value);
+						
+						// permit intersections only
+						if(!empty($arrValueOptions))
+						{
+							$valueArray = array_intersect($valueArray, $arrValueOptions);
+						}
+						
+						if(is_array($valueArray) && !empty($valueArray))
+						{
+							if ($arrFilterConfig['show_related'])
+							{
+								$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_OR);
+							}
+							else
+							{
+								$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_AND);
+							}
+							
+						}
+					}
+					else if(!empty($arrValueOptions))
+					{
+						$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $arrValueOptions);
+					}
+					break;
+				case 'docents':
+					if ($value != '') {
+						$valueArray = trimsplit(',', $value);
+
+						if(is_array($valueArray) && !empty($valueArray))
+						{
+							$arrDocents = array();
+							$arrMemberDocents = array();
+
+							foreach($valueArray as $id)
+							{
+								// docent
+								if(substr($id, 0, 1) == 'd'){
+									$arrDocents[] = substr($id,1);
+								}
+								// memberdocent
+								else if(substr($id, 0, 1) == 'm'){
+									$arrMemberDocents[] = substr($id,1);
+								}
+							}
+
+							if(!empty($arrDocents))
+							{
+								if(is_array($valueArray) && !empty($valueArray))
+								{
+									if ($arrFilterConfig['show_related'])
+									{
+										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrDocents, EVENTMODEL_CONDITION_OR);
+									}
+									else
+									{
+										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrDocents);
+									}
+								}
+							}
+
+							if(!empty($arrMemberDocents))
+							{
+								if(is_array($valueArray) && !empty($valueArray))
+								{
+									if ($arrFilterConfig['show_related'])
+									{
+										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMemberDocents, EVENTMODEL_CONDITION_OR);
+									}
+									else
+									{
+										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMemberDocents);
+									}
+								}
+							}
+
+						}
 					}
 					break;
 				case 'postal':
@@ -189,6 +420,38 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 						$arrColumns[] = "($t.$key >= $value AND $t.$key < ($value + 1))";
 					}
 					break;
+				case 'q':
+						if ($value != '' && is_array($arrFilterConfig['jumpTo'])) {
+
+							try
+							{
+								$objSearch = \Search::searchFor($value, ($arrFilterConfig['module']['queryType'] == 'or'), $arrFilterConfig['jumpTo'], 0, 0, $arrFilterConfig['module']['fuzzy']);
+
+								// return if keyword not found
+								if($objSearch->numRows < 1) return null;
+
+								$arrUrls = $objSearch->fetchEach('url');
+
+								$strKeyWordColumns = "";
+
+								$n = 0;
+
+								foreach($arrUrls as $i => $strAlias)
+								{
+									$strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$t.alias = ?";
+									$arrValues[] = basename($strAlias);
+									$n++;
+								}
+
+								$arrColumns[] = "($strKeyWordColumns)";
+
+							}
+							catch (\Exception $e)
+							{
+								\System::log('Website search failed: ' . $e->getMessage(), __METHOD__, TL_ERROR);
+							}
+						}
+					break;
 				default:
 					if ($value != '') {
 						$arrColumns[] = "$t.$key=?";
@@ -198,17 +461,25 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		}
 
 		$arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring=1 AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
+		
 
-		if (!BE_USER_LOGGED_IN) {
+		if (!BE_USER_LOGGED_IN)
+		{
 			$time         = time();
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
-
-
-		if (!isset($arrOptions['order'])) {
-			$arrOptions['order'] = "$t.startTime";
+		
+		// for related search
+		if(!empty($arrColumnsOr))
+		{
+			$arrColumns[] = implode(' OR ', $arrColumnsOr);
 		}
 
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order'] = "$t.startTime";
+		}
+		
 		if($count)
 		{
 			return static::countBy($arrColumns, $arrValues, $arrOptions);
@@ -251,8 +522,15 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		$t          = static::$strTable;
 		$arrColumns = array("($t.parentEvent=?)");
 
-		$time         = time();
-		$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order'] = "$t.startTime";
+		}
+
+		if (!BE_USER_LOGGED_IN) {
+			$time         = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
 
 		return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId), $arrOptions);
 	}
@@ -401,4 +679,5 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 	{
 		return (\ContentModel::findBy(array('ptable=? AND pid=?'), array('tl_news', $intId)) !== null);
 	}
+
 }

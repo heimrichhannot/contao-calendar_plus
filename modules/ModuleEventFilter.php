@@ -26,6 +26,12 @@ class ModuleEventFilter extends EventsPlus
 	 */
 	protected $strTemplate = 'mod_eventfilter';
 
+	public function __construct($objModule, $strColumn='main')
+	{
+		$objModule = $this->prepareFilterModel($objModule);
+		parent::__construct($objModule, $strColumn);
+	}
+
 	/**
 	 * Display a wildcard in the back end
 	 * @return string
@@ -51,11 +57,6 @@ class ModuleEventFilter extends EventsPlus
 			return '';
 		}
 
-		// Show the event reader if an item has been selected
-		if ($this->cal_readerModule > 0 && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item'])))) {
-			return $this->getFrontendModule($this->cal_readerModule, $this->strColumn);
-		}
-
 		return parent::generate();
 	}
 
@@ -67,4 +68,66 @@ class ModuleEventFilter extends EventsPlus
 		$objForm = new EventFilterForm($this->objModel);
 		$this->Template->form = $objForm->generate();
 	}
+
+	public function getFilterOptions()
+	{
+		$arrOptions = array();
+
+		// needs to be overwritten in model, otherwise datacontainer argument in options_callback contains protected calendars
+		$this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
+
+		$objForm = new EventFilterForm($this->objModel);
+		$objForm->generate();
+
+		$arrFields = $objForm->getFilterFields();
+
+		if(!is_array($arrFields) || empty($arrFields)) return $arrOptions;
+
+		$arrRestricedValueFields = deserialize($this->cal_restrictedValueFields, true);
+
+		$arrEventTypeArchives  = deserialize($this->cal_eventTypesArchive, true);
+
+		foreach($arrFields as $strName => $objWidget)
+		{
+			if(!is_array($objWidget->options)) continue;
+
+			if(!in_array($strName, $arrRestricedValueFields)) continue;
+			
+			$arrFieldOptions = array();
+
+			foreach($objWidget->options as $arrOption)
+			{
+				foreach ($arrOption as $strKey => $varValue)
+				{
+					// event types may be split into seperate lists
+					if(is_array($varValue) && $varValue['value'] == 'options')
+					{
+						$arrFieldOptions = array_merge($arrFieldOptions, $varValue['label']);
+					}
+					
+					else if($strKey == 'value' && $varValue != '')
+					{
+						$arrFieldOptions[] = $varValue;
+					}
+				}
+			}
+
+			if(!$this->cal_combineEventTypesArchive && count($arrEventTypeArchives) > 0 && strrpos($strName, 'eventtypes', -strlen($strName)) !== FALSE)
+			{
+				// use multiple eventtypes
+				foreach($arrEventTypeArchives as $intArchive)
+				{
+					$strArchiveKey = $strName . '_' . $intArchive;
+					$arrOptions[$strArchiveKey] = $arrFieldOptions;
+				}
+			}
+			else
+			{
+				$arrOptions[$strName] = $arrFieldOptions;
+			}
+		}
+
+		return $arrOptions;
+	}
+
 }

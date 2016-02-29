@@ -4,7 +4,6 @@
         onReady: function () {
             this.showEventsInModal();
             this.closeEventsModal();
-            this.changeUrl();
         },
         showEventsInModal: function () {
             $('body').on('click', '[data-event="modal"]', function (e) {
@@ -23,8 +22,6 @@
                     $modal.data('history-replaced', true);
                 });
             });
-        },
-        changeUrl: function () {
         },
         closeEventsModal: function () {
             $('.mod_eventreader_plus').on('hide.bs.modal', function (e) {

@@ -9,7 +9,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_calendar_events'];
 $dc['palettes']['default']      = str_replace('title,', 'title,shortTitle,', $dc['palettes']['default']);
 $dc['palettes']['default']      = str_replace(
 	'endDate',
-	'endDate,parentEvent;{promoter_legend},promoter;{docents_legend},docents;{eventtypes_legend},eventtypes',
+	'endDate,parentEvent;{promoter_legend},promoter;{docents_legend},docents,memberDocents;{hosts_legend:hide},hosts,memberHosts;{eventtypes_legend},eventtypes',
 	$dc['palettes']['default']
 );
 $dc['palettes']['default']      =
@@ -149,12 +149,8 @@ $dc['fields']['promoter'] = array
 	'inputType'  => 'select',
 	'foreignKey' => 'tl_calendar_promoters.title',
 	'exclude'    => true,
-	'eval'       => array('chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'long'),
-	'wizard'     => array
-	(
-		array('tl_extended_events_calendar_events', 'editPromoter')
-	),
-	'sql'        => "int(10) unsigned NOT NULL default '0'"
+	'eval'       => array('chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'long', 'multiple' => true, 'style' => 'width: 853px'),
+	'sql'        => "blob NULL"
 );
 
 $dc['fields']['docents'] = array
@@ -168,6 +164,41 @@ $dc['fields']['docents'] = array
 	'sql'        => "blob NULL",
 	'relation'   => array('type' => 'hasMany', 'load' => 'lazy')
 );
+
+$dc['fields']['memberDocents'] = array
+(
+	'label'            => &$GLOBALS['TL_LANG']['tl_calendar_events']['memberDocents'],
+	'exclude'          => true,
+	'search'           => true,
+	'inputType'        => 'select',
+	'options_callback' => array('tl_extended_events_calendar_events', 'getMemberDocents'),
+	'eval'             => array('multiple' => true, 'chosen' => true, 'tl_class' => 'clr', 'style' => 'width: 853px'),
+	'sql'              => "blob NULL"
+);
+
+$dc['fields']['hosts'] = array
+(
+	'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['hosts'],
+	'exclude'    => true,
+	'search'     => true,
+	'inputType'  => 'select',
+	'foreignKey' => 'tl_calendar_docents.title',
+	'eval'       => array('multiple' => true, 'chosen' => true, 'tl_class' => 'clr', 'style' => 'width: 853px'),
+	'sql'        => "blob NULL",
+	'relation'   => array('type' => 'hasMany', 'load' => 'lazy')
+);
+
+$dc['fields']['memberHosts'] = array
+(
+	'label'            => &$GLOBALS['TL_LANG']['tl_calendar_events']['memberHosts'],
+	'exclude'          => true,
+	'search'           => true,
+	'inputType'        => 'select',
+	'options_callback' => array('tl_extended_events_calendar_events', 'getMemberDocents'),
+	'eval'             => array('multiple' => true, 'chosen' => true, 'tl_class' => 'clr', 'style' => 'width: 853px'),
+	'sql'              => "blob NULL"
+);
+
 
 $dc['fields']['eventtypes'] = array
 (
@@ -187,6 +218,14 @@ $dc['fields']['website'] = array
 	'exclude'   => true,
 	'eval'      => array('tl_class' => 'w50', 'rgxp' => 'url', 'maxlength' => 255),
 	'sql'       => "varchar(255) NOT NULL default ''"
+);
+
+// keyword field
+$dc['fields']['q'] = array
+(
+	'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['q'],
+	'inputType' => 'text',
+	'eval'      => array('placeholder' => &$GLOBALS['TL_LANG']['tl_calendar_events']['placeholders']['q'])
 );
 
 /**
@@ -269,7 +308,8 @@ class tl_extended_events_calendar_events extends Backend
 	public function showSubEvents($row, $href, $label, $title, $icon, $attributes)
 	{
 		return $this->User->hasAccess('subevents', 'calendarp') ?
-			'<a href="contao/main.php?do=calendar&amp;table=tl_calendar_events&amp;pid=' . $row['pid'] . '&amp;epid=' . $row['id'] . '" title="' . specialchars($title) . '"' . $attributes . '>'
+			'<a href="contao/main.php?do=calendar&amp;table=tl_calendar_events&amp;pid=' . $row['pid'] . '&amp;epid=' . $row['id'] . '" title="'
+			. specialchars($title) . '"' . $attributes . '>'
 			. Image::getHtml($icon, $label) . '</a> ' : Image::getHtml(preg_replace('/\.png/i', '_.png', $icon)) . ' ';
 	}
 
@@ -288,29 +328,80 @@ class tl_extended_events_calendar_events extends Backend
 		}
 	}
 
+	public function getMemberDocents(DataContainer $dc)
+	{
+		$arrOptions = array();
+
+		$objCalendar = \HeimrichHannot\CalendarPlus\CalendarPlusModel::findByPk($dc->activeRecord->pid);
+
+		if ($objCalendar === null)
+		{
+			return $arrOptions;
+		}
+
+		$arrMemberDocentGroups = deserialize($objCalendar->memberDocentGroups, true);
+
+		if(!$objCalendar->addMemberDocentGroups || empty($arrMemberDocentGroups))
+		{
+			return $arrOptions;
+		}
+
+
+		$objMembers = \HeimrichHannot\MemberPlus\MemberPlusMemberModel::findActiveByGroups($arrMemberDocentGroups);
+
+		if($objMembers === null)
+		{
+			return $arrOptions;
+		}
+		
+
+		while($objMembers->next())
+		{
+			$arrTitle = array($objMembers->academicTitle, $objMembers->firstname, $objMembers->lastname);
+
+			if (empty($arrTitle)) {
+				continue;
+			}
+
+			$arrOptions[$objMembers->id] = implode(' ', $arrTitle);
+		}
+
+		return $arrOptions;
+	}
+
 	public function getEventTypes(DataContainer $dc)
 	{
 		$arrOptions = array();
 
 		$objCalendar = \HeimrichHannot\CalendarPlus\CalendarPlusModel::findByPk($dc->activeRecord->pid);
 
-		if($objCalendar === null) return $arrOptions;
+		if ($objCalendar === null) {
+			return $arrOptions;
+		}
 
 		// get additional archives from calendar config
-		$arrArchives = deserialize($objCalendar->eventTypeArchives, true);
+		$arrArchiveIds = deserialize($objCalendar->eventTypeArchives, true);
 
 		$objCurrentEventTypeArchives = \HeimrichHannot\CalendarPlus\CalendarEventtypesArchiveModel::findBy('pid', $dc->activeRecord->pid);
 		
-		if($objCurrentEventTypeArchives !== null)
-		{
-			$arrArchives = array_merge($arrArchives, $objCurrentEventTypeArchives->fetchEach('id'));
+		if ($objCurrentEventTypeArchives !== null) {
+			$arrArchiveIds = array_merge($arrArchiveIds, $objCurrentEventTypeArchives->fetchEach('id'));
 		}
 
-		$objEventTypes = \HeimrichHannot\CalendarPlus\CalendarEventtypesModel::findByPids($arrArchives);
+		$arrArchiveTitles     = array();
+		$objEventTypeArchives = \HeimrichHannot\CalendarPlus\CalendarEventtypesArchiveModel::findMultipleByIds($arrArchiveIds);
 
-		if($objEventTypes !== null)
-		{
-			$arrOptions = $objEventTypes->fetchEach('title');
+		if ($objEventTypeArchives !== null) {
+			$arrArchiveTitles = $objEventTypeArchives->fetchEach('title');
+		}
+
+		$objEventTypes = \HeimrichHannot\CalendarPlus\CalendarEventtypesModel::findByPids($arrArchiveIds);
+
+		if ($objEventTypes !== null) {
+			while ($objEventTypes->next()) {
+				$strGroup                                  = $arrArchiveTitles[$objEventTypes->pid];
+				$arrOptions[$strGroup][$objEventTypes->id] = $objEventTypes->title;
+			}
 		}
 
 		return $arrOptions;

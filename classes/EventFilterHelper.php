@@ -11,9 +11,13 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
+
 class EventFilterHelper extends \Frontend
 {
 	protected static $strTable = 'tl_calendar_events';
+
+	protected static $strTemplate = 'eventfilter_eventtypes_archives';
 
 	public static function getDocentSelectOptions(\DataContainer $dc)
 	{
@@ -24,14 +28,41 @@ class EventFilterHelper extends \Frontend
 			return $arrItems;
 		}
 
-		$objDocents = CalendarDocentsModel::findByPids($dc->objModule->cal_calendar);
-
-		if($objDocents === null)
+		$objDocents = CalendarPlusEventsModel::getUniqueDocentsByPids($dc->objModule->cal_calendar);
+		$objMemberDocents = CalendarPlusEventsModel::getUniqueMemberDocentsByPids($dc->objModule->cal_calendar);
+		
+		if($objDocents !== null)
 		{
-			return $arrItems;
+			while($objDocents->next())
+			{
+				$arrOrder['m' . $objMemberDocents->id] = $objDocents->title;
+				$arrItems['d' . $objDocents->id] = $objDocents->title;
+			}
 		}
 
-		return $objDocents->fetchEach('title');
+		$arrOrder = array();
+		
+		if($objMemberDocents !== null)
+		{
+			while($objMemberDocents->next())
+			{
+				$arrTitle = array($objMemberDocents->academicTitle, $objMemberDocents->firstname, $objMemberDocents->lastname);
+
+				if (empty($arrTitle)) {
+					continue;
+				}
+
+				$arrOrder['m' . $objMemberDocents->id] = $objMemberDocents->lastname;
+				$arrItems['m' . $objMemberDocents->id] = trim(implode(' ', $arrTitle));
+			}
+		}
+
+		// sort by lastname
+		asort($arrOrder);
+		
+		$arrItems = array_replace($arrOrder, $arrItems);
+
+		return $arrItems;
 	}
 
 	public static function getEventTypesSelectOptions(\DataContainer $dc)
@@ -57,9 +88,91 @@ class EventFilterHelper extends \Frontend
 			return $arrItems;
 		}
 
-
 		return $objEvenTypes->fetchEach('title');
 	}
+
+	public static function getEventTypesFieldsByArchive(\DataContainer $dc)
+	{
+		$arrItems = array();
+
+		if($dc->objModule->cal_combineEventTypesArchive === "1")
+		{
+			return static::getEventTypesSelectOptions($dc);
+		}
+		else
+		{
+			$arrEventTypesArchives = deserialize($dc->objModule->cal_eventTypesArchive);
+			if($arrEventTypesArchives === null || empty($arrEventTypesArchives)) {
+				return $arrItems;
+			}
+
+			$arrEventTypesArchivesMultiple = deserialize($dc->objModule->cal_eventTypesArchiveMultiple, true);
+
+			foreach($arrEventTypesArchives as $value)
+			{
+				$arrOptions = array();
+				$arrSelected = array();
+				$varMultiple = false;
+
+				$objArchive = CalendarEventtypesArchiveModel::findByIdOrAlias($value);
+				if ($objArchive === null) {
+					return $arrItems;
+				}
+
+				$objEventTypes = CalendarEventtypesModel::findByPids(array($value));
+
+				if ($objEventTypes === null)
+				{
+					return $arrItems;
+				}
+
+				while($objEventTypes->next())
+				{
+					$objEventtypesArchive = $objEventTypes->getRelated('pid');
+
+					if($objEventtypesArchive === null) continue;
+
+					$strClass  = (($objEventTypes->cssClass != '') ? ' ' . $objEventTypes->cssClass : '');
+					$strClass .= (($objEventtypesArchive->cssClass != '') ? ' ' . $objEventtypesArchive->cssClass : '');
+
+					$objEventTypes->class = $strClass;
+
+					$arrOptions[$objEventTypes->id] = $objEventTypes->current();
+				}
+
+				$strName = sprintf("eventtypes_%d", $value);
+				
+				$objTemplate = new \FrontendTemplate(static::$strTemplate);
+				$objTemplate->name = $strName . '[]';
+				
+				$arrSubmitted = \Input::get($strName);
+				
+				if(is_array($arrSubmitted) && !empty($arrSubmitted))
+				{
+					$arrSelected = array_intersect($arrSubmitted, array_keys($arrOptions));
+				}
+
+				if(in_array($value, $arrEventTypesArchivesMultiple) && is_array($arrEventTypesArchivesMultiple) && !empty($arrEventTypesArchivesMultiple)) {
+					$varMultiple = true;
+				}
+
+				$objTemplate->arrSelected = $arrSelected;
+				$objTemplate->alias = $objArchive->alias;
+				$objTemplate->label = "$objArchive->title";
+				$objTemplate->options = $arrOptions;
+				$objTemplate->multiple = $varMultiple;
+
+				$arrArchives[] = array
+				(
+					'options' => array_keys($arrOptions),
+					'output' => $objTemplate->parse(),
+				);
+			}
+		}
+		
+		return $arrArchives;
+	}
+
 
 	public static function getPromoterSelectOptions(\DataContainer $dc)
 	{
@@ -70,41 +183,15 @@ class EventFilterHelper extends \Frontend
 			return $arrItems;
 		}
 
-		$t = static::$strTable;
+		$objPromoters = CalendarPlusEventsModel::getUniquePromotersByPids($dc->objModule->cal_calendar);
 
-		$arrOptions['fields'][] = 'DISTINCT promoter';
-
-		$arrOptions['column'][] = "$t.pid IN(" . implode(',', array_map('intval', $dc->objModule->cal_calendar)) . ")";
-
-		$arrOptions['column'][] = 'city != ""';
-
-		if (!BE_USER_LOGGED_IN)
+		if($objPromoters !== null)
 		{
-			$time = time();
-			$arrOptions['column'][] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+			$arrItems = $objPromoters->fetchEach('title');
 		}
 
-		$arrOptions['order'] = 'promoter ASC';
-
-		$arrOptions['foreignKey'] = 'tl_calendar_promoters.title';
-
-		$objItems = static::getDatabaseResult($arrOptions);
-
-		if($objItems === null) return $arrItems;
-
-		$arrItems = $objItems->fetchEach('promoter');
-
-		if (is_array($arrItems) && !empty($arrItems) && isset($arrOptions['foreignKey']))
-		{
-			$arrKey = explode('.', $arrOptions['foreignKey'], 2);
-			$objOptions = \Database::getInstance()->query("SELECT id, " . $arrKey[1] . " AS value FROM " . $arrKey[0] . " WHERE tstamp>0 AND " . $arrKey[0] . ".id IN(" . implode(',', array_map('intval', $arrItems)) . ") ORDER BY value");
-			$arrItems = array();
-
-			while ($objOptions->next())
-			{
-				$arrItems[$objOptions->id] = $objOptions->value;
-			}
-		}
+		// sort
+		asort($arrItems);
 
 		return $arrItems;
 	}
@@ -180,7 +267,7 @@ class EventFilterHelper extends \Frontend
 	}
 
 
-	public static function getValueByDca($value, $arrData)
+	public function getValueByDca($value, $arrData)
 	{
 		$value = deserialize($value);
 		$rgxp = $arrData['eval']['rgxp'];
@@ -221,6 +308,10 @@ class EventFilterHelper extends \Frontend
 		}
 		elseif (is_array($value))
 		{
+			$value = static::flattenArray($value);
+			
+			$value = array_filter($value); // remove empty elements
+
 			$value = implode(', ', $value);
 		}
 		elseif (is_array($opts) && array_is_assoc($opts))
@@ -238,5 +329,11 @@ class EventFilterHelper extends \Frontend
 
 		// Convert special characters (see #1890)
 		return specialchars($value);
+	}
+
+	public static function flattenArray(array $array) {
+		$return = array();
+		array_walk_recursive($array, function($a) use (&$return) { $return[] = $a; });
+		return $return;
 	}
 }

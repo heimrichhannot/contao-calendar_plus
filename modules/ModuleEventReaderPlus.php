@@ -87,7 +87,7 @@ class ModuleEventReaderPlus extends EventsPlus
 		if($this->checkConditions())
 		{
 			parent::generate();
-			die($this->replaceInsertTags($this->Template->parse()));
+			die($this->replaceInsertTags($this->Template->output())); // use output, otherwise page will not be added to search index
 		}
 	}
 
@@ -148,6 +148,10 @@ class ModuleEventReaderPlus extends EventsPlus
 		// get ids from EventsPlus::getAllEvents
 		$session = \Session::getInstance()->getData();
 		$arrIds = $session[CALENDARPLUS_SESSION_EVENT_IDS];
+
+		// EventsPlus::getAllEvents did not run before the reader
+		// TODO: run EventsPlus::getAllEvents before
+		if(!is_array($arrIds) || empty($arrIds)) return;
 
 		$prevID = null;
 		$nextID = null;
@@ -235,6 +239,13 @@ class ModuleEventReaderPlus extends EventsPlus
 			// Send a 404 header
 			header('HTTP/1.1 404 Not Found');
 			$this->Template->event = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('events')) . '</p>';
+			
+			// remove page from search index
+			if($this->cal_showInModal)
+			{
+				\HeimrichHannot\SearchPlus\Search::removePageFromIndex(\Environment::get('request'));
+			}
+			
 			return;
 		}
 
@@ -276,7 +287,22 @@ class ModuleEventReaderPlus extends EventsPlus
 			}
 		}
 
-		$objEvent = (object) $this->getEventDetails($objEventModel, $intStartTime, $intEndTime, $strUrl, $intBegin, $intLimit, $intCalendar);
+		$objEvent = (object) $this->getEventDetails($objEventModel, $intStartTime, $intEndTime, $strUrl, $intStartTime, $objEventModel->pid);
+
+		$arrSubEvents = array();
+
+		if(!$this->cal_ungroupSubevents)
+		{
+			$objChildEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
+
+			if($objChildEvents !== null)
+			{
+				while($objChildEvents->next())
+				{
+					$arrSubEvents[$objChildEvents->id] = $this->addSingleEvent($objChildEvents, $intStartTime);
+				}
+			}
+		}
 
 		if ($objPage->outputFormat == 'xhtml')
 		{
@@ -332,12 +358,41 @@ class ModuleEventReaderPlus extends EventsPlus
 			}
 		}
 
+		$imgSize = false;
+
+		// Override the default image size
+		if ($this->imgSize != '')
+		{
+			$size = deserialize($this->imgSize);
+
+			if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
+			{
+				$imgSize = $this->imgSize;
+			}
+		}
+
 		$objTemplate = new \FrontendTemplate($this->cal_template);
 		$objTemplate->setData((array) $objEvent);
 		$objTemplate->nav = $this->generateArrowNavigation($objEvent, $strUrl);
 
 
-		if(in_array('share',$this->Config->getActiveModules()))
+		if(is_array($arrSubEvents) && !empty($arrSubEvents))
+		{
+			$strSubEvents = '';
+
+			foreach($arrSubEvents as $subID => $arrSubEvent)
+			{
+				$objSubEventTemplate = new \FrontendTemplate($this->cal_templateSubevent);
+				$objSubEventTemplate->setData($arrSubEvent);
+				$this->addEventDetailsToTemplate($objSubEventTemplate, $arrSubEvent, '', '', $imgSize);
+				$strSubEvents .= $objSubEventTemplate->parse() . "\n";
+			}
+
+			$objTemplate->subEvents = $strSubEvents;
+		}
+
+
+		if($this->addShare && in_array('share',$this->Config->getActiveModules()))
 		{
 			$objShare = new \HeimrichHannot\Share\Share($this->objModel, $objEvent);
 			$objTemplate->share = $objShare->generate();

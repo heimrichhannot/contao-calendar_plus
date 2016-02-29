@@ -260,7 +260,13 @@ class SubEventList extends \Widget
 			default:
 				// Form data rendering
 				$widgetType = 'checkbox';
-				if (($objFormField = \FormFieldModel::findByName($this->name)) !== null)
+				$objFormField = \Database::getInstance()->prepare('SELECT * FROM tl_form_field ff INNER JOIN tl_form f ON ff.pid=f.id INNER JOIN tl_formdata fd ON fd.form=f.title WHERE ff.name=? AND fd.id=?')
+					->limit(1)->execute(array(
+							'name' => $this->name,
+							'id' => \Input::get('id')
+						));
+
+				if ($objFormField->numRows > 0)
 				{
 					$widgetType = $objFormField->widgetType;
 					$arrOptions = deserialize($objFormField->options, true);
