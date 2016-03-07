@@ -297,6 +297,29 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 						$intEnd = strtotime(date('d.m.Y', $value) . ' 23:59:59'); // until last second of the day
 					}
 					break;
+
+				case 'dates':
+					if ($value != '')
+					{
+						$strQuery = '';
+						$valueArray = trimsplit(',', $value);
+
+						foreach ($valueArray as $key => $strDate)
+						{
+							$intDate = strtotime($strDate);
+							if ($key > 0)
+							{
+								$strQuery .= " OR ((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $intDate) OR (($t.startDate = '' OR $t.startDate <= $intDate) AND $t.endDate >= $intDate))";
+							}
+							else
+							{
+								$strQuery = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $intDate) OR (($t.startDate = '' OR $t.startDate <= $intDate) AND $t.endDate >= $intDate))";
+							}
+						}
+						$arrColumns[] = '(' . $strQuery . ')';
+					}
+					break;
+
 				case 'promoter':
 				case 'areasoflaw':
 					if ($value != '') {
@@ -327,10 +350,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 					}
 					break;
 				case strrpos($key, 'eventtypes', -strlen($key)) !== FALSE :
-					
 					if ($value != '') {
 						$valueArray = trimsplit(',', $value);
-						
 						// permit intersections only
 						if(!empty($arrValueOptions))
 						{
@@ -461,7 +482,6 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		}
 
 		$arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring=1 AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
-		
 
 		if (!BE_USER_LOGGED_IN)
 		{

@@ -165,6 +165,7 @@ class EventFilterHelper extends \Frontend
 				$arrArchives[] = array
 				(
 					'options' => array_keys($arrOptions),
+					'id' => $objArchive->id,
 					'output' => $objTemplate->parse(),
 				);
 			}

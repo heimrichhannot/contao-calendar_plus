@@ -9,7 +9,7 @@ $dc = &$GLOBALS['TL_DCA']['tl_calendar_events'];
 $dc['palettes']['default']      = str_replace('title,', 'title,shortTitle,', $dc['palettes']['default']);
 $dc['palettes']['default']      = str_replace(
 	'endDate',
-	'endDate,parentEvent;{promoter_legend},promoter;{docents_legend},docents,memberDocents;{hosts_legend:hide},hosts,memberHosts;{eventtypes_legend},eventtypes',
+	'endDate,dates,parentEvent;{promoter_legend},promoter;{docents_legend},docents,memberDocents;{hosts_legend:hide},hosts,memberHosts;{eventtypes_legend},eventtypes',
 	$dc['palettes']['default']
 );
 $dc['palettes']['default']      =
@@ -238,6 +238,19 @@ $dc['fields']['q'] = array
 	'inputType' => 'text',
 	'eval'      => array('placeholder' => &$GLOBALS['TL_LANG']['tl_calendar_events']['placeholders']['q'])
 );
+
+// dates field
+$dc['fields']['dates'] = array
+(
+	'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['dates'],
+	'inputType' => 'checkbox',
+	'eval'      => array(
+		'multiple' => true,
+		'placeholder' => &$GLOBALS['TL_LANG']['tl_calendar_events']['placeholders']['dates'],
+		'tl_class' => 'hidden'
+	)
+);
+
 
 /**
  * Filter list / show subevents
