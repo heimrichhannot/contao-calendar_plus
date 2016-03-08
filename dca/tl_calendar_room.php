@@ -127,9 +127,33 @@ $GLOBALS['TL_DCA']['tl_calendar_room'] = array
 			'eval'      => array('maxlength' => 255, 'tl_class' => 'w50', 'mandatory' => true),
 			'sql'       => "varchar(255) NOT NULL default ''",
 		),
+		'shortTitle'     => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_calendar_room']['shortTitle'],
+			'exclude'   => true,
+			'search'    => true,
+			'sorting'   => true,
+			'flag'      => 1,
+			'inputType' => 'text',
+			'eval'      => array('maxlength' => 128, 'tl_class' => 'w50'),
+			'sql'       => "varchar(128) NOT NULL default ''",
+		),
+		'alias'        => array
+		(
+			'label'         => &$GLOBALS['TL_LANG']['tl_calendar_room']['alias'],
+			'exclude'       => true,
+			'search'        => true,
+			'inputType'     => 'text',
+			'eval'          => array('rgxp' => 'alias', 'unique' => true, 'maxlength' => 128, 'tl_class' => 'w50'),
+			'save_callback' => array
+			(
+				array('tl_calendar_room', 'generateAlias'),
+			),
+			'sql'           => "varchar(128) COLLATE utf8_bin NOT NULL default ''",
+		),
 		'street'       => array
 		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['street'],
+			'label'     => &$GLOBALS['TL_LANG']['tl_calendar_room']['street'],
 			'exclude'   => true,
 			'search'    => true,
 			'inputType' => 'text',
@@ -138,7 +162,7 @@ $GLOBALS['TL_DCA']['tl_calendar_room'] = array
 		),
 		'postal'       => array
 		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['postal'],
+			'label'     => &$GLOBALS['TL_LANG']['tl_calendar_room']['postal'],
 			'exclude'   => true,
 			'search'    => true,
 			'inputType' => 'text',
@@ -147,7 +171,7 @@ $GLOBALS['TL_DCA']['tl_calendar_room'] = array
 		),
 		'city'         => array
 		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['city'],
+			'label'     => &$GLOBALS['TL_LANG']['tl_calendar_room']['city'],
 			'exclude'   => true,
 			'filter'    => true,
 			'search'    => true,
@@ -158,7 +182,7 @@ $GLOBALS['TL_DCA']['tl_calendar_room'] = array
 		),
 		'country'      => array
 		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['country'],
+			'label'     => &$GLOBALS['TL_LANG']['tl_calendar_room']['country'],
 			'exclude'   => true,
 			'filter'    => true,
 			'sorting'   => true,
@@ -169,80 +193,16 @@ $GLOBALS['TL_DCA']['tl_calendar_room'] = array
 		),
 		'singleCoords' => array
 		(
-			'label'         => &$GLOBALS['TL_LANG']['tl_news']['singleCoords'],
+			'label'         => &$GLOBALS['TL_LANG']['tl_calendar_room']['singleCoords'],
 			'exclude'       => true,
 			'search'        => true,
 			'inputType'     => 'text',
-			'eval'          => array('maxlength' => 64),
+			'eval'          => array('maxlength' => 64, 'tl_class' => 'w50'),
 			'sql'           => "varchar(64) NOT NULL default ''",
 			'save_callback' => array
 			(
 				array('tl_calendar_room', 'generateSingleCoords'),
 			),
-		),
-		'phone'   => array
-		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['phone'],
-			'exclude'   => true,
-			'search'    => true,
-			'inputType' => 'text',
-			'eval'      => array(
-				'maxlength'      => 64,
-				'rgxp'           => 'phone',
-				'decodeEntities' => true,
-				'tl_class'       => 'w50',
-			),
-			'sql'       => "varchar(64) NOT NULL default ''",
-		),
-		'fax'     => array
-		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['fax'],
-			'exclude'   => true,
-			'search'    => true,
-			'inputType' => 'text',
-			'eval'      => array(
-				'maxlength'      => 64,
-				'rgxp'           => 'phone',
-				'decodeEntities' => true,
-				'tl_class'       => 'w50',
-			),
-			'sql'       => "varchar(64) NOT NULL default ''",
-		),
-		'email'   => array
-		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['email'],
-			'exclude'   => true,
-			'search'    => true,
-			'inputType' => 'text',
-			'eval'      => array(
-				'maxlength'      => 255,
-				'rgxp'           => 'email',
-				'decodeEntities' => true,
-				'tl_class'       => 'w50',
-			),
-			'sql'       => "varchar(255) NOT NULL default ''",
-		),
-		'website' => array
-		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['website'],
-			'exclude'   => true,
-			'search'    => true,
-			'inputType' => 'text',
-			'eval'      => array(
-				'rgxp'       => 'url',
-				'maxlength'  => 255,
-				'tl_class'   => 'w50',
-			),
-			'sql'       => "varchar(255) NOT NULL default ''",
-		),
-		'text'         => array
-		(
-			'label'     => &$GLOBALS['TL_LANG']['tl_news']['text'],
-			'exclude'   => true,
-			'search'    => true,
-			'inputType' => 'textarea',
-			'eval'      => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
-			'sql'       => "text NULL",
 		),
 		'floor'     => array
 		(
@@ -253,6 +213,17 @@ $GLOBALS['TL_DCA']['tl_calendar_room'] = array
 			'inputType' => 'text',
 			'eval'      => array('tl_class' => 'w50', 'rgxp' => 'digit'),
 			'sql'       => "int(10) NOT NULL",
+		),
+		'isIndoor' => array
+		(
+			'label'     => &$GLOBALS['TL_LANG']['tl_calendar_room']['isIndoor'],
+			'exclude'   => true,
+			'filter'    => true,
+			'flag'      => 2,
+			'inputType' => 'checkbox',
+			'eval'      => array('tl_class' => 'w50 clr'),
+			'default'   => true,
+			'sql'       => "char(1) NOT NULL default '1'",
 		),
 		'published' => array
 		(
@@ -286,7 +257,6 @@ $GLOBALS['TL_DCA']['tl_calendar_room'] = array
 
 class tl_calendar_room extends \Backend
 {
-
 	/**
 	 * Import the back end user object
 	 */
@@ -504,6 +474,43 @@ class tl_calendar_room extends \Backend
 		$this->import('Calendar');
 		$this->Calendar->generateFeedsByCalendar(CURRENT_ID);
 	}
+
+
+	/**
+	 * Auto-generate the event alias if it has not been set yet
+	 *
+	 * @param mixed
+	 * @param \DataContainer
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public function generateAlias($varValue, DataContainer $dc)
+	{
+		$autoAlias = false;
+
+		// Generate alias if there is none
+		if ($varValue == '') {
+			$autoAlias = true;
+			$varValue  = standardize(String::restoreBasicEntities($dc->activeRecord->title));
+		}
+
+		$objAlias = $this->Database->prepare("SELECT id FROM tl_calendar_room WHERE alias=?")
+			->execute($varValue);
+
+		// Check whether the alias exists
+		if ($objAlias->numRows > 1 && !$autoAlias) {
+			throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
+		}
+
+		// Add ID to alias
+		if ($objAlias->numRows && $autoAlias) {
+			$varValue .= '-' . $dc->id;
+		}
+
+		return $varValue;
+	}
+
 
 	/**
 	 *
