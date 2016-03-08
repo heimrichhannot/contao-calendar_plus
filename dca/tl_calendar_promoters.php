@@ -701,8 +701,8 @@ class tl_calendar_promoters extends Backend
 				specialchars($GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'][1]),
 				$dc->value
 			) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(
-				  str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'][1], $dc->value))
-			  ) . '\',\'url\':this.href});return false">' . Image::getHtml(
+				str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'][1], $dc->value))
+			) . '\',\'url\':this.href});return false">' . Image::getHtml(
 				'alias.gif',
 				$GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'][0],
 				'style="vertical-align:top"'
