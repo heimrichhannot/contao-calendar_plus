@@ -248,7 +248,8 @@ $dc['fields']['dates'] = array
 		'multiple' => true,
 		'placeholder' => &$GLOBALS['TL_LANG']['tl_calendar_events']['placeholders']['dates'],
 		'tl_class' => 'hidden'
-	)
+	),
+	'sql' => "char(1) NOT NULL default ''"
 );
 
 
