@@ -18,8 +18,9 @@
                 }
 
                 $replace.load($this.attr('href'), function (responseText, textStatus, jqXHR) {
+                    $replace.html(responseText);
                     history.pushState(null, null, $this.attr('href'));
-                    $modal.data('history-replaced', true);
+                    $modal.modal('show');
                 });
             });
         },
