@@ -163,6 +163,86 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return MemberPlusMemberModel::findMultipleByIds($arrDocents, array('order' => 'lastname ASC'));
 	}
 
+	public static function getUniqueHostsByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "($t.hosts != '')";
+
+		if($currentOnly)
+		{
+			$arrColumns[] = "($t.startDate >= $time)";
+		}
+
+		$arrOptions['group'] = 'hosts';
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$objEvents = static::findBy($arrColumns, null, $arrOptions);
+
+		if($objEvents === null) return null;
+
+		$arrHosts = array();
+
+		while($objEvents->next())
+		{
+			$arrHosts = array_merge($arrHosts, deserialize($objEvents->hosts, true));
+		}
+
+		$arrHosts = array_unique($arrHosts);
+
+		return CalendarDocentsModel::findMultipleByIds($arrHosts, array('order' => 'title'));
+	}
+
+	public static function getUniqueMemberHostsByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$time = time();
+
+		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+		$arrColumns[] = "($t.memberHosts != '')";
+
+		if($currentOnly)
+		{
+			$arrColumns[] = "($t.startDate >= $time)";
+		}
+
+		$arrOptions['group'] = 'memberHosts';
+
+		if (!BE_USER_LOGGED_IN) {
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		$objEvents = static::findBy($arrColumns, null, $arrOptions);
+
+		if($objEvents === null) return null;
+
+		$arrHosts = array();
+
+		while($objEvents->next())
+		{
+			$arrHosts = array_merge($arrHosts,  deserialize($objEvents->memberHosts, true));
+		}
+
+		$arrHosts = array_unique($arrHosts);
+
+		return MemberPlusMemberModel::findMultipleByIds($arrHosts, array('order' => 'lastname ASC'));
+	}
+
 
 	public static function getUniquePromoterNamesByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
 	{
@@ -377,23 +457,31 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 					}
 					break;
 				case 'docents':
+				case 'hosts':
 					if ($value != '') {
 						$valueArray = trimsplit(',', $value);
 
 						if(is_array($valueArray) && !empty($valueArray))
 						{
 							$arrDocents = array();
-							$arrMemberDocents = array();
+							$arrMembers = array();
+							$arrHosts = array();
 
 							foreach($valueArray as $id)
 							{
 								// docent
-								if(substr($id, 0, 1) == 'd'){
+								if(\HeimrichHannot\Haste\Util\StringUtil::startsWith($id, 'd')){
 									$arrDocents[] = substr($id,1);
 								}
-								// memberdocent
-								else if(substr($id, 0, 1) == 'm'){
-									$arrMemberDocents[] = substr($id,1);
+								// members
+								else if(\HeimrichHannot\Haste\Util\StringUtil::startsWith($id, 'm'))
+								{
+									$arrMembers[] = substr($id,1);
+								}
+								// hosts
+								else if(\HeimrichHannot\Haste\Util\StringUtil::startsWith($id, 'h'))
+								{
+									$arrHosts[] = substr($id,1);
 								}
 							}
 
@@ -403,30 +491,55 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 								{
 									if ($arrFilterConfig['show_related'])
 									{
-										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrDocents, EVENTMODEL_CONDITION_OR);
+										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.docents", $arrDocents, EVENTMODEL_CONDITION_OR);
 									}
 									else
 									{
-										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.$key", $arrDocents);
+										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.docents", $arrDocents);
+									}
+								}
+							}
+							
+							if(!empty($arrMembers))
+							{
+								if(is_array($valueArray) && !empty($valueArray))
+								{
+									if ($arrFilterConfig['show_related'] || $arrFilterConfig['combine_docents'])
+									{
+										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMembers, EVENTMODEL_CONDITION_OR);
+
+										if($key = 'hosts' || $key == 'docents' && $arrFilterConfig['combine_docents'])
+										{
+											$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberhosts", $arrMembers, EVENTMODEL_CONDITION_OR);
+										}
+									}
+									else
+									{
+										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMembers);
+
+										if($key = 'hosts' || $key == 'docents' && $arrFilterConfig['combine_docents'])
+										{
+											$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberhosts", $arrMembers);
+										}
+
 									}
 								}
 							}
 
-							if(!empty($arrMemberDocents))
+							if(!empty($arrHosts) && ($key = 'hosts' || $key == 'docents' && $arrFilterConfig['cal_docent_combine']))
 							{
 								if(is_array($valueArray) && !empty($valueArray))
 								{
 									if ($arrFilterConfig['show_related'])
 									{
-										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMemberDocents, EVENTMODEL_CONDITION_OR);
+										$arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.hosts", $arrHosts, EVENTMODEL_CONDITION_OR);
 									}
 									else
 									{
-										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMemberDocents);
+										$arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.hosts", $arrHosts);
 									}
 								}
 							}
-
 						}
 					}
 					break;

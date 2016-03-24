@@ -142,6 +142,7 @@ class ModuleEventListPlus extends EventsPlus
 				$arrFilter = $this->getFilter($objFilterModule);
 				$arrOptions = $this->getPossibleFilterOptions($objFilterModule);
 				$arrFilterConfig['module'] = $objFilterModule->row();
+				$arrFilterConfig['combine_docents'] = $objFilterModule->cal_docent_combine;
 
 				if(!empty($arrFilter))
 				{

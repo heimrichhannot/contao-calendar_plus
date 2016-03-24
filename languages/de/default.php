@@ -59,3 +59,7 @@ $GLOBALS['TL_LANG']['eventfilter']['startDatePlaceholder'] = 'von';
 $GLOBALS['TL_LANG']['eventfilter']['endDatePlaceholder'] = 'bis';
 $GLOBALS['TL_LANG']['eventfilter']['eventTypesBlankOptionLabel'] = 'Veranstaltungsart';
 $GLOBALS['TL_LANG']['eventfilter']['docentsBlankOptionLabel'] = 'Referenten';
+$GLOBALS['TL_LANG']['eventfilter']['hostsBlankOptionLabel'] = 'Moderatoren';
+
+$GLOBALS['TL_LANG']['eventfilter']['hostsGroupLabel'] = 'Moderatoren';
+$GLOBALS['TL_LANG']['eventfilter']['docentsGroupLabel'] = 'Referenten';

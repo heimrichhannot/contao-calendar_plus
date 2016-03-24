@@ -65,7 +65,15 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		$this->dca['fields']['eventtypes']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['eventTypesBlankOptionLabel'];
 
 		// adjust docents field
-		$this->dca['fields']['docents']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getDocentSelectOptions');
+
+		if($this->objModule->cal_docent_combine)
+		{
+			$this->dca['fields']['docents']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getCombinedHostsAndDocentsSelectOptions');
+		} else
+		{
+			$this->dca['fields']['docents']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getDocentSelectOptions');
+		}
+
 		unset($this->dca['fields']['docents']['eval']['chosen']);
 		unset($this->dca['fields']['docents']['eval']['style']);
 		$this->dca['fields']['docents']['eval']['multiple'] = false;

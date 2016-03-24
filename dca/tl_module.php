@@ -41,6 +41,7 @@ $dc['palettes']['eventfilter'] = '
 									{title_legend},name,headline,type;
 									{config_legend},cal_calendar,formHybridDataContainer,formHybridPalette,formHybridEditable,formHybridEditableSkip,formHybridAddDefaultValues,formHybridTemplate;
 									{keyword_legend},cal_addKeywordSearch;
+									{docent_legend},cal_docent_combine;
 									{eventtype_legend},cal_eventTypesArchive,cal_eventTypesArchiveMultiple,cal_combineEventTypesArchive,cal_combineEventTypesArchiveMultiple;
 									{related_legend},cal_filterRelatedOnEmpty;
 									{restrict_legend},cal_restrictedValueFields;
@@ -186,6 +187,14 @@ $arrFields = array
 		'exclude'   => true,
 		'inputType' => 'checkbox',
 		'eval'      => array('tl_class' => 'clr w50', 'submitOnChange' => true),
+		'sql'       => "char(1) NOT NULL default ''",
+	),
+	'cal_docent_combine' => array
+	(
+		'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_docent_combine'],
+		'exclude'   => true,
+		'inputType' => 'checkbox',
+		'eval'      => array('tl_class' => 'clr w50'),
 		'sql'       => "char(1) NOT NULL default ''",
 	)
 );
