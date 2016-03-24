@@ -54,14 +54,12 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		$time = time();
 
 		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
-		$arrColumns[] = "($t.promoter != '')";
+		$arrColumns[] = "($t.promoter IS NOT NULL)";
 
 		if($currentOnly)
 		{
 			$arrColumns[] = "($t.startDate >= $time)";
 		}
-
-		$arrOptions['group'] = 'promoter';
 
 		if (!BE_USER_LOGGED_IN) {
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
@@ -284,46 +282,6 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return CalendarPromotersModel::findMultipleByIds($arrPromoters);
 	}
 
-
-	public static function getUniqueAreasOfLawByPids(array $arrPids=array(), $currentOnly=true, $arrOptions = array())
-	{
-		if (!is_array($arrPids) || empty($arrPids))
-		{
-			return null;
-		}
-
-		$t = static::$strTable;
-		$time = time();
-
-		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
-		$arrColumns[] = "($t.areasoflaw != '')";
-
-		if($currentOnly)
-		{
-			$arrColumns[] = "($t.startDate >= $time)";
-		}
-
-		//$arrOptions['group'] = 'promoter';
-
-		if (!BE_USER_LOGGED_IN) {
-			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
-		}
-
-		$objEvents = static::findBy($arrColumns, null, $arrOptions);
-
-		if($objEvents === null) return $objEvents;
-
-		$arrAreasOfLaw = array();
-
-		while($objEvents->next())
-		{
-			$arrAreasOfLaw = array_merge($arrAreasOfLaw, deserialize($objEvents->areasoflaw, true));
-		}
-		
-		$arrAreasOfLaw = array_unique($arrAreasOfLaw);
-
-		return AreasOfLawModel::findMultipleByIds($arrAreasOfLaw);
-	}
 
 	/**
 	 * Helper method to generate the alias for the current model

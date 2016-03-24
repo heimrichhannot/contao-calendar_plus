@@ -59,7 +59,7 @@ class EventFilterHelper extends \Frontend
 			return $arrItems;
 		}
 
-		$strCacheKey = 'host_select_options' . implode('_', $dc->objModule->cal_calendar);
+		$strCacheKey = 'host_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
 		if(FileCache::getInstance()->isExisting($strCacheKey))
 		{
@@ -114,7 +114,7 @@ class EventFilterHelper extends \Frontend
 			return $arrItems;
 		}
 
-		$strCacheKey = 'docent_select_options' . implode('_', $dc->objModule->cal_calendar);
+		$strCacheKey = 'docent_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
 		if(FileCache::getInstance()->isExisting($strCacheKey))
 		{
@@ -169,7 +169,7 @@ class EventFilterHelper extends \Frontend
 			return $arrItems;
 		}
 
-		$strCacheKey = 'eventtypes_select_options' . implode('_', $dc->objModule->cal_calendar);
+		$strCacheKey = 'eventtypes_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
 		if(FileCache::getInstance()->isExisting($strCacheKey))
 		{
@@ -290,7 +290,7 @@ class EventFilterHelper extends \Frontend
 			return $arrItems;
 		}
 
-		$strCacheKey = 'promoters_select_options' . implode('_', $dc->objModule->cal_calendar);
+		$strCacheKey = 'promoters_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
 		if(FileCache::getInstance()->isExisting($strCacheKey))
 		{
@@ -321,7 +321,7 @@ class EventFilterHelper extends \Frontend
 			return $arrItems;
 		}
 
-		$strCacheKey = 'city_select_options' . implode('_', $dc->objModule->cal_calendar);
+		$strCacheKey = 'city_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
 		if(FileCache::getInstance()->isExisting($strCacheKey))
 		{
