@@ -23,6 +23,7 @@ $dc['subpalettes']['addMap']    = 'map,mapText';
  */
 
 $dc['config']['onload_callback'][] = array('tl_extended_events_calendar_events', 'setDefaultParentEvent');
+$dc['config']['onsubmit_callback'][] = array('tl_extended_events_calendar_events', 'clearCaches');
 
 /**
  * Operations
@@ -453,5 +454,10 @@ class tl_extended_events_calendar_events extends Backend
 		}
 
 		return $arrOptions;
+	}
+
+	public function clearCaches()
+	{
+		\HeimrichHannot\Haste\Cache\FileCache::clean();
 	}
 }

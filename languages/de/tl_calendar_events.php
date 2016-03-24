@@ -41,6 +41,8 @@ $GLOBALS['TL_LANG']['tl_calendar_events']['docents_legend'] = 'Dozenten';
 $GLOBALS['TL_LANG']['tl_calendar_events']['hosts_legend'] = 'Moderatoren';
 $GLOBALS['TL_LANG']['tl_calendar_events']['eventtypes_legend'] = 'Veranstaltungsarten';
 $GLOBALS['TL_LANG']['tl_calendar_events']['contact_legend'] = 'Kontakt';
+$GLOBALS['TL_LANG']['tl_calendar_events']['location_legend'] = 'Veranstaltungsort';
+
 
 /**
  * Event Chooser
