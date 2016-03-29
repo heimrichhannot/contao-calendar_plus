@@ -12,11 +12,15 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_calendar_room_archive']['title'] = array('Titel', 'Geben Sie hier den Titel des Eventraum-Archivs ein.');
+$GLOBALS['TL_LANG']['tl_calendar_room_archive']['published'] = array('Archiv veröffentlichen', 'Das Archiv auf der Webseite anzeigen.');
+$GLOBALS['TL_LANG']['tl_calendar_room_archive']['start'] = array('Anzeigen ab', 'Das Archiv erst ab diesem Tag auf der Webseite anzeigen.');
+$GLOBALS['TL_LANG']['tl_calendar_room_archive']['stop'] = array('Anzeigen bis', 'Das Beitrag nur bis zu diesem Tag auf der Webseite anzeigen..');
 
 /**
  * Legends
  */
-
+$GLOBALS['TL_LANG']['tl_calendar_room_archive']['title_legend'] = 'Titel';
+$GLOBALS['TL_LANG']['tl_calendar_room_archive']['publish_legend'] = 'Veröffentlichung';
 
 /**
  * Buttons
