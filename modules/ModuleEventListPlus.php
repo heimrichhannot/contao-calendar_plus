@@ -222,7 +222,7 @@ class ModuleEventListPlus extends EventsPlus
 						// event is parent even --> add child events
 						else
 						{
-							$objChildEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($event['id']);
+							$objChildEvents = CalendarPlusEventsModel::findPublishedSubEvents($event['id']);
 
 							if($objChildEvents !== null)
 							{

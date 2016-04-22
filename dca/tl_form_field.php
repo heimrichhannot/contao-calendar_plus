@@ -105,7 +105,7 @@ class tl_extended_events_form_field extends Backend {
 	
 	public static function doCreateOptions($formFieldId, $formFieldEventId)
 	{
-		$objEvents = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($formFieldEventId);
+		$objEvents = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findPublishedSubEvents($formFieldEventId);
 		
 		if ($objEvents !== null)
 		{

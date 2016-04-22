@@ -656,7 +656,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 	public static function hasAtLeastOnePublishedPlacedSubEvent($config, $intId)
 	{
 		if (in_array('event_subscription', $config->getActiveModules())) {
-			$objSubEvents = static::findPublishedSubEventsByParentEventId($intId);
+			$objSubEvents = static::findPublishedSubEvents($intId);
 			if ($objSubEvents !== null) {
 				while ($objSubEvents->next()) {
 					if ($objSubEvents->addSubscription)
