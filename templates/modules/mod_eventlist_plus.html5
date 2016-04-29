@@ -1,14 +1,12 @@
 <?php $this->extend('block_unsearchable'); ?>
 
 <?php $this->block('content'); ?>
-
+<?php if($this->news_useInfiniteScroll):?> <div class="jscroll_element_<?= $this->id ?>" data-autotrigger="<?= $this->news_useAutoTrigger ? 'true':'false' ?>"><?php endif; ?>
 	<?php if($this->isRelated): ?>
 		<?php echo $this->emptyMessage; ?>
 		<h5>Das könnte Sie auch interessieren.</h5>
 	<?php endif; ?>
-
  	<?php echo $this->events; ?>
-
   	<?php echo $this->pagination; ?>
-
+	<?php if($this->news_useInfiniteScroll):?></div><?php endif; ?>
 <?php $this->endblock(); ?>

@@ -7,7 +7,6 @@
  * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
-
 $dc = &$GLOBALS['TL_DCA']['tl_form_field'];
 
 // add palette for field type nl_subscribe

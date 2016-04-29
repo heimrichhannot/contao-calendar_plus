@@ -13,7 +13,6 @@ namespace HeimrichHannot\CalendarPlus;
 
 class ModuleEventFilter extends EventsPlus
 {
-
 	/**
 	 * Current date object
 	 * @var integer
@@ -62,10 +61,13 @@ class ModuleEventFilter extends EventsPlus
 
 	protected function compile()
 	{
+
 		// needs to be overwritten in model, otherwise datacontainer argument in options_callback contains protected calendars
 		$this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
 
+
 		$objForm = new EventFilterForm($this->objModel);
+
 		$this->Template->form = $objForm->generate();
 	}
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
  * @package calendar_plus
  * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
@@ -287,8 +287,18 @@ class ModuleEventListPlus extends EventsPlus
 			$offset = ($page - 1) * $this->perPage;
 			$limit = min($this->perPage + $offset, $total);
 
-			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
+
+			// load specific pagination template if infiniteScroll is used
+			// otherwise keep standard pagination
+			$objT = $this->cal_useInfiniteScroll ? new \FrontendTemplate('infinite_pagination') : null;
+
+			if(!is_null($objT))$objT->triggerText = $this->cal_changeTriggerText ? $this->cal_triggerText : $GLOBALS['TL_LANG']['eventlist']['loadMore'];
+
+			// Add the pagination menu
+			$objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objT);
+
 			$this->Template->pagination = $objPagination->generate("\n  ");
+
 		}
 
 		$strMonth = '';

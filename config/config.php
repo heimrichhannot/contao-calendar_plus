@@ -14,15 +14,15 @@ $GLOBALS['BE_MOD']['content']['calendar']['tables'][] = 'tl_calendar_room';
  * Frontend modules
  */
 array_insert(
-	$GLOBALS['FE_MOD']['events'],
-	2,
-	array
-	(
-		'eventlist_plus'   => 'HeimrichHannot\CalendarPlus\ModuleEventListPlus',
-		'eventreader_plus' => 'HeimrichHannot\CalendarPlus\ModuleEventReaderPlus',
-		'eventfilter'      => 'HeimrichHannot\CalendarPlus\ModuleEventFilter',
-		'event_chooser'    => 'HeimrichHannot\CalendarPlus\ModuleEventChooser',
-	)
+		$GLOBALS['FE_MOD']['events'],
+		2,
+		array
+		(
+				'eventlist_plus'   => 'HeimrichHannot\CalendarPlus\ModuleEventListPlus',
+				'eventreader_plus' => 'HeimrichHannot\CalendarPlus\ModuleEventReaderPlus',
+				'eventfilter'      => 'HeimrichHannot\CalendarPlus\ModuleEventFilter',
+				'event_chooser'    => 'HeimrichHannot\CalendarPlus\ModuleEventChooser',
+		)
 );
 
 
@@ -72,5 +72,6 @@ $GLOBALS['EFG']['storable_fields'][] = 'subEventList';
  * JS
  */
 if (TL_MODE == 'FE') {
+	$GLOBALS['TL_JAVASCRIPT']['infinitescroll'] = '/system/modules/calendar_plus/assets/js/jscroll/jquery.jscroll.min.js';
 	$GLOBALS['TL_JAVASCRIPT']['calendarplus'] = '/system/modules/calendar_plus/assets/js/jquery.calendarplus' . (!$GLOBALS['TL_CONFIG']['debugMode'] ? '.min' : '') . '.js|static';
 }

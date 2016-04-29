@@ -16,6 +16,9 @@ $arrDca['palettes']['default'] =
 	str_replace('location', '{location_legend},street,postal,city,coordinates,location,locationAdditional,rooms', $arrDca['palettes']['default']);
 $arrDca['palettes']['default'] = str_replace('{location_legend}', '{contact_legend},website;{location_legend}', $arrDca['palettes']['default']);
 
+
+
+
 /**
  * Callbacks
  */
@@ -203,7 +206,7 @@ $arrDca['fields'] += $arrFields;
 
 $arrDca['fields']['location']['eval']['tl_class'] = 'w50 clr';
 
-tl_calendar_events_plus::filterSubEvents($arrDca);
+//tl_calendar_events_plus::filterSubEvents($arrDca);
 
 class tl_calendar_events_plus extends \Backend
 {

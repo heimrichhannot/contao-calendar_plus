@@ -27,6 +27,11 @@ $GLOBALS['TL_LANG']['tl_module']['cal_subeventHostTemplate'] = array('Mitglieder
 $GLOBALS['TL_LANG']['tl_module']['cal_filterRelatedOnEmpty'] = array('Verwandte Veranstaltungen bei keinen Ergebnissen anzeigen', 'Wenn keine Veranstaltungen mit den Filtereinstellungen gefunden werden, wird die Liste mit verwandten Veranstaltungen zurückgeliefert.');
 $GLOBALS['TL_LANG']['tl_module']['cal_addKeywordSearch'] = array('Stichwortsuche aktivieren', 'Ein Suchfeld für die Stichwortsuche über Titel und Teaser von Veranstaltungen hinzufügen.');
 $GLOBALS['TL_LANG']['tl_module']['cal_docent_combine'] = array('Moderatoren mit Referenten zusammenfassen', 'Die Moderatoren in der Liste der Referenten zusammenfassen und gruppiert ausgeben.');
+$GLOBALS['TL_LANG']['tl_module']['cal_useInfiniteScroll'] = array('InifiniteScroll nutzen', '');
+$GLOBALS['TL_LANG']['tl_module']['cal_useAutoTrigger'] = array('AutoTrigger aktivieren', 'Wenn aktiviert wird Liste automatisch beim Scrollen nachgeladen. Andernfalls erfolgt das Nachladen mittels Button');
+$GLOBALS['TL_LANG']['tl_module']['cal_changeTriggerText'] = array('Triggertext ändern', 'Ermöglicht die Individualisierung des Triggertextes');
+$GLOBALS['TL_LANG']['tl_module']['cal_triggerText'] = array('Triggertext', 'Tragen Sie hier den individiuellen Triggertext ein.');
+
 /**
  * Legends
  */
