@@ -1,0 +1,11 @@
+<?php $this->extend('block_searchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if (empty($this->promoters)): ?>
+	<p class="empty"><?php echo $this->empty; ?></p>
+<?php else: ?>
+	<?php echo implode('', $this->promoters); ?>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>

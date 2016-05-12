@@ -11,6 +11,7 @@
 /**
  * Fields
  */
+$GLOBALS['TL_LANG']['tl_calendar_promoters']['type'] = array('Typ', 'Geben Sie hier den Veranstalter-Typ an');
 $GLOBALS['TL_LANG']['tl_calendar_promoters']['title'] = array('Titel', 'Bitte geben Sie einen Titel an.');
 $GLOBALS['TL_LANG']['tl_calendar_promoters']['alias'] = array('Veranstalteralias', 'Der Veranstalteralias ist eine eindeutige Referenz, die anstelle der numerischen Veranstalter-ID aufgerufen werden kann.');
 $GLOBALS['TL_LANG']['tl_calendar_promoters']['subtitle'] = array('Unterüberschrift', 'Hier können Sie eine Unterüberschrift eingeben.');
@@ -54,3 +55,8 @@ $GLOBALS['TL_LANG']['tl_calendar_promoters']['delete'] = array('Veranstalter lö
  * Wizard
  */
 $GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'] = array('Veranstaltunsraum bearbeiten', 'Den Veranstaltunsraum ID %s bearbeiten');
+
+/**
+ * Reference
+ */
+$GLOBALS['TL_LANG']['tl_calendar_promoters']['type']['default'] = 'Standard';

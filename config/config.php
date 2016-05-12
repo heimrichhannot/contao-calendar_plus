@@ -59,6 +59,7 @@ $GLOBALS['TL_MODELS']['tl_calendar_room']               = 'HeimrichHannot\Calend
 define('CALENDARPLUS_SORTBY_DAY', 'day');
 define('CALENDARPLUS_SESSION_EVENT_IDS', 'CALENDAR_PLUS_EVENT_IDS');
 define('CALENDARPLUS_FILTER', 'CALENDARPLUS_FILTER');
+define('CALENDARPLUS_PROMOTER_TYPE_DEFAULT', 'default');
 
 /**
  * EFG
@@ -75,3 +76,8 @@ if (TL_MODE == 'FE') {
 	$GLOBALS['TL_JAVASCRIPT']['infinitescroll'] = '/system/modules/calendar_plus/assets/js/jscroll/jquery.jscroll.min.js';
 	$GLOBALS['TL_JAVASCRIPT']['calendarplus'] = '/system/modules/calendar_plus/assets/js/jquery.calendarplus' . (!$GLOBALS['TL_CONFIG']['debugMode'] ? '.min' : '') . '.js|static';
 }
+
+/**
+ * Content elements
+ */
+$GLOBALS['TL_CTE']['calendar']['promoterlist'] = 'HeimrichHannot\CalendarPlus\ContentCalendarPromoterList';

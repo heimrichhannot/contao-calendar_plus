@@ -371,4 +371,14 @@ class tl_module_calendar_plus extends \Backend
 
 		return $objArchives->fetchEach('title');
 	}
+
+	/**
+	 * Return all promoter templates as array
+	 *
+	 * @return array
+	 */
+	public function getPromoterTemplates($dc)
+	{
+		return $this->getTemplateGroup('cal_promoter_');
+	}
 }

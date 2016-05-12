@@ -31,6 +31,10 @@ $GLOBALS['TL_LANG']['tl_module']['cal_useInfiniteScroll'] = array('InifiniteScro
 $GLOBALS['TL_LANG']['tl_module']['cal_useAutoTrigger'] = array('AutoTrigger aktivieren', 'Wenn aktiviert wird Liste automatisch beim Scrollen nachgeladen. Andernfalls erfolgt das Nachladen mittels Button');
 $GLOBALS['TL_LANG']['tl_module']['cal_changeTriggerText'] = array('Triggertext ändern', 'Ermöglicht die Individualisierung des Triggertextes');
 $GLOBALS['TL_LANG']['tl_module']['cal_triggerText'] = array('Triggertext', 'Tragen Sie hier den individiuellen Triggertext ein.');
+$GLOBALS['TL_LANG']['tl_module']['cal_promoterTypes'] = array('Veranstaltertypen', 'Wählen sie Veranstaltertypen aus.');
+$GLOBALS['TL_LANG']['tl_module']['cal_promoters'] = array('Veranstalter', 'Wählen sie Veranstalter aus.');
+$GLOBALS['TL_LANG']['tl_module']['cal_promoterTemplate'] = array('Veranstalter-Template', 'Hier können Sie das Veranstalter-Template überschreiben.');
+
 
 /**
  * Legends

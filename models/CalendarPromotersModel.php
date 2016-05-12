@@ -98,4 +98,29 @@ class CalendarPromotersModel extends \Model
 
 		return static::findBy($arrColumns, null, $arrOptions);
 	}
+
+
+	/**
+	 * Find published promoters by given ids
+	 * @param array   $arrIds     An array of promoters IDs
+	 * @return \Model\Collection|null A collection of models or null if there are no promoters
+	 */
+	public static function findPublishedByIds(array $arrIds, array $arrOptions=array())
+	{
+		if (empty($arrIds))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$arrColumns = array("$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")");
+
+		if (!BE_USER_LOGGED_IN)
+		{
+			$time = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		return static::findBy($arrColumns, null, $arrOptions);
+	}
 }

@@ -63,3 +63,19 @@ $GLOBALS['TL_LANG']['eventfilter']['hostsBlankOptionLabel'] = 'Moderatoren';
 
 $GLOBALS['TL_LANG']['eventfilter']['hostsGroupLabel'] = 'Moderatoren';
 $GLOBALS['TL_LANG']['eventfilter']['docentsGroupLabel'] = 'Referenten';
+
+/**
+ * Content Elements
+ */
+$GLOBALS['TL_LANG']['CTE']['calendar'] = 'Events';
+$GLOBALS['TL_LANG']['CTE']['promoterlist'] = array('Veranstalterliste', 'Fügen Sie einen Liste ausgewählter Veranstalter ein.');
+
+/**
+ * Promoterlist
+ */
+$GLOBALS['TL_LANG']['cal_promoterlist']['contactTitle'] = 'Kontakt';
+$GLOBALS['TL_LANG']['cal_promoterlist']['emptyList'] = 'Es wurden keiner Veranstalter gefunden.';
+$GLOBALS['TL_LANG']['cal_promoterlist']['phoneTitle'] = 'Telefon';
+$GLOBALS['TL_LANG']['cal_promoterlist']['faxTitle'] = 'Telefax';
+$GLOBALS['TL_LANG']['cal_promoterlist']['emailTitle'] = 'E-Mail';
+$GLOBALS['TL_LANG']['cal_promoterlist']['websiteTitle'] = 'Webseite';

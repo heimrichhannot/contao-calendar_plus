@@ -1,0 +1,48 @@
+<div class="promoter promoter_default">
+	<?php if($this->room): ?>
+		<h3 class="room"><?= $this->room->title; ?></h3>
+	<?php endif; ?>
+	<div class="content">
+		<h4 class="title"><?= $this->title; ?></h4>
+		<?php if($this->subtitle): ?>
+			<h6 class="subtitle"><?= $this->subtitle; ?></h6>
+		<?php endif; ?>
+		<?php if($this->teaser):?>
+			<?= $this->teaser; ?>
+		<?php endif; ?>
+		<?php if($this->hasContact): ?>
+			<address>
+				<?php if($this->contactTitle): ?>
+					<strong><?= $this->contactTitle; ?></strong><br />
+				<?php endif; ?>
+				<?php if($this->contact->company): ?>
+					<?= $this->contact->company; ?> <br />
+				<?php endif; ?>
+				<?php if($this->contact->contactName): ?>
+					<?= $this->contact->contactName; ?> <br />
+				<?php endif; ?>
+				<?php if($this->contact->street): ?>
+					<?= $this->contact->street; ?> <br />
+				<?php endif; ?>
+				<?php if($this->contact->postal || $this->contact->city): ?>
+					<?= implode(' ', array($this->contact->postal, $this->contact->city)); ?> <br />
+				<?php endif; ?>
+				<?php if($this->contact->country): ?>
+					<?= $this->contact->country; ?> <br />
+				<?php endif; ?>
+				<?php if($this->contact->fax): ?>
+					<i class="fa fa-fax" title="<?= $this->faxTitle; ?>"></i> <?= $this->contact->fax; ?> <br />
+				<?php endif; ?>
+				<?php if($this->contact->phone): ?>
+					<i class="fa fa-phone" title="<?= $this->phoneTitle; ?>"></i> <?= $this->contact->phone; ?> <br />
+				<?php endif; ?>
+				<?php if($this->contact->email): ?>
+					<i class="fa fa-envelope" title="<?= $this->emailTitle; ?>"></i> {{email::<?= $this->contact->email; ?>}} <br />
+				<?php endif; ?>
+				<?php if($this->contact->website): ?>
+					<i class="fa fa-globe" title="<?= $this->websiteTitle; ?>"></i> <a href="<?= $this->contact->websiteUrl; ?>" target="_blank"><?= $this->contact->website; ?></a><br />
+				<?php endif; ?>
+			</address>
+		<?php endif; ?>
+	</div>
+</div>

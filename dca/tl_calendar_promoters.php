@@ -18,11 +18,11 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 	// Config
 	'config'      => array
 	(
-		'dataContainer'    => 'Table',
-		'ptable'           => 'tl_calendar',
-		'switchToEdit'     => true,
-		'enableVersioning' => true,
-		'onload_callback'  => array
+		'dataContainer'     => 'Table',
+		'ptable'            => 'tl_calendar',
+		'switchToEdit'      => true,
+		'enableVersioning'  => true,
+		'onload_callback'   => array
 		(
 			array('tl_calendar_promoters', 'checkPermission'),
 		),
@@ -30,7 +30,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		(
 			'setDateAdded' => array('HeimrichHannot\\HastePlus\\Utilities', 'setDateAdded'),
 		),
-		'sql'              => array
+		'sql'               => array
 		(
 			'keys' => array
 			(
@@ -109,9 +109,8 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 	'palettes'    => array
 	(
 		'__selector__' => array('published'),
-		'default'      => '{title_legend},title,alias;{teaser_legend},subtitle,teaser;{address_legend},company,street,postal,city,country,singleCoords;{contact_legend},contactName,phone,fax,email,website,room;{publish_legend},published',
+		'default'      => '{type_legend},type;{title_legend},title,alias;{teaser_legend},subtitle,teaser;{address_legend},company,street,postal,city,country,singleCoords;{contact_legend},contactName,phone,fax,email,website,room;{contact_legend},website;{publish_legend},published',
 	),
-
 	// Subpalettes
 	'subpalettes' => array
 	(
@@ -135,13 +134,26 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 		(
 			'sql' => "int(10) unsigned NOT NULL default '0'",
 		),
-		'dateAdded' => array
+		'dateAdded'    => array
 		(
 			'label'   => &$GLOBALS['TL_LANG']['MSC']['dateAdded'],
 			'sorting' => true,
 			'flag'    => 6,
 			'eval'    => array('rgxp' => 'datim', 'doNotCopy' => true),
 			'sql'     => "int(10) unsigned NOT NULL default '0'",
+		),
+		'type'         => array
+		(
+			'label'            => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['type'],
+			'exclude'          => true,
+			'search'           => true,
+			'filter'           => true,
+			'inputType'        => 'select',
+			'default'          => CALENDARPLUS_PROMOTER_TYPE_DEFAULT,
+			'options_callback' => array('HeimrichHannot\\CalendarPlus\\Utils\\Options', 'getPromoterTypes'),
+			'reference'        => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['type'],
+			'eval'             => array('tl_class' => 'w50', 'submitOnChange' => true),
+			'sql'              => "varchar(64) NOT NULL default ''",
 		),
 		'title'        => array
 		(
@@ -173,7 +185,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 			'exclude'   => true,
 			'search'    => true,
 			'inputType' => 'text',
-			'eval'      => array('maxlength' => 255, 'tl_class'=>'long'),
+			'eval'      => array('maxlength' => 255, 'tl_class' => 'long'),
 			'sql'       => "varchar(255) NOT NULL default ''",
 		),
 		'teaser'       => array
@@ -185,7 +197,7 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 			'eval'      => array('rte' => 'tinyMCE', 'tl_class' => 'clr'),
 			'sql'       => "text NULL",
 		),
-		'company'         => array
+		'company'      => array
 		(
 			'label'     => &$GLOBALS['TL_LANG']['tl_calendar_promoters']['company'],
 			'exclude'   => true,
@@ -319,8 +331,10 @@ $GLOBALS['TL_DCA']['tl_calendar_promoters'] = array
 			'filter'           => true,
 			'sorting'          => true,
 			'inputType'        => 'select',
+			'foreignKey'	   => 'tl_calendar_room.id',
 			'options_callback' => array('tl_calendar_promoters', 'getAvailableRooms'),
 			'eval'             => array('includeBlankOption' => true, 'chosen' => true, 'tl_class' => 'w50'),
+			'relation'   => array('type' => 'belongsTo', 'load' => 'eager'),
 			'wizard'           => array
 			(
 				array('tl_calendar_promoters', 'editRoom'),
@@ -701,11 +715,12 @@ class tl_calendar_promoters extends Backend
 				specialchars($GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'][1]),
 				$dc->value
 			) . '" style="padding-left:3px" onclick="Backend.openModalIframe({\'width\':768,\'title\':\'' . specialchars(
-				str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'][1], $dc->value))
-			) . '\',\'url\':this.href});return false">' . Image::getHtml(
+				  str_replace("'", "\\'", sprintf($GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'][1], $dc->value))
+			  ) . '\',\'url\':this.href});return false">' . Image::getHtml(
 				'alias.gif',
 				$GLOBALS['TL_LANG']['tl_calendar_promoters']['editroom'][0],
 				'style="vertical-align:top"'
 			) . '</a>';
 	}
+
 }
