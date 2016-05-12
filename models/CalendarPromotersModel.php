@@ -91,6 +91,10 @@ class CalendarPromotersModel extends \Model
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
+		if(!isset($arrOptions['order']))
+		{
+			$arrOptions['order'] = "$t.title";
+		}
 
 		return static::findBy($arrColumns, null, $arrOptions);
 	}
