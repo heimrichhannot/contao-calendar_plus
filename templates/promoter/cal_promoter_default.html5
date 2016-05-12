@@ -1,4 +1,4 @@
-<div class="promoter promoter_default">
+<div class="promoter promoter_default <?= $this->cssClass; ?>">
 	<?php if($this->room): ?>
 		<h3 class="room"><?= $this->room->title; ?></h3>
 	<?php endif; ?>

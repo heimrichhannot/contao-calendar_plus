@@ -46,7 +46,7 @@ class PromoterController extends \Frontend
 		$this->arrData = $objModel->row();
 	}
 
-	public function parsePromoter($objPromoter)
+	public function parsePromoter($objPromoter, $index = null, array $arrPromoters = array())
 	{
 		$strTemplate = $this->cal_promoterTemplate ? $this->cal_promoterTemplate : 'cal_promoter_default';
 
@@ -86,7 +86,11 @@ class PromoterController extends \Frontend
 		$objT->emailTitle = $GLOBALS['TL_LANG']['cal_promoterlist']['emailTitle'];
 		$objT->websiteTitle = $GLOBALS['TL_LANG']['cal_promoterlist']['websiteTitle'];
 
-
+		if(!empty($arrPromoters) && $index !== null)
+		{
+			$objT->cssClass = \HeimrichHannot\Haste\Util\Arrays::getListPositonCssClass($index, $arrPromoters);
+		}
+		
 		return $objT->parse();
 	}
 

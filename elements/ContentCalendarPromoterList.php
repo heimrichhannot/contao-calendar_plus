@@ -48,11 +48,15 @@ class ContentCalendarPromoterList extends \ContentElement
 			return;
 		}
 
+		$i = 0;
 		$arrPromoters = array();
-
+		$arrList = $this->objPromoters->fetchAll();
+		$this->objPromoters->reset();
+		
 		while($this->objPromoters->next())
 		{
-			$arrPromoters[] = $this->Controller->parsePromoter($this->objPromoters->current());
+			$arrPromoters[] = $this->Controller->parsePromoter($this->objPromoters->current(), $i, $arrList);
+			$i++;
 		}
 
 		$this->Template->promoters = $arrPromoters;
