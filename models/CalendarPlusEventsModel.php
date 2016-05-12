@@ -635,7 +635,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 	 *
 	 * @return \Model|null The model or null if there is no event
 	 */
-	public static function findPublishedSubEventsByParentEventId($varId, array $arrOptions = array())
+	public static function findPublishedSubEvents($varId, array $arrOptions = array())
 	{
 		$t          = static::$strTable;
 		$arrColumns = array("($t.parentEvent=?)");
@@ -656,7 +656,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 	public static function hasAtLeastOnePublishedPlacedSubEvent($config, $intId)
 	{
 		if (in_array('event_subscription', $config->getActiveModules())) {
-			$objSubEvents = static::findPublishedSubEventsByParentEventId($intId);
+			$objSubEvents = static::findPublishedSubEvents($intId);
 			if ($objSubEvents !== null) {
 				while ($objSubEvents->next()) {
 					if ($objSubEvents->addSubscription)

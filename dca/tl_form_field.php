@@ -7,7 +7,6 @@
  * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
-
 $dc = &$GLOBALS['TL_DCA']['tl_form_field'];
 
 // add palette for field type nl_subscribe
@@ -105,7 +104,7 @@ class tl_extended_events_form_field extends Backend {
 	
 	public static function doCreateOptions($formFieldId, $formFieldEventId)
 	{
-		$objEvents = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($formFieldEventId);
+		$objEvents = HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findPublishedSubEvents($formFieldEventId);
 		
 		if ($objEvents !== null)
 		{

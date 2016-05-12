@@ -1,50 +1,45 @@
 (function ($) {
 
-    var CalendarPlus = {
-        onReady: function () {
-            this.showEventsInModal();
-            this.closeEventsModal();
-        },
-        showEventsInModal: function () {
-            $('body').on('click', '[data-event="modal"]', function (e) {
-                e.preventDefault();
-                var $this = $(this),
-                    $modal = $($this.data('target')),
-                    $replace = $modal.find('.modal-dialog');
+	var CalendarPlus = {
+		onReady: function () {
+			this.showEventsInModal();
+			this.initInfiniteScroll();
+		},
+		showEventsInModal: function () {
+			$('body').on('click', '[data-event="modal"]', function (e) {
+				e.preventDefault();
+				var $modal = $($(this).data('target'));
 
-                // change history base to filtered url, as long we are not in modal view
-                if (!$modal.hasClass('in')) {
-                    $modal.data('history-base-filtered', window.location.href);
-                }
+				// change history base
+				if (!$modal.hasClass('in')) {
+					$modal.data('history-base-filtered', window.location.href);
+				}
+			});
+		},
+		initInfiniteScroll: function(){
+			var arrInfiniteElem = $(document).find('[class^=jscroll_element]'),
+					loadHtml = "<div class='loading'><div class='inside'><div class='spinner'><div class='rect1'></div><div class='rect2'></div><div class='rect3'></div><div class='rect4'></div><div class='rect5'></div></div>Daten werden geladen.</div></div>";
 
-                $replace.load($this.attr('href'), function (responseText, textStatus, jqXHR) {
-                    $replace.html(responseText);
-                    history.pushState(null, null, $this.attr('href'));
-                    $modal.modal('show');
-                });
-            });
-        },
-        closeEventsModal: function () {
-            $('.mod_eventreader_plus').on('hide.bs.modal', function (e) {
+			$.each(arrInfiniteElem, function(){
+				var infiniteElementSelector = $(this).attr('class'),
+						autoTrigger = $(this).attr('data-autotrigger'),
+						html = '<script>';
+				html += '$(".'+infiniteElementSelector+'").jscroll({'
+						+  'debug: false,'
+						+  'loadingHtml: "'+loadHtml+'",'
+						+  'nextSelector: ".pagination a.next",'
+						+  'autoTrigger: '+autoTrigger+','
+						+  'contentSelector: ".'+infiniteElementSelector+'"});';
+				html += '</script>';
+				$(this).prepend(html);
+			});
 
-                var $this = $(this);
-
-                // set url to history-base-filtered if set (modal content replaced via ajax)
-                if($this.data('history-base-filtered'))
-                {
-                    history.pushState(null, null, $this.data('history-base-filtered'));
-                }
-                // redirect to base url (modal window opened via direct event url)
-                else{
-                    window.location.href = $this.data('history-base');
-                }
-            });
-        }
-    }
+		}
+	}
 
 
-    $(document).ready(function () {
-        CalendarPlus.onReady()
-    });
+	$(document).ready(function () {
+		CalendarPlus.onReady()
+	});
 
 })(jQuery);

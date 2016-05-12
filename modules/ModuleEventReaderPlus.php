@@ -293,7 +293,7 @@ class ModuleEventReaderPlus extends EventsPlus
 
 		if(!$this->cal_ungroupSubevents)
 		{
-			$objChildEvents = CalendarPlusEventsModel::findPublishedSubEventsByParentEventId($objEvent->id);
+			$objChildEvents = CalendarPlusEventsModel::findPublishedSubEvents($objEvent->id);
 
 			if($objChildEvents !== null)
 			{

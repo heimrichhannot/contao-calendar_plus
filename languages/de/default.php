@@ -30,7 +30,7 @@ $GLOBALS['TL_LANG']['tl_form_field']['further-info'] = 'Weitere&nbsp;Information
  * Event List
  */
 $GLOBALS['TL_LANG']['eventlist']['listEmptyFilter'] = 'Für die angegebenen Filterkriterien wurden keine Veranstaltungen gefunden. <br />Bitte verändern Sie Ihre Eingabe und senden Sie die Suche anschließend erneut ab.';
-
+$GLOBALS['TL_LANG']['eventlist']['loadMore'] = 'mehr laden';
 /**
  * Event Details
  */
