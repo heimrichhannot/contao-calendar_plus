@@ -793,6 +793,14 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 		return $reservedPlaces;
 	}
 
+	public static function getNonSubEventEvents($blnPublishedOnly = false)
+	{
+		if ($blnPublishedOnly)
+			return static::findBy(array('(parentEvent IS NULL OR parentEvent="")', 'published=1'), array());
+		else
+			return static::findBy(array('(parentEvent IS NULL OR parentEvent="")'), array());
+	}
+
 	public static function hasContentElements($intId)
 	{
 		return (\ContentModel::findBy(array('ptable=? AND pid=?'), array('tl_news', $intId)) !== null);
