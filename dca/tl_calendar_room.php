@@ -286,7 +286,14 @@ class tl_calendar_room extends \Backend
 			$root = $this->User->calendars;
 		}
 
-		$id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
+		$archiveId = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
+
+		$objRoomArchive = \HeimrichHannot\CalendarPlus\CalendarRoomArchiveModel::findByPk($archiveId);
+
+		if($objRoomArchive !== null)
+		{
+			$id = $objRoomArchive->pid;
+		}
 
 		// Check current action
 		switch (Input::get('act'))
