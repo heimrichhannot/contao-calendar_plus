@@ -206,7 +206,7 @@ $arrDca['fields'] += $arrFields;
 
 $arrDca['fields']['location']['eval']['tl_class'] = 'w50 clr';
 
-tl_calendar_events_plus::filterSubEvents($arrDca);
+//tl_calendar_events_plus::filterSubEvents($arrDca);
 
 class tl_calendar_events_plus extends \Backend
 {

@@ -31,6 +31,7 @@ $dc['palettes']['eventlist_plus'] = '
 $dc['palettes']['eventreader_plus'] = '
 										{title_legend},name,headline,type;
 										{config_legend},cal_calendar;
+											{event_registration_legend},addRegistration;
 										{template_legend:hide},cal_template,cal_template_modal,cal_templateSubevent,customTpl;
 										{image_legend},imgSize;{protected_legend:hide},protected;
 										{memberdocent_legend},mlTemplate,mlLoadContent,mlImgSize,mlDisableImages,cal_subeventDocentTemplate,cal_subeventHostTemplate;
@@ -48,6 +49,8 @@ $dc['palettes']['eventfilter'] = '
 									{template_legend:hide},customTpl;
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';
+
+
 
 /**
  * Selectors

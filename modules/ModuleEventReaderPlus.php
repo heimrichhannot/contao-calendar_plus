@@ -54,7 +54,7 @@ class ModuleEventReaderPlus extends EventsPlus
 
 		if($this->cal_template_modal)
 		{
-			$this->strTemplate = 'mod_event_modal';
+			$this->strTemplate = $this->customTpl ?: 'mod_event_modal';
 			$this->cal_template = $this->cal_template_modal;
 
 			// list config
@@ -374,6 +374,11 @@ class ModuleEventReaderPlus extends EventsPlus
 		$objTemplate = new \FrontendTemplate($this->cal_template);
 		$objTemplate->setData((array) $objEvent);
 		$objTemplate->nav = $this->generateArrowNavigation($objEvent, $strUrl);
+
+		if (in_array('event_registration', \ModuleLoader::getActive()))
+		{
+			$objTemplate->module = $this;
+		}
 
 
 		if(is_array($arrSubEvents) && !empty($arrSubEvents))
