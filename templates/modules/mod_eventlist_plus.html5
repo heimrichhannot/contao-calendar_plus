@@ -2,13 +2,14 @@
 
 <?php $this->block('content'); ?>
 
-<?php if($this->event_useInfiniteScroll):?> <div class="jscroll_element_<?= $this->id ?>" data-autotrigger="<?= $this->event_useAutoTrigger ? 'true':'false' ?>"><?php endif; ?>
+
+<?php if($this->cal_useInfiniteScroll):?><div class="jscroll_element_<?= $this->id ?>" data-autotrigger="<?= $this->cal_useAutoTrigger ? 'true':'false' ?>"><?php endif; ?>
 	<?php if($this->isRelated): ?>
 		<?php echo $this->emptyMessage; ?>
 		<h5>Das könnte Sie auch interessieren.</h5>
 	<?php endif; ?>
  	<?php echo $this->events; ?>
   	<?php echo $this->pagination; ?>
-	<?php if($this->event_useInfiniteScroll):?></div><?php endif; ?>
+	<?php if($this->cal_useInfiniteScroll):?></div><?php endif; ?>
 <?php $this->endblock(); ?>
 
