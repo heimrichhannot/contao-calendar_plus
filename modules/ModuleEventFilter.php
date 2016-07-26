@@ -52,23 +52,30 @@ class ModuleEventFilter extends EventsPlus
 		$this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
 
 		// Return if there are no calendars
-		if (!is_array($this->cal_calendar) || empty($this->cal_calendar)) {
+		if (!is_array($this->cal_calendar) || empty($this->cal_calendar))
+		{
 			return '';
 		}
-
-		return parent::generate();
+		
+		parent::generate();
+		
+		// needs to be overwritten in model, otherwise datacontainer argument in options_callback contains protected calendars
+		$this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
+		
+		$objForm = new EventFilterForm($this->objModel);
+		
+		if(($strForm = $objForm->generate()) === null)
+		{
+			return '';
+		}
+		
+		$this->Template->form = $objForm->generate();
+		
+		return $this->Template->parse();
 	}
 
 	protected function compile()
 	{
-
-		// needs to be overwritten in model, otherwise datacontainer argument in options_callback contains protected calendars
-		$this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
-
-
-		$objForm = new EventFilterForm($this->objModel);
-
-		$this->Template->form = $objForm->generate();
 	}
 
 	public function getFilterOptions()
@@ -79,6 +86,7 @@ class ModuleEventFilter extends EventsPlus
 		$this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
 
 		$objForm = new EventFilterForm($this->objModel);
+		
 		$objForm->generate();
 
 		$arrFields = $objForm->getFilterFields();
