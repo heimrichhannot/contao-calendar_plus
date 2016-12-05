@@ -10,8 +10,6 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
-use Crossjoin\Browscap\Cache\File;
-use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
 use HeimrichHannot\Haste\Cache\FileCache;
 
 class EventFilterHelper extends \Frontend
@@ -61,10 +59,13 @@ class EventFilterHelper extends \Frontend
 
 		$strCacheKey = 'host_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
-		if(FileCache::getInstance()->isExisting($strCacheKey))
-		{
-			return FileCache::getInstance()->get($strCacheKey);
-		}
+        $objCache = FileCache::getInstance();
+        $objCacheItem = $objCache->getItem($strCacheKey);
+
+        if($objCacheItem->get() !== null)
+        {
+            return $objCacheItem->get();
+        }
 
 		$objHosts = CalendarPlusEventsModel::getUniqueHostsByPids($dc->objModule->cal_calendar);
 		$objMemberHosts = CalendarPlusEventsModel::getUniqueMemberHostsByPids($dc->objModule->cal_calendar);
@@ -100,7 +101,8 @@ class EventFilterHelper extends \Frontend
 
 		$arrItems = array_replace($arrOrder, $arrItems);
 
-		FileCache::getInstance()->set($strCacheKey, $arrItems);
+        $objCacheItem->set($arrItems);
+        $objCache->save($objCacheItem);
 
 		return $arrItems;
 	}
@@ -116,10 +118,13 @@ class EventFilterHelper extends \Frontend
 
 		$strCacheKey = 'docent_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
-		if(FileCache::getInstance()->isExisting($strCacheKey))
-		{
-			return FileCache::getInstance()->get($strCacheKey);
-		}
+        $objCache = FileCache::getInstance();
+        $objCacheItem = $objCache->getItem($strCacheKey);
+
+        if($objCacheItem->get() !== null)
+        {
+            return $objCacheItem->get();
+        }
 
 		$objDocents = CalendarPlusEventsModel::getUniqueDocentsByPids($dc->objModule->cal_calendar);
 		$objMemberDocents = CalendarPlusEventsModel::getUniqueMemberDocentsByPids($dc->objModule->cal_calendar);
@@ -155,7 +160,8 @@ class EventFilterHelper extends \Frontend
 		
 		$arrItems = array_replace($arrOrder, $arrItems);
 
-		FileCache::getInstance()->set($strCacheKey, $arrItems);
+        $objCacheItem->set($arrItems);
+        $objCache->save($objCacheItem);
 
 		return $arrItems;
 	}
@@ -171,10 +177,13 @@ class EventFilterHelper extends \Frontend
 
 		$strCacheKey = 'eventtypes_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
-		if(FileCache::getInstance()->isExisting($strCacheKey))
-		{
-			return FileCache::getInstance()->get($strCacheKey);
-		}
+        $objCache = FileCache::getInstance();
+        $objCacheItem = $objCache->getItem($strCacheKey);
+
+        if($objCacheItem->get() !== null)
+        {
+            return $objCacheItem->get();
+        }
 
 		$objArchives = CalendarEventtypesArchiveModel::findByPids($dc->objModule->cal_calendar);
 
@@ -192,7 +201,8 @@ class EventFilterHelper extends \Frontend
 
 		$arrItems = $objEvenTypes->fetchEach('title');
 
-		FileCache::getInstance()->set($strCacheKey, $arrItems);
+        $objCacheItem->set($arrItems);
+        $objCache->save($objCacheItem);
 
 		return $arrItems;
 	}
@@ -292,9 +302,12 @@ class EventFilterHelper extends \Frontend
 
 		$strCacheKey = 'promoters_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
-		if(FileCache::getInstance()->isExisting($strCacheKey))
+        $objCache = FileCache::getInstance();
+        $objCacheItem = $objCache->getItem($strCacheKey);
+
+		if($objCacheItem->get() !== null)
 		{
-			return FileCache::getInstance()->get($strCacheKey);
+			return $objCacheItem->get();
 		}
 
 		$objPromoters = CalendarPlusEventsModel::getUniquePromotersByPids($dc->objModule->cal_calendar);
@@ -307,7 +320,8 @@ class EventFilterHelper extends \Frontend
 		// sort
 		asort($arrItems);
 
-		FileCache::getInstance()->set($strCacheKey, $arrItems);
+        $objCacheItem->set($arrItems);
+        $objCache->save($objCacheItem);
 
 		return $arrItems;
 	}
@@ -323,10 +337,13 @@ class EventFilterHelper extends \Frontend
 
 		$strCacheKey = 'city_select_options_' . implode('_', $dc->objModule->cal_calendar);
 
-		if(FileCache::getInstance()->isExisting($strCacheKey))
-		{
-			return FileCache::getInstance()->get($strCacheKey);
-		}
+        $objCache = FileCache::getInstance();
+        $objCacheItem = $objCache->getItem($strCacheKey);
+
+        if($objCacheItem->get() !== null)
+        {
+            return $objCacheItem->get();
+        }
 
 		$arrItems = array();
 
@@ -334,15 +351,12 @@ class EventFilterHelper extends \Frontend
 
 		$arrOptions['fields'][] = 'DISTINCT city';
 
-		$arrOptions['column'][] = "$t.pid IN(" . implode(',', array_map('intval', $dc->objModule->cal_calendar)) . ")";
-
 		$arrOptions['column'][] = 'city != ""';
 
-		if (!BE_USER_LOGGED_IN)
-		{
-			$time = time();
-			$arrOptions['column'][] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
-		}
+        $time = \Date::floorToMinute();
+
+        // Get upcoming events using endTime instead of startTime (see #3917)
+        $arrOptions['column'][] = "($t.endTime>=$time OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$time))) AND $t.pid IN(" . implode(',', array_map('intval', $dc->objModule->cal_calendar)) . ") AND ($t.start='' OR $t.start<='$time') AND ($t.stop='' OR $t.stop>'" . ($time + 60) . "') AND $t.published='1'";
 
 		$arrOptions['order'] = 'city ASC';
 
@@ -352,7 +366,8 @@ class EventFilterHelper extends \Frontend
 
 		$arrItems = $objItems->fetchEach('city');
 
-		FileCache::getInstance()->set($strCacheKey, $arrItems);
+        $objCacheItem->set($arrItems);
+        $objCache->save($objCacheItem);
 
 		return $arrItems;
 	}

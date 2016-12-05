@@ -29,7 +29,7 @@ abstract class EventsPlus extends \Events
 			$objModel->formHybridEditable = deserialize($objModel->formHybridEditable, true);
 			$objModel->formHybridEditable = array_unique(array_merge($objModel->formHybridEditable, array('q')));
 		}
-		
+
 		return $objModel;
 	}
 
@@ -73,17 +73,17 @@ abstract class EventsPlus extends \Events
 		}
 		
 		$objHelper = new EventFilterHelper();
-		
+
 		$arrEventTypeArchives  = deserialize($objModule->cal_eventTypesArchive, true);
-		
+
 		foreach($arrFields as $strKey)
 		{
 			$arrData = $GLOBALS['TL_DCA']['tl_calendar_events']['fields'][$strKey];
-			
+
 			if(!is_array($arrData) || empty($arrData)) continue;
 
 			$arrFilter[$strKey] = $objHelper->getValueByDca(\Input::get($strKey), $arrData);
-			
+
 			if(!$objModule->cal_combineEventTypesArchive && count($arrEventTypeArchives) > 0 && strrpos($strKey, 'eventtypes', -strlen($strKey)) !== FALSE)
 			{
 				// unset eventtypes
@@ -97,7 +97,7 @@ abstract class EventsPlus extends \Events
 				}
 			}
 		}
-		
+
 		return $arrFilter;
 	}
 

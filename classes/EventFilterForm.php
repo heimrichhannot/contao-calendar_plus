@@ -19,65 +19,64 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 
 	public function __construct($objModule)
 	{
-		$this->strPalette = $objModule->formHybridPalette;
 		$this->strMethod = FORMHYBRID_METHOD_GET;
 		$this->isFilterForm = true;
 		parent::__construct($objModule);
 	}
 	
-	public function modifyDC()
+	public function modifyDC(&$arrDca)
 	{
 		// adjust start date
-		$this->dca['fields']['startDate']['eval']['mandatory'] = false;
-		$this->dca['fields']['startDate']['eval']['placeholder'] = &$GLOBALS['TL_LANG']['eventfilter']['startDatePlaceholder'];
-		$this->dca['fields']['startDate']['eval']['autocomplete'] = false;
-		$this->dca['fields']['startDate']['eval']['linkedEnd'] = '#ctrl_endDate';
-		$this->dca['fields']['startDate']['eval']['linkedUnlock'] = 'true';
-		$this->dca['fields']['startDate']['eval']['data-toggle'] = 'tooltip';
-		$this->dca['fields']['startDate']['eval']['minDate'] = \Date::parse(\Config::get('dateFormat'), time());
+		$arrDca['fields']['startDate']['eval']['mandatory'] = false;
+		$arrDca['fields']['startDate']['eval']['placeholder'] = &$GLOBALS['TL_LANG']['eventfilter']['startDatePlaceholder'];
+		$arrDca['fields']['startDate']['eval']['autocomplete'] = false;
+		$arrDca['fields']['startDate']['eval']['linkedEnd'] = '#ctrl_endDate';
+		$arrDca['fields']['startDate']['eval']['linkedUnlock'] = 'true';
+		$arrDca['fields']['startDate']['eval']['data-toggle'] = 'tooltip';
+		$arrDca['fields']['startDate']['eval']['minDate'] = \Date::parse(\Config::get('dateFormat'), time());
 
 		// adjust end date
-		$this->dca['fields']['endDate']['eval']['mandatory'] = false;
-		$this->dca['fields']['endDate']['eval']['placeholder'] = &$GLOBALS['TL_LANG']['eventfilter']['endDatePlaceholder'];
-		$this->dca['fields']['endDate']['eval']['autocomplete'] = false;
-		$this->dca['fields']['endDate']['eval']['linkedStart'] = '#ctrl_startDate';
-		$this->dca['fields']['endDate']['eval']['linkedUnlock'] = 'true';
-		$this->dca['fields']['endDate']['eval']['data-toggle'] = 'tooltip';
+		$arrDca['fields']['endDate']['eval']['mandatory'] = false;
+		$arrDca['fields']['endDate']['eval']['placeholder'] = &$GLOBALS['TL_LANG']['eventfilter']['endDatePlaceholder'];
+		$arrDca['fields']['endDate']['eval']['autocomplete'] = false;
+		$arrDca['fields']['endDate']['eval']['linkedStart'] = '#ctrl_startDate';
+		$arrDca['fields']['endDate']['eval']['linkedUnlock'] = 'true';
+		$arrDca['fields']['endDate']['eval']['data-toggle'] = 'tooltip';
 
 		// adjust promoter field
-		$this->dca['fields']['promoter']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getPromoterSelectOptions');
-		unset($this->dca['fields']['promoter']['eval']['chosen']);
-		$this->dca['fields']['promoter']['eval']['includeBlankOption'] = true;
-		$this->dca['fields']['promoter']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['promoterBlankOptionLabel'];
+		$arrDca['fields']['promoter']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getPromoterSelectOptions');
+		unset($arrDca['fields']['promoter']['eval']['chosen']);
+		$arrDca['fields']['promoter']['eval']['includeBlankOption'] = true;
+		$arrDca['fields']['promoter']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['promoterBlankOptionLabel'];
 
 		// adjust city field
-		$this->dca['fields']['city']['inputType'] = 'select';
-		$this->dca['fields']['city']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getCitySelectOptions');
-		$this->dca['fields']['city']['eval']['includeBlankOption'] = true;
-		$this->dca['fields']['city']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['cityBlankOptionLabel'];
+		$arrDca['fields']['city']['inputType'] = 'select';
+		$arrDca['fields']['city']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getCitySelectOptions');
+		$arrDca['fields']['city']['eval']['includeBlankOption'] = true;
+		$arrDca['fields']['city']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['cityBlankOptionLabel'];
 
 		// adjust eventtypes field
-		$this->dca['fields']['eventtypes']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getEventTypesFieldsByArchive');
-		unset($this->dca['fields']['eventtypes']['eval']['chosen']);
-		$this->dca['fields']['eventtypes']['eval']['multiple'] = false;
-		$this->dca['fields']['eventtypes']['eval']['includeBlankOption'] = true;
-		$this->dca['fields']['eventtypes']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['eventTypesBlankOptionLabel'];
+		$arrDca['fields']['eventtypes']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getEventTypesFieldsByArchive');
+		unset($arrDca['fields']['eventtypes']['eval']['chosen']);
+		$arrDca['fields']['eventtypes']['eval']['multiple'] = false;
+		$arrDca['fields']['eventtypes']['eval']['includeBlankOption'] = true;
+		$arrDca['fields']['eventtypes']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['eventTypesBlankOptionLabel'];
 
 		// adjust docents field
 
 		if($this->objModule->cal_docent_combine)
 		{
-			$this->dca['fields']['docents']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getCombinedHostsAndDocentsSelectOptions');
+			$arrDca['fields']['docents']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getCombinedHostsAndDocentsSelectOptions');
 		} else
 		{
-			$this->dca['fields']['docents']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getDocentSelectOptions');
+			$arrDca['fields']['docents']['options_callback'] = array('HeimrichHannot\CalendarPlus\EventFilterHelper', 'getDocentSelectOptions');
 		}
 
-		unset($this->dca['fields']['docents']['eval']['chosen']);
-		unset($this->dca['fields']['docents']['eval']['style']);
-		$this->dca['fields']['docents']['eval']['multiple'] = false;
-		$this->dca['fields']['docents']['eval']['includeBlankOption'] = true;
-		$this->dca['fields']['docents']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['docentsBlankOptionLabel'];
+		unset($arrDca['fields']['docents']['eval']['chosen']);
+		unset($arrDca['fields']['docents']['eval']['style']);
+		$arrDca['fields']['docents']['eval']['multiple'] = false;
+		$arrDca['fields']['docents']['eval']['includeBlankOption'] = true;
+		$arrDca['fields']['docents']['eval']['blankOptionLabel'] = &$GLOBALS['TL_LANG']['eventfilter']['docentsBlankOptionLabel'];
 
 		// HOOK: add custom logic
 		if (isset($GLOBALS['TL_HOOKS']['loadDCEventFilterForm']) && is_array($GLOBALS['TL_HOOKS']['loadDCEventFilterForm']))
@@ -85,9 +84,14 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 			foreach ($GLOBALS['TL_HOOKS']['loadDCEventFilterForm'] as $callback)
 			{
 				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($this->dca);
+				$this->$callback[0]->$callback[1]($arrDca);
 			}
 		}
+
+        if($this->cal_addKeywordSearch)
+        {
+            $this->addEditableField('q', $arrDca['fields']['q'], true);
+        }
 
 		return true;
 	}

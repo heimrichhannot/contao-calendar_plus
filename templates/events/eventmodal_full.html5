@@ -8,7 +8,7 @@
         <?php echo $this->share; ?>
 	</div>
 	<div class="modal-body">
-		<div class="event layout_full block<?php echo $this->class; ?>" data-history-delete="<?php echo $this->alias; ?>" data-history-base="<?php echo $this->base; ?>">
+		<div class="event layout_full block<?php echo $this->class; ?>" data-history-base="<?php echo $this->base; ?>">
 
 			<div class="meta-row clearfix">
 				<?php if(is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
