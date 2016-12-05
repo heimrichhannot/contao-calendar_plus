@@ -11,9 +11,8 @@
 				var $modal = $($(this).data('target'));
 
 				// change history base
-				if (!$modal.hasClass('in')) {
-					$modal.data('history-base-filtered', window.location.href);
-				}
+				$modal.data('history-base', $(this).data('history-base'));
+				$modal.data('history-base-title', $(this).data('history-base-title'));
 			});
 		},
 		initInfiniteScroll: function(){

@@ -59,7 +59,7 @@
 
 
 
-  <h4 class="hidden-xs"><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
+  <h4 class="hidden-xs"><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-title="<?= $this->title; ?> - {{page::rootTitle}}" data-history-base-title="{{page::title}}" data-history-base="<?= \Environment::get('request'); ?>" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
 
   <div class="ce_text block">
 	<?php echo $this->teaser; ?>
