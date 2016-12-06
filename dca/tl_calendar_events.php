@@ -351,7 +351,7 @@ class tl_calendar_events_plus extends \Backend
 
 	public function clearCaches()
 	{
-		\HeimrichHannot\Haste\Cache\FileCache::clean();
+		\HeimrichHannot\Haste\Cache\FileCache::getInstance()->clear();
 	}
 
 	public static function filterSubEvents(&$arrDca)
