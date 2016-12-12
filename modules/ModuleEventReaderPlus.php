@@ -133,7 +133,7 @@ class ModuleEventReaderPlus extends EventsPlus
 			parent::generate();
 			// use output, otherwise page will not be added to search index
 			$strOutput = $this->isSearchIndexer() ? $this->Template->output() : $this->Template->parse();
-			die(\Controller::replaceInsertTags($strOutput, true));
+			die(\Controller::replaceInsertTags($strOutput, false));
 		}
 	}
 	
