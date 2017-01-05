@@ -33,7 +33,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
+            $arrColumns[] = "($t.endTime>=$time OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$time)))";
         }
 
         $arrOptions['group'] = 'city';
@@ -61,7 +61,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
+            $arrColumns[] = "($t.endTime>=$time OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$time)))";
         }
 
         if (!BE_USER_LOGGED_IN)
@@ -103,7 +103,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
+            $arrColumns[] = "($t.endTime>=$time OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$time)))";
         }
 
         $arrOptions['group'] = 'docents';
@@ -147,7 +147,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
+            $arrColumns[] = "($t.endTime>=$time OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$time)))";
         }
 
         $arrOptions['group'] = 'memberDocents';
@@ -191,7 +191,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
+            $arrColumns[] = "($t.endTime>=$time OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$time)))";
         }
 
         $arrOptions['group'] = 'hosts';
@@ -235,7 +235,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
+            $arrColumns[] = "($t.endTime>=$time OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$time)))";
         }
 
         $arrOptions['group'] = 'memberHosts';
@@ -280,7 +280,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
+            $arrColumns[] = "($t.endTime>=$time OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$time)))";
         }
 
         $arrOptions['group'] = 'promoter';

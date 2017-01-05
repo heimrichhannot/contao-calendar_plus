@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.21] - 2017-01-05
+
+### Fixed
+- CalendarPlusEventsModel::getUniqueCityNamesByPids() now correctly recognize $currentOnly period
+- CalendarPlusEventsModel::getUniquePromotersByPids() now correctly recognize $currentOnly period 
+- CalendarPlusEventsModel::getUniqueDocentsByPids() now correctly recognize $currentOnly period 
+- CalendarPlusEventsModel::getUniqueMemberDocentsByPids() now correctly recognize $currentOnly period 
+- CalendarPlusEventsModel::getUniqueHostsByPids() now correctly recognize $currentOnly period
+- CalendarPlusEventsModel::getUniqueMemberHostsByPids() now correctly recognize $currentOnly period
+- CalendarPlusEventsModel::getUniquePromoterNamesByPids() now correctly recognize $currentOnly period
+
 ## [1.2.20] - 2017-01-05
 
 ### Fixed
