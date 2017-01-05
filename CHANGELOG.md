@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.19] - 2016-01-06
+
+### Added
+- Poser badges added to README.md
+
 ## [1.2.18] - 2016-01-05
 
 ### Fixed

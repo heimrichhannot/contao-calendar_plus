@@ -1,5 +1,10 @@
 # Calendar Plus
 
+[![Latest Stable Version](https://poser.pugx.org/heimrichhannot/contao-calendar_plus/v/stable)](https://packagist.org/packages/heimrichhannot/contao-calendar_plus)
+[![Total Downloads](https://poser.pugx.org/heimrichhannot/contao-calendar_plus/downloads)](https://packagist.org/packages/heimrichhannot/contao-calendar_plus)
+[![Monthly Downloads](https://poser.pugx.org/heimrichhannot/contao-calendar_plus/d/monthly)](https://packagist.org/packages/heimrichhannot/contao-calendar_plus)
+[![License](https://poser.pugx.org/heimrichhannot/contao-calendar_plus/license)](https://packagist.org/packages/heimrichhannot/contao-calendar_plus)
+
 A collection of enhancements for the contao calendar module.
 
 ## Features
