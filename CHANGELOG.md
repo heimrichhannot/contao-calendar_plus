@@ -1,12 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.2.19] - 2016-01-06
+## [1.2.20] - 2017-01-05
+
+### Fixed
+- Changelog dates for 1.2.18 & 1.2.19 to 2017
+
+## [1.2.19] - 2017-01-05
 
 ### Added
 - Poser badges added to README.md
 
-## [1.2.18] - 2016-01-05
+## [1.2.18] - 2017-01-05
 
 ### Fixed
 - CalendarPlusEventsModel::getUniqueCityNamesByPids() now correctly recognize $currentOnly period
