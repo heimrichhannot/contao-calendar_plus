@@ -33,7 +33,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "($t.startDate >= $time)";
+            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
         }
 
         $arrOptions['group'] = 'city';
@@ -61,7 +61,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "($t.startDate >= $time)";
+            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
         }
 
         if (!BE_USER_LOGGED_IN)
@@ -103,7 +103,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "($t.startDate >= $time)";
+            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
         }
 
         $arrOptions['group'] = 'docents';
@@ -147,7 +147,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "($t.startDate >= $time)";
+            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
         }
 
         $arrOptions['group'] = 'memberDocents';
@@ -191,7 +191,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "($t.startDate >= $time)";
+            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
         }
 
         $arrOptions['group'] = 'hosts';
@@ -235,7 +235,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "($t.startDate >= $time)";
+            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
         }
 
         $arrOptions['group'] = 'memberHosts';
@@ -280,7 +280,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($currentOnly)
         {
-            $arrColumns[] = "($t.startDate >= $time)";
+            $arrColumns[] = "((($t.endDate IS NULL OR $t.endDate = '') AND $t.startDate = $time) OR (($t.startDate = '' OR $t.startDate <= $time) AND $t.endDate >= $time))";
         }
 
         $arrOptions['group'] = 'promoter';
