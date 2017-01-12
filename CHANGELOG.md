@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.22] - 2017-01-12
+
+### Fixed
+- event registration connection
+
 ## [1.2.21] - 2017-01-05
 
 ### Fixed

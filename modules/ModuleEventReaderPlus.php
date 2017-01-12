@@ -11,6 +11,8 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
+use HeimrichHannot\EventRegistration\EventRegistration;
+
 
 /**
  * Class ModuleEventReader
@@ -64,7 +66,8 @@ class ModuleEventReaderPlus extends EventsPlus
 		global $objPage;
 		
 		// add registration before generating event details, otherwise formhybrid ajax requests wont get triggered
-		if(in_array('event_registration', \ModuleLoader::getActive()) && $this->addRegistration && $this->checkConditions() && $this->objEvent->addRegistration)
+		if(in_array('event_registration', \ModuleLoader::getActive()) && $this->addRegistration &&
+           $this->checkConditions() && $this->objEvent->addRegistration)
 		{
 			if ((!$this->objEvent->codes && !\Input::get('step')) || \Input::get('step') == EventRegistration::STEP_REGISTRATION)
 			{
@@ -397,7 +400,7 @@ class ModuleEventReaderPlus extends EventsPlus
 		if ($this->registration !== null)
 		{
 			$objTemplate->registration = $this->registration;
-			$objTemplate->module = $this; // falback
+			$objTemplate->module = $this; // fallback
 		}
 		
 		if (is_array($arrSubEvents) && !empty($arrSubEvents)) {
