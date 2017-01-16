@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.23] - 2017-01-16
+
+### Added
+- startDateFormatted and endDateFormatted in reader module
+
 ## [1.2.22] - 2017-01-12
 
 ### Fixed

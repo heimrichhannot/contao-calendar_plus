@@ -34,6 +34,8 @@ $GLOBALS['TL_LANG']['eventlist']['loadMore'] = 'mehr laden';
 /**
  * Event Details
  */
+$GLOBALS['TL_LANG']['event']['startDateLabel'] = 'Von';
+$GLOBALS['TL_LANG']['event']['endDateLabel'] = 'Bis';
 $GLOBALS['TL_LANG']['event']['startTimeLabel'] = 'Beginn';
 $GLOBALS['TL_LANG']['event']['endTimeLabel'] = 'Ende';
 $GLOBALS['TL_LANG']['event']['timeSuffix'] = 'Uhr';

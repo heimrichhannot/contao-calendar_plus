@@ -297,6 +297,8 @@ abstract class EventsPlus extends \Events
 		$arrEvent['begin'] = $intStart;
 		$arrEvent['end'] = $intEnd;
 		$arrEvent['details'] = '';
+        $arrEvent['startDateFormatted'] = $objEvent->startDate > 0 ? \Date::parse($objPage->dateFormat, $objEvent->startDate) : null;
+        $arrEvent['endDateFormatted'] = $objEvent->endDate > 0 ? \Date::parse($objPage->dateFormat, $objEvent->endDate) : null;
 		$arrEvent['startTimeFormated'] = $objEvent->startTime > 0 ? \Date::parse($objPage->timeFormat, $objEvent->startTime) : null;
 		$arrEvent['endTimeFormated'] = $objEvent->endTime > 0 ? \Date::parse($objPage->timeFormat, $objEvent->endTime) : null;
 
