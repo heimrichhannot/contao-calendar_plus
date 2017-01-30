@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.24] - 2017-01-30
+
+### Fixed
+- tl_calendar_room permission issues
+
 ## [1.2.23] - 2017-01-16
 
 ### Added

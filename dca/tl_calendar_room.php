@@ -286,13 +286,13 @@ class tl_calendar_room extends \Backend
 			$root = $this->User->calendars;
 		}
 
-		$archiveId = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
+		$id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
 
-		$objRoomArchive = \HeimrichHannot\CalendarPlus\CalendarRoomArchiveModel::findByPk($archiveId);
+		$objRoomArchive = \HeimrichHannot\CalendarPlus\CalendarRoomArchiveModel::findByPk($id);
 
 		if($objRoomArchive !== null)
 		{
-			$id = $objRoomArchive->pid;
+			$pid = $objRoomArchive->pid;
 		}
 
 		// Check current action
@@ -303,7 +303,7 @@ class tl_calendar_room extends \Backend
 				break;
 
 			case 'create':
-				if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root))
+				if (!strlen(Input::get('pid')) || !in_array($pid, $root))
 				{
 					$this->log('Not enough permissions to create room in calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
@@ -312,9 +312,9 @@ class tl_calendar_room extends \Backend
 
 			case 'cut':
 			case 'copy':
-				if (!in_array(Input::get('pid'), $root))
+				if (!in_array($pid, $root))
 				{
-					$this->log('Not enough permissions to '.Input::get('act').' room ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+					$this->log('Not enough permissions to '.Input::get('act').' room ID "'.$id.'" to calendar ID "'.$pid.'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
 			// NO BREAK STATEMENT HERE
@@ -385,7 +385,7 @@ class tl_calendar_room extends \Backend
 					$this->log('Invalid command "'.Input::get('act').'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
 				}
-				elseif (!in_array($id, $root))
+				elseif (!in_array($pid, $root))
 				{
 					$this->log('Not enough permissions to access calendar ID "'.$id.'"', __METHOD__, TL_ERROR);
 					$this->redirect('contao/main.php?act=error');
