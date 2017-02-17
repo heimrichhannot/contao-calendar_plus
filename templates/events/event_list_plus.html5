@@ -71,6 +71,16 @@
 		</div>
 	<?php endif; ?>
 
+    <?php if(is_array($this->roomList) && !empty($this->roomList)): ?>
+        <div class="rooms">
+            <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['roomLabel']; ?></span>
+            <?php foreach($this->roomList as $iR => $objRoom): ?>
+                <?php if($iR > 0): ?>&middot;<?php endif; ?>
+                <?= $objRoom->title; ?>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
+
 	<?php if(is_array($this->promoterList) && !empty($this->promoterList)): ?>
 		<div class="promoter">
 			<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span>

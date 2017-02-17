@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.25] - 2017-02-17
+
+### Added
+- roomList now available within reader and list template
+
 ## [1.2.24] - 2017-01-30
 
 ### Fixed
