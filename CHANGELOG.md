@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.26] - 2017-04-05
+
+### Added
+- do not render modal when share-print template is set within module config
+
 ## [1.2.25] - 2017-02-17
 
 ### Added
