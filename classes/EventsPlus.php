@@ -210,7 +210,7 @@ abstract class EventsPlus extends \Events
             foreach ($GLOBALS['TL_HOOKS']['getAllEvents'] as $callback)
             {
                 $this->import($callback[0]);
-                $this->arrEvents = $this->$callback[0]->$callback[1]($this->arrEvents, $arrCalendars, $intStart, $intEnd, $this);
+                $this->arrEvents = $this->{$callback[0]}->{$callback[1]}($this->arrEvents, $arrCalendars, $intStart, $intEnd, $this);
             }
         }
 
@@ -497,11 +497,11 @@ abstract class EventsPlus extends \Events
         {
             if ($objPage->outputFormat == 'xhtml')
             {
-                $arrEvent['teaser'] = \String::toXhtml($arrEvent['teaser']);
+                $arrEvent['teaser'] = \StringUtil::toXhtml($arrEvent['teaser']);
             }
             else
             {
-                $arrEvent['teaser'] = \String::toHtml5($arrEvent['teaser']);
+                $arrEvent['teaser'] = \StringUtil::toHtml5($arrEvent['teaser']);
             }
         }
 
