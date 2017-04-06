@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 ## [1.2.27] - 2017-04-05
 
 ### Changed
+- changed String to StringUtil and this->$callback to this->{callback}
+
+## [1.2.27] - 2017-04-05
+
+### Changed
 - added php7 support. fixed contao-core dependency
 
 ## [1.2.26] - 2017-04-05

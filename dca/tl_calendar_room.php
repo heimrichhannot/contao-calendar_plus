@@ -462,7 +462,7 @@ class tl_calendar_room extends \Backend
 			foreach ($GLOBALS['TL_DCA']['tl_calendar_room']['fields']['published']['save_callback'] as $callback) {
 				if (is_array($callback)) {
 					$this->import($callback[0]);
-					$blnVisible = $this->$callback[0]->$callback[1]($blnVisible, ($dc ?: $this));
+					$blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, ($dc ?: $this));
 				} elseif (is_callable($callback)) {
 					$blnVisible = $callback($blnVisible, ($dc ?: $this));
 				}
@@ -499,7 +499,7 @@ class tl_calendar_room extends \Backend
 		// Generate alias if there is none
 		if ($varValue == '') {
 			$autoAlias = true;
-			$varValue  = standardize(String::restoreBasicEntities($dc->activeRecord->title));
+			$varValue  = standardize(StringUtil::restoreBasicEntities($dc->activeRecord->title));
 		}
 
 		$objAlias = $this->Database->prepare("SELECT id FROM tl_calendar_room WHERE alias=?")

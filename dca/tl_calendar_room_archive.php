@@ -362,7 +362,7 @@ class tl_calendar_room_archive extends \Backend
 			foreach ($GLOBALS['TL_DCA']['tl_calendar_room_archive']['fields']['published']['save_callback'] as $callback) {
 				if (is_array($callback)) {
 					$this->import($callback[0]);
-					$blnVisible = $this->$callback[0]->$callback[1]($blnVisible, ($dc ?: $this));
+					$blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, ($dc ?: $this));
 				} elseif (is_callable($callback)) {
 					$blnVisible = $callback($blnVisible, ($dc ?: $this));
 				}
