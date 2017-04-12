@@ -1,7 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## [1.2.27] - 2017-04-05
+## [1.2.29] - 2017-04-12
+- created new tag for composer dependency
+
+## [1.2.28] - 2017-04-05
 
 ### Changed
 - changed String to StringUtil and this->$callback to this->{callback}
