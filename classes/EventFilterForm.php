@@ -24,7 +24,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 		parent::__construct($objModule);
 	}
 	
-	public function modifyDC(&$arrDca)
+	public function modifyDC(&$arrDca = NULL)
 	{
 		// adjust start date
 		$arrDca['fields']['startDate']['eval']['mandatory'] = false;
@@ -84,7 +84,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 			foreach ($GLOBALS['TL_HOOKS']['loadDCEventFilterForm'] as $callback)
 			{
 				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($arrDca);
+				$this->{$callback[0]}->{$callback[1]}($arrDca);
 			}
 		}
 

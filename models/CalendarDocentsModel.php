@@ -18,7 +18,7 @@ class CalendarDocentsModel extends \Model
 
 	public function generateAlias()
 	{
-		$varValue = standardize(\String::restoreBasicEntities($this->title));
+		$varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
 
 		$objAlias = static::findBy('alias', $varValue);
 

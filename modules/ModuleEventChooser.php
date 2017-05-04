@@ -44,7 +44,7 @@ class ModuleEventChooser extends \Module
 			foreach ($GLOBALS['TL_HOOKS']['getEventObjectsForChooser'] as $callback)
 			{
 				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($objEvents);
+				$this->{$callback[0]}->{$callback[1]}($objEvents);
 			}
 		}
 		
@@ -64,7 +64,7 @@ class ModuleEventChooser extends \Module
 			foreach ($GLOBALS['TL_HOOKS']['getEventItemsForChooser'] as $callback)
 			{
 				$this->import($callback[0]);
-				$this->$callback[0]->$callback[1]($objEvents, $items);
+				$this->{$callback[0]}->{$callback[1]}($objEvents, $items);
 			}
 		}
 		
