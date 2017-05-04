@@ -235,7 +235,7 @@ class EventFilterHelper extends \Frontend
 					return $arrItems;
 				}
 
-				$objEventTypes = CalendarEventtypesModel::findByPids(array($value));
+				$objEventTypes = CalendarEventtypesModel::findPublishedByPids(array($value));
 
 				if ($objEventTypes === null)
 				{

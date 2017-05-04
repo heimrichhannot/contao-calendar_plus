@@ -1,10 +1,11 @@
 <?php
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
+ *
  * @package calendar_plus
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
@@ -13,74 +14,110 @@ namespace HeimrichHannot\CalendarPlus;
 
 class CalendarEventtypesModel extends \Model
 {
-	protected static $strTable = 'tl_calendar_eventtypes';
+    protected static $strTable = 'tl_calendar_eventtypes';
 
 
-	public function generateAlias()
-	{
-		$varValue = standardize(\String::restoreBasicEntities($this->title));
+    public function generateAlias()
+    {
+        $varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
 
-		$objAlias = static::findBy('alias', $varValue);
+        $objAlias = static::findBy('alias', $varValue);
 
-		// Check whether the alias exists
-		if ($objAlias !== null) {
-			if(!$this->id) return $this;
+        // Check whether the alias exists
+        if ($objAlias !== null)
+        {
+            if (!$this->id)
+            {
+                return $this;
+            }
 
-			$varValue .= '-' . $this->id;
-		}
+            $varValue .= '-' . $this->id;
+        }
 
-		$this->alias = $varValue;
+        $this->alias = $varValue;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Find all item by pids
-	 *
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return \Model\Collection|null A collection of models or null
-	 */
-	public static function findByPids(array $arrPids=array(), array $arrOptions=array())
-	{
-		if (!is_array($arrPids) || empty($arrPids))
-		{
-			return null;
-		}
+    /**
+     * Find all item by pids
+     *
+     * @param array $arrOptions An optional options array
+     *
+     * @return \Model\Collection|null A collection of models or null
+     */
+    public static function findByPids(array $arrPids = [], array $arrOptions = [])
+    {
+        if (!is_array($arrPids) || empty($arrPids))
+        {
+            return null;
+        }
 
-		$t = static::$strTable;
+        $t = static::$strTable;
 
-		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+        $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
 
 
-		if(!$arrOptions['order'])
-		{
-			$arrOptions['order'] = 'title';
-		}
+        if (!$arrOptions['order'])
+        {
+            $arrOptions['order'] = 'title';
+        }
 
-		return static::findBy($arrColumns, null, $arrOptions);
-	}
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
 
-	/**
-	 * Find all item by title
-	 *
-	 * @param string  $varValue   The title value
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return \Model\Collection|null A collection of models or null if the title was not found
-	 */
-	public static function findByTitleAndPid(array $arrPids=array(), $title, array $arrOptions=array())
-	{
-		if (!is_array($arrPids) || empty($arrPids))
-		{
-			return null;
-		}
+    /**
+     * Find all published items by their pids
+     *
+     * @param array $arrOptions An optional options array
+     *
+     * @return \Model\Collection|null A collection of models or null
+     */
+    public static function findPublishedByPids(array $arrPids = [], array $arrOptions = [])
+    {
+        if (!is_array($arrPids) || empty($arrPids))
+        {
+            return null;
+        }
 
-		$t = static::$strTable;
+        $t    = static::$strTable;
+        $time = time();
 
-		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
-		$arrColumns[] = "LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'";
+        $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
 
-		return static::findBy($arrColumns, null, $arrOptions);
-	}
+        if (!BE_USER_LOGGED_IN)
+        {
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
+
+        if (!$arrOptions['order'])
+        {
+            $arrOptions['order'] = 'title';
+        }
+
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
+
+    /**
+     * Find all item by title
+     *
+     * @param string $varValue   The title value
+     * @param array  $arrOptions An optional options array
+     *
+     * @return \Model\Collection|null A collection of models or null if the title was not found
+     */
+    public static function findByTitleAndPid(array $arrPids = [], $title, array $arrOptions = [])
+    {
+        if (!is_array($arrPids) || empty($arrPids))
+        {
+            return null;
+        }
+
+        $t = static::$strTable;
+
+        $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+        $arrColumns[] = "LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'";
+
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
 }
