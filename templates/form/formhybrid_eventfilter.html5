@@ -1,74 +1,83 @@
 <div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?>>
 
-	<form<?php if ($this->action): ?> action="<?php echo $this->action; ?>"<?php endif; ?>
-		id="<?php echo $this->formId; ?>"
-		method="<?php echo $this->method; ?>"
-		enctype="<?php echo $this->enctype; ?>"
-		<?php echo $this->attributes; ?>
-		<?php echo $this->novalidate; ?>
-		<?php if($this->formClass):?> class="<?php echo $this->formClass; ?>"<?php endif;?>>
-		<div class="formbody">
-			<?php if ($this->method == FORMHYBRID_METHOD_POST): ?>
-				<input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formId; ?>">
-				<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
-				<?php if ($this->maxFileSize): ?>
-					<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $this->maxFileSize; ?>">
-				<?php endif; ?>
-			<?php endif; ?>
-			<?php echo $this->hidden; ?>
-			<div class="field-wrapper">
-				<div class="row">
-					<div class="top-row">
-						<div class="fields-container">
-							<div class="date-wrapper">
-								<div class="form-group-label">
-									<span class="label label-input"><?php echo $GLOBALS['TL_LANG']['eventfilter']['dateLabel'];?></span>
-								</div>
-								<?php echo isset($this->fields['startDate']) ? $this->fields['startDate']->parse() : ''; ?>
-								<?php echo isset($this->fields['endDate']) ? $this->fields['endDate']->parse() : ''; ?>
-							</div>
-							<?php echo isset($this->fields['docents']) ? $this->fields['docents']->parse() : ''; ?>
-							<?php echo isset($this->fields['city']) ? $this->fields['city']->parse() : ''; ?>
-							<?php echo isset($this->fields['postal']) ? $this->fields['postal']->parse() : ''; ?>
-							<?php echo isset($this->fields['timeHours']) ? $this->fields['timeHours']->parse() : ''; ?>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="bottom-row">
-						<div class="fields-container">
-							<?php if(isset($this->fields['eventtypes'])): ?>
-								<?php if(is_array($this->fields['eventtypes']->arrOptions[0][0])): ?>
-									<?php foreach($this->fields['eventtypes']->arrOptions as $arrSelects): ?>
-										<?php if(!is_array($arrSelects)) continue; ?>
-										<?php foreach($arrSelects as $arrSelect): ?>
-											<?php if(!is_array($arrSelect) || $arrSelect['value'] != 'output') continue; ?>
-											<?php echo $arrSelect['label']; ?>
-										<?php endforeach; ?>
-									<?php endforeach; ?>
-								<?php else: ?>
-									<?php echo $this->fields['eventtypes']->parse(); ?>
-								<?php endif; ?>
-							<?php endif; ?>
+    <form<?php if ($this->action): ?> action="<?php echo $this->action; ?>"<?php endif; ?>
+            id="<?php echo $this->formId; ?>"
+            method="<?php echo $this->method; ?>"
+            enctype="<?php echo $this->enctype; ?>"
+        <?php echo $this->attributes; ?>
+        <?php echo $this->novalidate; ?>
+        <?php if ($this->formClass): ?> class="<?php echo $this->formClass; ?>"<?php endif; ?>>
+        <div class="formbody">
+            <?php if ($this->method == FORMHYBRID_METHOD_POST): ?>
+                <input type="hidden" name="FORM_SUBMIT" value="<?php echo $this->formId; ?>">
+                <input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}">
+                <?php if ($this->maxFileSize): ?>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="<?php echo $this->maxFileSize; ?>">
+                <?php endif; ?>
+            <?php endif; ?>
+            <?php echo $this->hidden; ?>
+            <div class="field-wrapper">
+                <div class="row">
+                    <div class="top-row">
+                        <div class="fields-container">
+                            <div class="date-wrapper">
+                                <div class="form-group-label">
+                                    <span class="label label-input"><?php echo $GLOBALS['TL_LANG']['eventfilter']['dateLabel']; ?></span>
+                                </div>
+                                <?php echo isset($this->fields['startDate']) ? $this->fields['startDate']->parse() : ''; ?>
+                                <?php echo isset($this->fields['endDate']) ? $this->fields['endDate']->parse() : ''; ?>
+                            </div>
+                            <?php echo isset($this->fields['docents']) ? $this->fields['docents']->parse() : ''; ?>
+                            <?php echo isset($this->fields['city']) ? $this->fields['city']->parse() : ''; ?>
+                            <?php echo isset($this->fields['postal']) ? $this->fields['postal']->parse() : ''; ?>
+                            <?php echo isset($this->fields['timeHours']) ? $this->fields['timeHours']->parse() : ''; ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="bottom-row">
+                        <div class="fields-container">
+                            <?php if (isset($this->fields['eventtypes'])): ?>
+                                <?php if (is_array($this->fields['eventtypes']->arrOptions[0][0])): ?>
+                                    <?php foreach ($this->fields['eventtypes']->arrOptions as $arrSelects): ?>
+                                        <?php if (!is_array($arrSelects))
+                                        {
+                                            continue;
+                                        } ?>
+                                        <?php foreach ($arrSelects as $arrSelect): ?>
+                                            <?php if (!is_array($arrSelect) || $arrSelect['value'] != 'output')
+                                            {
+                                                continue;
+                                            } ?>
+                                            <?php echo $arrSelect['label']; ?>
+                                        <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <?php echo $this->fields['eventtypes']->parse(); ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
 
-							<?php echo isset($this->fields['areasoflaw']) ? $this->fields['areasoflaw']->parse() : ''; ?>
-							<?php echo isset($this->fields['promoter']) ? $this->fields['promoter']->parse() : ''; ?>
-							<?php echo isset($this->fields['q']) ? $this->fields['q']->parse() : ''; ?>
-							<div class="form-submit">
-								<div class="btn-group" role="group">
-									<a href="{{page::alias}}" class="reset btn btn-default" data-toggle="tooltip" title="Filter zurücksetzen"><i class="ei ei-close_alt2"></i></a>
-									<?php echo isset($this->fields['submit']) ? $this->fields['submit']->generate() : ''; ?>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?php foreach($this->fields as $name => $objField): ?>
-					<?php if(in_array($name, array('startDate', 'endDate', 'docents', 'city', 'postal', 'areasoflaw', 'promoter', 'timeHours', 'eventtypes', 'q', 'submit'))) continue; ?>
-					<?php echo $objField->parse(); ?>
-				<?php endforeach; ?>
-			</div>
-		</div>
-	</form>
+                            <?php echo isset($this->fields['areasoflaw']) ? $this->fields['areasoflaw']->parse() : ''; ?>
+                            <?php echo isset($this->fields['promoter']) ? $this->fields['promoter']->parse() : ''; ?>
+                            <?php echo isset($this->fields['q']) ? $this->fields['q']->parse() : ''; ?>
+                            <div class="form-submit">
+                                <div class="btn-group" role="group">
+                                    <a href="{{page::alias}}" class="reset btn btn-default" data-toggle="tooltip" title="Filter zurücksetzen"><i class="ei ei-close_alt2"></i></a>
+                                    <?php echo isset($this->fields['submit']) ? $this->fields['submit']->generate() : ''; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php foreach ($this->fields as $name => $objField): ?>
+                    <?php if (in_array($name, ['startDate', 'endDate', 'docents', 'city', 'postal', 'areasoflaw', 'promoter', 'timeHours', 'eventtypes', 'q', 'submit']))
+                    {
+                        continue;
+                    } ?>
+                    <?php echo $objField->parse(); ?>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </form>
 
 </div>

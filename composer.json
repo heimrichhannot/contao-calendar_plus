@@ -1,38 +1,47 @@
 {
-    "name": "heimrichhannot/contao-calendar_plus",
-    "description":"A collection of enhancements for the contao calendar module.",
-    "keywords":["contao", "calendar", "events", "filter", "modal", "subevents"],
-    "type": "contao-module",
-    "homepage":"https://github.com/heimrichhannot/contao-calendar_plus",
-    "license":"LGPL-3.0+",
-    "authors":[
-        {
-            "name":"Heimrich & Hannot",
-            "email":"digitales@heimrich-hannot.de",
-            "homepage":"http://www.heimrich-hannot.de",
-            "role":"Developer"
-        }
-    ],
-    "support":{
-        "issues":"https://github.com/heimrichhannot/contao-calendar_plus/issues"
-    },
-    "require": {
-        "php": "~5.4 || ~7.0",
-        "contao/core-bundle": "^3.5.1 || ~4.1",
-        "contao-community-alliance/composer-plugin": "~2.4 || ~3.0",
-		"heimrichhannot/contao-formhybrid": ">=2.0.85,<3.0.0-dev",
-        "heimrichhannot/contao-member_plus": ">=2.0.0,<3.0.0-dev",
-        "heimrichhannot/contao-search_plus": ">=1.0.11,<2.0.0-dev",
-        "heimrichhannot/contao-haste_plus": "^1.6"
-    },
-    "autoload": {
-        "classmap": [""]
-    },
-    "extra": {
-        "contao": {
-            "sources": {
-                "": "system/modules/calendar_plus"
-            }
-        }
+  "name": "heimrichhannot/contao-calendar_plus",
+  "description": "A collection of enhancements for the contao calendar module.",
+  "keywords": [
+    "contao",
+    "calendar",
+    "events",
+    "filter",
+    "modal",
+    "subevents"
+  ],
+  "type": "contao-module",
+  "homepage": "https://github.com/heimrichhannot/contao-calendar_plus",
+  "license": "LGPL-3.0+",
+  "authors": [
+    {
+      "name": "Heimrich & Hannot",
+      "email": "digitales@heimrich-hannot.de",
+      "homepage": "http://www.heimrich-hannot.de",
+      "role": "Developer"
     }
+  ],
+  "support": {
+    "issues": "https://github.com/heimrichhannot/contao-calendar_plus/issues"
+  },
+  "require": {
+    "php": "~5.4 || ~7.0",
+    "contao/core-bundle": "^3.5.1 || ~4.1",
+    "contao-community-alliance/composer-plugin": "~2.4 || ~3.0",
+    "heimrichhannot/contao-formhybrid": ">=2.0.85,<3.0.0-dev",
+    "heimrichhannot/contao-member_plus": ">=2.0.0,<3.0.0-dev",
+    "heimrichhannot/contao-search_plus": ">=1.0.11,<2.0.0-dev",
+    "heimrichhannot/contao-haste_plus": "^1.6"
+  },
+  "autoload": {
+    "classmap": [
+      ""
+    ]
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "": "system/modules/calendar_plus"
+      }
+    }
+  }
 }

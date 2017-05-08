@@ -1,104 +1,118 @@
 <?php if ($this->newMonth && $this->firstDay): ?>
-  <div class="header-row header-month-row">
-    <div class="header header-month<?php echo $this->classMonth; ?>">
-		<div class="header-month-date">
-      		<span class="month"><?php echo $this->month; ?></span>
-		</div>
+    <div class="header-row header-month-row">
+        <div class="header header-month<?php echo $this->classMonth; ?>">
+            <div class="header-month-date">
+                <span class="month"><?php echo $this->month; ?></span>
+            </div>
+        </div>
     </div>
-  </div>
 <?php endif; ?>
 
 <?php if ($this->header): ?>
-	<div class="day-row">
-		<div class="header header-day<?php echo $this->classHeader; ?>">
-			<div class="header-day-date">
-				<time datetime="<?php echo $this->datetime; ?>" class="date"><?php echo date('d', $this->dateday); ?></time><?php if ($this->firstDay): ?> <span class="day"><?php echo $this->firstDay; ?></span><?php endif; ?>
-			</div>
-		</div>
-      <div class="event-wrapper">
-<?php endif; ?>
+<div class="day-row">
+    <div class="header header-day<?php echo $this->classHeader; ?>">
+        <div class="header-day-date">
+            <time datetime="<?php echo $this->datetime; ?>" class="date"><?php echo date('d', $this->dateday); ?></time><?php if ($this->firstDay): ?> <span
+                    class="day"><?php echo $this->firstDay; ?></span><?php endif; ?>
+        </div>
+    </div>
+    <div class="event-wrapper">
+        <?php endif; ?>
 
-<div class="event layout_list<?php echo $this->classList; ?>">
+        <div class="event layout_list<?php echo $this->classList; ?>">
 
-  <h4 class="visible-xs"><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
-  <div class="meta-row clearfix">
-	  <?php if(is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
-		  <?php foreach($this->eventtypeList as $eventType): ?>
-			  <div class="label label-default-dark eventtypes<?php echo $eventType->class; ?>"<?php if($eventType->tooltipTitle):?> data-toggle="tooltip" data-placement="right" title="<?php echo $eventType->tooltipTitle; ?>"<?php endif; ?>>
-				  <span class="eventtpe"><?php echo $eventType->title; ?></span>
-			  </div>
-		  <?php endforeach; ?>
-	  <?php endif; ?>
+            <h4 class="visible-xs"><a<?php if ($this->modal): ?> data-event="modal" data-toggle="modal" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?>
+                        href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif;
+                echo $this->date;
+                if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
+            <div class="meta-row clearfix">
+                <?php if (is_array($this->eventtypeList) && !empty($this->eventtypeList)): ?>
+                    <?php foreach ($this->eventtypeList as $eventType): ?>
+                        <div class="label label-default-dark eventtypes<?php echo $eventType->class; ?>"<?php if ($eventType->tooltipTitle): ?> data-toggle="tooltip" data-placement="right" title="<?php echo $eventType->tooltipTitle; ?>"<?php endif; ?>>
+                            <span class="eventtpe"><?php echo $eventType->title; ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
 
-    <?php if ($this->addTime || $this->city): ?>
-        <div class="label label-default time-location">
-          <?php if($this->addTime && $this->startTimeFormated): ?>
-            <span class="time-start">
+                <?php if ($this->addTime || $this->city): ?>
+                    <div class="label label-default time-location">
+                        <?php if ($this->addTime && $this->startTimeFormated): ?>
+                            <span class="time-start">
               <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['startTimeLabel']; ?></span> <?php echo $this->startTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
             </span>
-          <?php endif; ?>
-          <?php if($this->addTime &&$this->endTimeFormated): ?>
-            <span class="time-end">
+                        <?php endif; ?>
+                        <?php if ($this->addTime && $this->endTimeFormated): ?>
+                            <span class="time-end">
               <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['endTimeLabel']; ?></span> <?php echo $this->endTimeFormated; ?> <?php echo $GLOBALS['TL_LANG']['eventlist_plus']['timeSuffix']; ?>
             </span>
-          <?php endif; ?>
-          <?php if($this->city): ?>
-            <span class="city">
+                        <?php endif; ?>
+                        <?php if ($this->city): ?>
+                            <span class="city">
               <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['cityLabel']; ?></span> <?php echo $this->city; ?>
             </span>
-          <?php endif; ?>
-        </div>
-    <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
 
-    <?php if($this->timeHours > 0): ?>
-        <div class="label label-default time-hours">
-          <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['timeHoursLabel']; ?></span> <?php echo rtrim(rtrim(number_format($this->timeHours, 2, ",", ""), '0'), ','); ?>
-        </div>
-    <?php endif; ?>
-  </div>
+                <?php if ($this->timeHours > 0): ?>
+                    <div class="label label-default time-hours">
+                        <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['timeHoursLabel']; ?></span> <?php echo rtrim(
+                            rtrim(number_format($this->timeHours, 2, ",", ""), '0'),
+                            ','
+                        ); ?>
+                    </div>
+                <?php endif; ?>
+            </div>
 
 
+            <h4 class="hidden-xs">
+                <a<?php if ($this->modal): ?> data-event="modal" data-toggle="modal" data-title="<?= $this->title; ?> - {{page::rootTitle}}" data-history-base-title="{{page::title}}" data-history-base="<?= \Environment::get(
+                    'request'
+                ); ?>" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>"
+                                                                                      title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif;
+                                                                                      echo $this->date;
+                                                                                      if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a>
+            </h4>
 
-  <h4 class="hidden-xs"><a<?php if($this->modal): ?> data-event="modal" data-toggle="modal" data-title="<?= $this->title; ?> - {{page::rootTitle}}" data-history-base-title="{{page::title}}" data-history-base="<?= \Environment::get('request'); ?>" data-target="<?php echo $this->modalTarget; ?>"<?php endif; ?> href="<?php echo $this->href; ?>" title="<?php echo $this->title; ?> (<?php if ($this->day): echo $this->day; ?>, <?php endif; echo $this->date; if ($this->time): ?>, <?php echo $this->time; endif; ?>)"<?php echo $this->target; ?>><?php echo $this->link; ?></a></h4>
+            <div class="ce_text block">
+                <?php echo $this->teaser; ?>
+            </div>
 
-  <div class="ce_text block">
-	<?php echo $this->teaser; ?>
-  </div>
+            <?php if ($this->subEvents): ?>
+                <div class="subevents">
+                    <?php echo $this->subEvents; ?>
+                </div>
+            <?php endif; ?>
 
-	<?php if($this->subEvents): ?>
-		<div class="subevents">
-			<?php echo $this->subEvents; ?>
-		</div>
-	<?php endif; ?>
+            <?php if (is_array($this->roomList) && !empty($this->roomList)): ?>
+                <div class="rooms">
+                    <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['roomLabel']; ?></span>
+                    <?php foreach ($this->roomList as $iR => $objRoom): ?>
+                        <?php if ($iR > 0): ?>&middot;<?php endif; ?>
+                        <?= $objRoom->title; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
-    <?php if(is_array($this->roomList) && !empty($this->roomList)): ?>
-        <div class="rooms">
-            <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['roomLabel']; ?></span>
-            <?php foreach($this->roomList as $iR => $objRoom): ?>
-                <?php if($iR > 0): ?>&middot;<?php endif; ?>
-                <?= $objRoom->title; ?>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-
-	<?php if(is_array($this->promoterList) && !empty($this->promoterList)): ?>
-		<div class="promoter">
-			<span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span>
-			<?php foreach($this->promoterList as $iP => $objPromoter): ?>
-				<span class="promoter">
-					<?php if($objPromoter->website): ?>
-						<a href="<?php echo $objPromoter->website; ?>" target="_blank">
+            <?php if (is_array($this->promoterList) && !empty($this->promoterList)): ?>
+                <div class="promoter">
+                    <span class="text-muted"><?php echo $GLOBALS['TL_LANG']['event']['promoterLabel']; ?></span>
+                    <?php foreach ($this->promoterList as $iP => $objPromoter): ?>
+                        <span class="promoter">
+					<?php if ($objPromoter->website): ?>
+                            <a href="<?php echo $objPromoter->website; ?>" target="_blank">
 					<?php endif; ?>
-					<?php echo $objPromoter->title; ?>
-					<?php if($objPromoter->website): ?>
+                    <?php echo $objPromoter->title; ?>
+                    <?php if ($objPromoter->website): ?>
 						</a>
-					<?php endif; ?>
-				<?php if($iP + 1 < count($this->promoterList)): ?> &middot; <?php endif; ?>
+                        <?php endif; ?>
+                            <?php if ($iP + 1 < count($this->promoterList)): ?> &middot; <?php endif; ?>
 				</span>
-			<?php endforeach; ?>
-		</div>
- 	<?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
-</div>
+        </div>
 
-<?php if($this->lastItem): ?></div></div><?php endif; ?>
+        <?php if ($this->lastItem): ?></div>
+</div><?php endif; ?>

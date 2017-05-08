@@ -100,7 +100,7 @@ class ModuleEventReaderPlus extends EventsPlus
         if ($this->cal_template_modal)
         {
             $strOriginalTemplate = $this->strTemplate;
-            $this->strTemplate  = $this->customTpl ?: 'mod_event_modal';
+            $this->strTemplate   = $this->customTpl ?: 'mod_event_modal';
 
             // never render print view in modal
             if ($this->addShare && in_array('share', \ModuleLoader::getActive()))
@@ -143,23 +143,6 @@ class ModuleEventReaderPlus extends EventsPlus
         return parent::generate();
     }
 
-    protected function generateAjax()
-    {
-        // ajax request ist not delegated to this module
-        if (!(\Input::get('scope') == 'modal' && \Input::get('target') == EventsPlusHelper::getCSSModalID($this->id)))
-        {
-            return false;
-        }
-
-        if ($this->checkConditions())
-        {
-            parent::generate();
-            // use output, otherwise page will not be added to search index
-            $strOutput = $this->isSearchIndexer() ? $this->Template->output() : $this->Template->parse();
-            die(\Controller::replaceInsertTags($strOutput, false));
-        }
-    }
-
     protected function checkConditions()
     {
         // Set the item from the auto_item parameter
@@ -195,6 +178,28 @@ class ModuleEventReaderPlus extends EventsPlus
         return true;
     }
 
+    protected function isSearchIndexer()
+    {
+        return (strpos($_SERVER['HTTP_REFERER'], 'main.php?act=index&do=maintenance') !== false);
+    }
+
+    protected function generateAjax()
+    {
+        // ajax request ist not delegated to this module
+        if (!(\Input::get('scope') == 'modal' && \Input::get('target') == EventsPlusHelper::getCSSModalID($this->id)))
+        {
+            return false;
+        }
+
+        if ($this->checkConditions())
+        {
+            parent::generate();
+            // use output, otherwise page will not be added to search index
+            $strOutput = $this->isSearchIndexer() ? $this->Template->output() : $this->Template->parse();
+            die(\Controller::replaceInsertTags($strOutput, false));
+        }
+    }
+
     protected function generateModal()
     {
         $this->Template = new \FrontendTemplate($this->strTemplate);
@@ -209,90 +214,6 @@ class ModuleEventReaderPlus extends EventsPlus
         }
 
         return $this->Template->parse();
-    }
-
-    protected function generateArrowNavigation($objCurrentEvent, $strUrl)
-    {
-        $objT = new \FrontendTemplate('eventnavigation_arrows');
-        $objT->setData($this->arrData);
-
-        $arrIds = [];
-
-        // get ids from EventsPlus::getAllEvents
-        $session = \Session::getInstance()->getData();
-        $arrIds  = $session[CALENDARPLUS_SESSION_EVENT_IDS];
-
-        // EventsPlus::getAllEvents did not run before the reader
-        // TODO: run EventsPlus::getAllEvents before
-        if (!is_array($arrIds) || empty($arrIds))
-        {
-            return;
-        }
-
-        $prevID       = null;
-        $nextID       = null;
-        $currentIndex = array_search($objCurrentEvent->id, $arrIds);
-
-        // prev only of not first item
-        if (isset($arrIds[$currentIndex - 1]))
-        {
-            $prevID = $arrIds[$currentIndex - 1];
-
-            $objEvent = \CalendarEventsModel::findPublishedByParentAndIdOrAlias($prevID, $this->cal_calendar);
-
-            $intStartTime = $objEvent->startTime;
-            $intEndTime   = $objEvent->endTime;
-            $span         = \Calendar::calculateSpan($intStartTime, $intEndTime);
-
-            // Do not show dates in the past if the event is recurring (see #923)
-            if ($objEvent->recurring)
-            {
-                $arrRange = deserialize($objEvent->repeatEach);
-
-                while ($intStartTime < time() && $intEndTime < $objEvent->repeatEnd)
-                {
-                    $intStartTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intStartTime);
-                    $intEndTime   = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intEndTime);
-                }
-            }
-
-            if ($objEvent !== null)
-            {
-                $objT->prev     = $this->getEventDetails($objEvent, $intStartTime, $intEndTime, $strUrl, 0, $objEvent->pid);
-                $objT->prevLink = $GLOBALS['TL_LANG']['event']['prevLink'];
-            }
-        }
-
-        // next only of not last item
-        if (isset($arrIds[$currentIndex + 1]))
-        {
-            $nextID   = $arrIds[$currentIndex + 1];
-            $objEvent = \CalendarEventsModel::findPublishedByParentAndIdOrAlias($nextID, $this->cal_calendar);
-
-            $intStartTime = $objEvent->startTime;
-            $intEndTime   = $objEvent->endTime;
-            $span         = \Calendar::calculateSpan($intStartTime, $intEndTime);
-
-            // Do not show dates in the past if the event is recurring (see #923)
-            if ($objEvent->recurring)
-            {
-                $arrRange = deserialize($objEvent->repeatEach);
-
-                while ($intStartTime < time() && $intEndTime < $objEvent->repeatEnd)
-                {
-                    $intStartTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intStartTime);
-                    $intEndTime   = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intEndTime);
-                }
-            }
-
-            if ($objEvent !== null)
-            {
-                $objT->next     = $this->getEventDetails($objEvent, $intStartTime, $intEndTime, $strUrl, 0, $objEvent->pid);
-                $objT->nextLink = $GLOBALS['TL_LANG']['event']['nextLink'];
-            }
-        }
-
-        return $objT->parse();
     }
 
     protected function compile()
@@ -571,8 +492,87 @@ class ModuleEventReaderPlus extends EventsPlus
         $this->Comments->addCommentsToTemplate($this->Template, $objConfig, 'tl_calendar_events', $objEvent->id, $arrNotifies);
     }
 
-    protected function isSearchIndexer()
+    protected function generateArrowNavigation($objCurrentEvent, $strUrl)
     {
-        return (strpos($_SERVER['HTTP_REFERER'], 'main.php?act=index&do=maintenance') !== false);
+        $objT = new \FrontendTemplate('eventnavigation_arrows');
+        $objT->setData($this->arrData);
+
+        $arrIds = [];
+
+        // get ids from EventsPlus::getAllEvents
+        $session = \Session::getInstance()->getData();
+        $arrIds  = $session[CALENDARPLUS_SESSION_EVENT_IDS];
+
+        // EventsPlus::getAllEvents did not run before the reader
+        // TODO: run EventsPlus::getAllEvents before
+        if (!is_array($arrIds) || empty($arrIds))
+        {
+            return;
+        }
+
+        $prevID       = null;
+        $nextID       = null;
+        $currentIndex = array_search($objCurrentEvent->id, $arrIds);
+
+        // prev only of not first item
+        if (isset($arrIds[$currentIndex - 1]))
+        {
+            $prevID = $arrIds[$currentIndex - 1];
+
+            $objEvent = \CalendarEventsModel::findPublishedByParentAndIdOrAlias($prevID, $this->cal_calendar);
+
+            $intStartTime = $objEvent->startTime;
+            $intEndTime   = $objEvent->endTime;
+            $span         = \Calendar::calculateSpan($intStartTime, $intEndTime);
+
+            // Do not show dates in the past if the event is recurring (see #923)
+            if ($objEvent->recurring)
+            {
+                $arrRange = deserialize($objEvent->repeatEach);
+
+                while ($intStartTime < time() && $intEndTime < $objEvent->repeatEnd)
+                {
+                    $intStartTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intStartTime);
+                    $intEndTime   = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intEndTime);
+                }
+            }
+
+            if ($objEvent !== null)
+            {
+                $objT->prev     = $this->getEventDetails($objEvent, $intStartTime, $intEndTime, $strUrl, 0, $objEvent->pid);
+                $objT->prevLink = $GLOBALS['TL_LANG']['event']['prevLink'];
+            }
+        }
+
+        // next only of not last item
+        if (isset($arrIds[$currentIndex + 1]))
+        {
+            $nextID   = $arrIds[$currentIndex + 1];
+            $objEvent = \CalendarEventsModel::findPublishedByParentAndIdOrAlias($nextID, $this->cal_calendar);
+
+            $intStartTime = $objEvent->startTime;
+            $intEndTime   = $objEvent->endTime;
+            $span         = \Calendar::calculateSpan($intStartTime, $intEndTime);
+
+            // Do not show dates in the past if the event is recurring (see #923)
+            if ($objEvent->recurring)
+            {
+                $arrRange = deserialize($objEvent->repeatEach);
+
+                while ($intStartTime < time() && $intEndTime < $objEvent->repeatEnd)
+                {
+                    $intStartTime = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intStartTime);
+                    $intEndTime   = strtotime('+' . $arrRange['value'] . ' ' . $arrRange['unit'], $intEndTime);
+                }
+            }
+
+            if ($objEvent !== null)
+            {
+                $objT->next     = $this->getEventDetails($objEvent, $intStartTime, $intEndTime, $strUrl, 0, $objEvent->pid);
+                $objT->nextLink = $GLOBALS['TL_LANG']['event']['nextLink'];
+            }
+        }
+
+        return $objT->parse();
     }
 }

@@ -28,7 +28,10 @@
     "jquery-plugin",
     "ecosystem:jquery"
   ],
-  "license": ["MIT", "GPL-2.0"],
+  "license": [
+    "MIT",
+    "GPL-2.0"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",

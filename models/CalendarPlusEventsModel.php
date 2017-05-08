@@ -18,7 +18,7 @@ use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
 class CalendarPlusEventsModel extends \CalendarEventsModel
 {
 
-    public static function getUniqueCityNamesByPids(array $arrPids = array(), $currentOnly = true, $arrOptions = array())
+    public static function getUniqueCityNamesByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
     {
         if (!is_array($arrPids) || empty($arrPids))
         {
@@ -46,7 +46,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         return static::findBy($arrColumns, null, $arrOptions);
     }
 
-    public static function getUniquePromotersByPids(array $arrPids = array(), $currentOnly = true, $arrOptions = array())
+    public static function getUniquePromotersByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
     {
         if (!is_array($arrPids) || empty($arrPids))
         {
@@ -76,7 +76,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return $objEvents;
         }
 
-        $arrPromoters = array();
+        $arrPromoters = [];
 
         while ($objEvents->next())
         {
@@ -88,7 +88,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         return CalendarPromotersModel::findMultipleByIds($arrPromoters);
     }
 
-    public static function getUniqueDocentsByPids(array $arrPids = array(), $currentOnly = true, $arrOptions = array())
+    public static function getUniqueDocentsByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
     {
         if (!is_array($arrPids) || empty($arrPids))
         {
@@ -120,7 +120,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return null;
         }
 
-        $arrDocents = array();
+        $arrDocents = [];
 
         while ($objEvents->next())
         {
@@ -129,10 +129,10 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         $arrDocents = array_unique($arrDocents);
 
-        return CalendarDocentsModel::findMultipleByIds($arrDocents, array('order' => 'title'));
+        return CalendarDocentsModel::findMultipleByIds($arrDocents, ['order' => 'title']);
     }
 
-    public static function getUniqueMemberDocentsByPids(array $arrPids = array(), $currentOnly = true, $arrOptions = array())
+    public static function getUniqueMemberDocentsByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
     {
         if (!is_array($arrPids) || empty($arrPids))
         {
@@ -164,7 +164,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return null;
         }
 
-        $arrDocents = array();
+        $arrDocents = [];
 
         while ($objEvents->next())
         {
@@ -173,10 +173,10 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         $arrDocents = array_unique($arrDocents);
 
-        return MemberPlusMemberModel::findMultipleByIds($arrDocents, array('order' => 'lastname ASC'));
+        return MemberPlusMemberModel::findMultipleByIds($arrDocents, ['order' => 'lastname ASC']);
     }
 
-    public static function getUniqueHostsByPids(array $arrPids = array(), $currentOnly = true, $arrOptions = array())
+    public static function getUniqueHostsByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
     {
         if (!is_array($arrPids) || empty($arrPids))
         {
@@ -208,7 +208,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return null;
         }
 
-        $arrHosts = array();
+        $arrHosts = [];
 
         while ($objEvents->next())
         {
@@ -217,10 +217,10 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         $arrHosts = array_unique($arrHosts);
 
-        return CalendarDocentsModel::findMultipleByIds($arrHosts, array('order' => 'title'));
+        return CalendarDocentsModel::findMultipleByIds($arrHosts, ['order' => 'title']);
     }
 
-    public static function getUniqueMemberHostsByPids(array $arrPids = array(), $currentOnly = true, $arrOptions = array())
+    public static function getUniqueMemberHostsByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
     {
         if (!is_array($arrPids) || empty($arrPids))
         {
@@ -252,7 +252,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return null;
         }
 
-        $arrHosts = array();
+        $arrHosts = [];
 
         while ($objEvents->next())
         {
@@ -261,11 +261,11 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         $arrHosts = array_unique($arrHosts);
 
-        return MemberPlusMemberModel::findMultipleByIds($arrHosts, array('order' => 'lastname ASC'));
+        return MemberPlusMemberModel::findMultipleByIds($arrHosts, ['order' => 'lastname ASC']);
     }
 
 
-    public static function getUniquePromoterNamesByPids(array $arrPids = array(), $currentOnly = true, $arrOptions = array())
+    public static function getUniquePromoterNamesByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
     {
         if (!is_array($arrPids) || empty($arrPids))
         {
@@ -297,7 +297,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return $objEvents;
         }
 
-        $arrPromoters = array();
+        $arrPromoters = [];
 
         while ($objEvents->next())
         {
@@ -309,41 +309,14 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         return CalendarPromotersModel::findMultipleByIds($arrPromoters);
     }
 
-
-    /**
-     * Helper method to generate the alias for the current model
-     *
-     * @return $this
-     */
-    public function generateAlias()
-    {
-        $varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
-
-        $objAlias = static::findBy('alias', $varValue);
-
-        // Check whether the alias exists
-        if ($objAlias !== null)
-        {
-            if (!$this->id)
-            {
-                return $this;
-            }
-            $varValue .= '-' . $this->id;
-        }
-
-        $this->alias = $varValue;
-
-        return $this;
-    }
-
     public static function countCurrentByPidAndFilter(
         $arrPids,
         $intStart,
         $intEnd,
-        array $arrFilter = array(),
-        $arrFilterOptions = array(),
-        $arrFilterConfig = array(),
-        $arrOptions = array()
+        array $arrFilter = [],
+        $arrFilterOptions = [],
+        $arrFilterConfig = [],
+        $arrOptions = []
     ) {
         return static::findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig, $arrOptions, true);
     }
@@ -352,25 +325,25 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         $arrPids,
         $intStart,
         $intEnd,
-        array $arrFilter = array(),
-        array $arrFilterOptions = array(),
-        $arrFilterConfig = array(),
-        $arrOptions = array(),
+        array $arrFilter = [],
+        array $arrFilterOptions = [],
+        $arrFilterConfig = [],
+        $arrOptions = [],
         $count = false
     ) {
         $t        = static::$strTable;
         $intStart = intval($intStart);
         $intEnd   = intval($intEnd);
 
-        $arrPids = !is_array($arrPids) ? array($arrPids) : $arrPids;
+        $arrPids = !is_array($arrPids) ? [$arrPids] : $arrPids;
 
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
-        $arrColumnsOr = array();
+        $arrColumnsOr = [];
 
         foreach ($arrFilter as $key => $value)
         {
 
-            $arrValueOptions = (isset($arrFilterOptions[$key]) && is_array($arrFilterOptions[$key])) ? $arrFilterOptions[$key] : array();
+            $arrValueOptions = (isset($arrFilterOptions[$key]) && is_array($arrFilterOptions[$key])) ? $arrFilterOptions[$key] : [];
 
             switch ($key)
             {
@@ -482,9 +455,9 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
                         if (is_array($valueArray) && !empty($valueArray))
                         {
-                            $arrDocents = array();
-                            $arrMembers = array();
-                            $arrHosts   = array();
+                            $arrDocents = [];
+                            $arrMembers = [];
+                            $arrHosts   = [];
 
                             foreach ($valueArray as $id)
                             {
@@ -532,13 +505,11 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
                                 {
                                     if ($arrFilterConfig['show_related'] || $arrFilterConfig['combine_docents'])
                                     {
-                                        $arrColumnsOr[] =
-                                            EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMembers, EVENTMODEL_CONDITION_OR);
+                                        $arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberdocents", $arrMembers, EVENTMODEL_CONDITION_OR);
 
                                         if ($key = 'hosts' || $key == 'docents' && $arrFilterConfig['combine_docents'])
                                         {
-                                            $arrColumnsOr[] =
-                                                EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberhosts", $arrMembers, EVENTMODEL_CONDITION_OR);
+                                            $arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.memberhosts", $arrMembers, EVENTMODEL_CONDITION_OR);
                                         }
                                     }
                                     else
@@ -672,10 +643,10 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
      *
      * @return \CalendarEventsModel|\Model\Collection|null A collection of models or null if there are no events
      */
-    public static function findPublishedByPid($intPid, array $arrOptions = array())
+    public static function findPublishedByPid($intPid, array $arrOptions = [])
     {
         $t          = static::$strTable;
-        $arrColumns = array("$t.pid=?");
+        $arrColumns = ["$t.pid=?"];
 
         if (!BE_USER_LOGGED_IN)
         {
@@ -699,10 +670,10 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
      *
      * @return \Model|null The model or null if there is no event
      */
-    public static function findPublishedEventsByIdOrAlias($varId, array $arrOptions = array())
+    public static function findPublishedEventsByIdOrAlias($varId, array $arrOptions = [])
     {
         $t          = static::$strTable;
-        $arrColumns = array("($t.id=?) OR ($t.alias=?)");
+        $arrColumns = ["($t.id=?) OR ($t.alias=?)"];
 
         if (!BE_USER_LOGGED_IN)
         {
@@ -710,34 +681,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
         }
 
-        return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId), $arrOptions);
-    }
-
-    /**
-     * Find published sub events by the parent's ID or alias
-     *
-     * @param mixed $varId      The numeric ID or alias name
-     * @param array $arrOptions An optional options array
-     *
-     * @return \Model|null The model or null if there is no event
-     */
-    public static function findPublishedSubEvents($varId, array $arrOptions = array())
-    {
-        $t          = static::$strTable;
-        $arrColumns = array("($t.parentEvent=?)");
-
-        if (!isset($arrOptions['order']))
-        {
-            $arrOptions['order'] = "$t.startTime";
-        }
-
-        if (!BE_USER_LOGGED_IN)
-        {
-            $time         = time();
-            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
-        }
-
-        return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId), $arrOptions);
+        return static::findBy($arrColumns, [(is_numeric($varId) ? $varId : 0), $varId], $arrOptions);
     }
 
     public static function hasAtLeastOnePublishedPlacedSubEvent($config, $intId)
@@ -764,16 +708,43 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
      * Find published sub events by the parent's ID or alias
      *
      * @param mixed $varId      The numeric ID or alias name
+     * @param array $arrOptions An optional options array
+     *
+     * @return \Model|null The model or null if there is no event
+     */
+    public static function findPublishedSubEvents($varId, array $arrOptions = [])
+    {
+        $t          = static::$strTable;
+        $arrColumns = ["($t.parentEvent=?)"];
+
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order'] = "$t.startTime";
+        }
+
+        if (!BE_USER_LOGGED_IN)
+        {
+            $time         = time();
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
+
+        return static::findBy($arrColumns, [(is_numeric($varId) ? $varId : 0), $varId], $arrOptions);
+    }
+
+    /**
+     * Find published sub events by the parent's ID or alias
+     *
+     * @param mixed $varId      The numeric ID or alias name
      * @param array $arrPids    An array of calendar IDs
      * @param array $arrOptions An optional options array
      *
      * @return \Model|null The model or null if there is no event
      */
-    public static function findPublishedParentalEvents(array $arrOptions = array())
+    public static function findPublishedParentalEvents(array $arrOptions = [])
     {
         $t              = static::$strTable;
         $objEvents      = static::findAll();
-        $parentalEvents = array();
+        $parentalEvents = [];
         if ($objEvents !== null)
         {
             while ($objEvents->next())
@@ -787,7 +758,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
                 }
             }
         }
-        $arrColumns = array("($t.id IN (" . implode(',', $parentalEvents) . "))");
+        $arrColumns = ["($t.id IN (" . implode(',', $parentalEvents) . "))"];
 
         if (!BE_USER_LOGGED_IN)
         {
@@ -795,7 +766,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
         }
 
-        return static::findBy($arrColumns, array(implode(',', $parentalEvents)), $arrOptions);
+        return static::findBy($arrColumns, [implode(',', $parentalEvents)], $arrOptions);
     }
 
     public static function hasTextOrTeaser($intId)
@@ -839,8 +810,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             }
             else
             {
-                $objSubscriber =
-                    $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objEvent->alias);
+                $objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objEvent->alias);
                 if ($objSubscriber->numRows > 0)
                 {
                     while ($objSubscriber->next())
@@ -860,8 +830,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if ($objEvent !== null)
         {
-            $objMembers =
-                \Database::getInstance()->prepare('SELECT * FROM tl_member WHERE groups LIKE ?')->execute('%"' . $objEvent->memberGroupCheckedIn . '"%');
+            $objMembers = \Database::getInstance()->prepare('SELECT * FROM tl_member WHERE groups LIKE ?')->execute('%"' . $objEvent->memberGroupCheckedIn . '"%');
 
             return $objMembers->numRows;
         }
@@ -889,8 +858,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $objParentEvent = static::findByPk($objEvent->parentEvent);
             if ($objParentEvent !== null)
             {
-                $objSubscriber =
-                    $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objParentEvent->alias);
+                $objSubscriber = $database->prepare('SELECT * FROM tl_formdata_details WHERE ff_name=? AND value=?')->executeUncached('eventAlias', $objParentEvent->alias);
                 if ($objSubscriber->numRows > 0)
                 {
                     while ($objSubscriber->next())
@@ -922,17 +890,43 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
     {
         if ($blnPublishedOnly)
         {
-            return static::findBy(array('(parentEvent IS NULL OR parentEvent="")', 'published=1'), array());
+            return static::findBy(['(parentEvent IS NULL OR parentEvent="")', 'published=1'], []);
         }
         else
         {
-            return static::findBy(array('(parentEvent IS NULL OR parentEvent="")'), array());
+            return static::findBy(['(parentEvent IS NULL OR parentEvent="")'], []);
         }
     }
 
     public static function hasContentElements($intId)
     {
-        return (\ContentModel::findBy(array('ptable=? AND pid=?'), array('tl_news', $intId)) !== null);
+        return (\ContentModel::findBy(['ptable=? AND pid=?'], ['tl_news', $intId]) !== null);
+    }
+
+    /**
+     * Helper method to generate the alias for the current model
+     *
+     * @return $this
+     */
+    public function generateAlias()
+    {
+        $varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
+
+        $objAlias = static::findBy('alias', $varValue);
+
+        // Check whether the alias exists
+        if ($objAlias !== null)
+        {
+            if (!$this->id)
+            {
+                return $this;
+            }
+            $varValue .= '-' . $this->id;
+        }
+
+        $this->alias = $varValue;
+
+        return $this;
     }
 
 }

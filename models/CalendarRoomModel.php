@@ -39,126 +39,126 @@ namespace HeimrichHannot\CalendarPlus;
  * @property string  $stop
  * @property string  $authorName
  *
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findById($id, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPk($id, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByIdOrAlias($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneBy($col, $val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByPid($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByTstamp($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByTitle($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByAlias($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByName($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByStreet($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByPostal($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByCity($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByCountry($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneBySingleCoords($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByContactName($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByPhone($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByFax($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByEmail($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByWebsite($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByRoom($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByPublished($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByStart($val, $opt=array())
- * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByStop($val, $opt=array())
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findById($id, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPk($id, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByIdOrAlias($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneBy($col, $val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByPid($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByTstamp($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByTitle($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByAlias($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByName($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByStreet($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByPostal($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByCity($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByCountry($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneBySingleCoords($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByContactName($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByPhone($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByFax($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByEmail($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByWebsite($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByRoom($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByPublished($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByStart($val, $opt = [])
+ * @method static \HeimrichHannot\CalendarPlus\CalendarRoomModel|null findOneByStop($val, $opt = [])
  *
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPid($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByTstamp($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByTitle($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByAlias($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByName($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByStreet($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPostal($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByCity($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByCountry($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findBySingleCoors($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByContactName($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPhone($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByFax($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByEmail($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByWebsite($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByRoom($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPublished($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByStart($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByStop($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findMultipleByIds($val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findBy($col, $val, $opt=array())
- * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findAll($opt=array())
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPid($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByTstamp($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByTitle($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByAlias($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByName($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByStreet($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPostal($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByCity($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByCountry($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findBySingleCoors($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByContactName($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPhone($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByFax($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByEmail($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByWebsite($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByRoom($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByPublished($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByStart($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findByStop($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findMultipleByIds($val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findBy($col, $val, $opt = [])
+ * @method static \Model\Collection|\HeimrichHannot\CalendarPlus\CalendarRoomModel|null findAll($opt = [])
  *
- * @method static integer countById($id, $opt=array())
- * @method static integer countByPid($val, $opt=array())
- * @method static integer countByTstamp($val, $opt=array())
- * @method static integer countByTitle($val, $opt=array())
- * @method static integer countByAlias($val, $opt=array())
- * @method static integer countByName($val, $opt=array())
- * @method static integer countByStreet($val, $opt=array())
- * @method static integer countByPostal($val, $opt=array())
- * @method static integer countByCity($val, $opt=array())
- * @method static integer countByCountry($val, $opt=array())
- * @method static integer countBySingleCoords($val, $opt=array())
- * @method static integer countByContactName($val, $opt=array())
- * @method static integer countByPhone($val, $opt=array())
- * @method static integer countByFax($val, $opt=array())
- * @method static integer countByEmail($val, $opt=array())
- * @method static integer countByWebsite($val, $opt=array())
- * @method static integer countByRoom($val, $opt=array())
- * @method static integer countByPublished($val, $opt=array())
- * @method static integer countByStart($val, $opt=array())
- * @method static integer countByStop($val, $opt=array())
+ * @method static integer countById($id, $opt = [])
+ * @method static integer countByPid($val, $opt = [])
+ * @method static integer countByTstamp($val, $opt = [])
+ * @method static integer countByTitle($val, $opt = [])
+ * @method static integer countByAlias($val, $opt = [])
+ * @method static integer countByName($val, $opt = [])
+ * @method static integer countByStreet($val, $opt = [])
+ * @method static integer countByPostal($val, $opt = [])
+ * @method static integer countByCity($val, $opt = [])
+ * @method static integer countByCountry($val, $opt = [])
+ * @method static integer countBySingleCoords($val, $opt = [])
+ * @method static integer countByContactName($val, $opt = [])
+ * @method static integer countByPhone($val, $opt = [])
+ * @method static integer countByFax($val, $opt = [])
+ * @method static integer countByEmail($val, $opt = [])
+ * @method static integer countByWebsite($val, $opt = [])
+ * @method static integer countByRoom($val, $opt = [])
+ * @method static integer countByPublished($val, $opt = [])
+ * @method static integer countByStart($val, $opt = [])
+ * @method static integer countByStop($val, $opt = [])
  *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
  * @package calendar_plus
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
 class CalendarRoomModel extends \Model
 {
 
-	protected static $strTable = 'tl_calendar_room';
+    protected static $strTable = 'tl_calendar_room';
 
 
-	public static function findAllByCalendar($intId, array $arrOptions = array())
-	{
-		$t = static::$strTable;
-		$objRoomArchives = CalendarRoomArchiveModel::findByPid($intId);
+    public static function findAllByCalendar($intId, array $arrOptions = [])
+    {
+        $t               = static::$strTable;
+        $objRoomArchives = CalendarRoomArchiveModel::findByPid($intId);
 
-		if($objRoomArchives === null)
-		{
-			return null;
-		}
+        if ($objRoomArchives === null)
+        {
+            return null;
+        }
 
-		if(!isset($arrOptions['order']))
-		{
-			$arrOptions['order'] = "$t.title";
-		}
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order'] = "$t.title";
+        }
 
-		return static::findMultipleByPids($objRoomArchives->fetchEach('id'), $arrOptions);
-	}
+        return static::findMultipleByPids($objRoomArchives->fetchEach('id'), $arrOptions);
+    }
 
-	public static function findMultipleByPids(array $arrPids, array $arrOptions = array())
-	{
-		$t = static::$strTable;
-		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+    public static function findMultipleByPids(array $arrPids, array $arrOptions = [])
+    {
+        $t          = static::$strTable;
+        $arrColumns = ["$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")"];
 
-		return static::findBy($arrColumns, null, $arrOptions);
-	}
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
 
-	public static function findPublishedByIds($arrIds, array $arrOptions=array())
-	{
-		if (!is_array($arrIds) || empty($arrIds))
-		{
-			return null;
-		}
+    public static function findPublishedByIds($arrIds, array $arrOptions = [])
+    {
+        if (!is_array($arrIds) || empty($arrIds))
+        {
+            return null;
+        }
 
-		$t = static::$strTable;
-		$arrColumns = array("$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")");
+        $t          = static::$strTable;
+        $arrColumns = ["$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")"];
 
-		$time = time();
-		$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        $time         = time();
+        $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 
-		return static::findBy($arrColumns, null, $arrOptions);
-	}
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
 
 }

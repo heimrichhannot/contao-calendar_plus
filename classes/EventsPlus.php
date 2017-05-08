@@ -21,25 +21,13 @@ abstract class EventsPlus extends \Events
      *
      * @var array
      */
-    protected $arrSubEvents = array();
-
-    protected function prepareFilterModel($objModel)
-    {
-        // add keyword support
-        if ($objModel->cal_addKeywordSearch)
-        {
-            $objModel->formHybridEditable = deserialize($objModel->formHybridEditable, true);
-            $objModel->formHybridEditable = array_unique(array_merge($objModel->formHybridEditable, array('q')));
-        }
-
-        return $objModel;
-    }
+    protected $arrSubEvents = [];
 
     public function getPossibleFilterOptions($objModule)
     {
         \Controller::loadDataContainer('tl_calendar_events');
 
-        $arrOptions = array();
+        $arrOptions = [];
 
         $arrFields = deserialize($objModule->formHybridEditable, true);
 
@@ -64,7 +52,7 @@ abstract class EventsPlus extends \Events
     {
         \Controller::loadDataContainer('tl_calendar_events');
 
-        $arrFilter = array();
+        $arrFilter = [];
 
         $arrFields = deserialize($objModule->formHybridEditable, true);
 
@@ -106,6 +94,18 @@ abstract class EventsPlus extends \Events
         return $arrFilter;
     }
 
+    protected function prepareFilterModel($objModel)
+    {
+        // add keyword support
+        if ($objModel->cal_addKeywordSearch)
+        {
+            $objModel->formHybridEditable = deserialize($objModel->formHybridEditable, true);
+            $objModel->formHybridEditable = array_unique(array_merge($objModel->formHybridEditable, ['q']));
+        }
+
+        return $objModel;
+    }
+
     /**
      * Get all events of a certain period
      *
@@ -115,14 +115,14 @@ abstract class EventsPlus extends \Events
      *
      * @return array
      */
-    protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter = array(), $arrFilterOptions = array(), $arrFilterConfig = array())
+    protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter = [], $arrFilterOptions = [], $arrFilterConfig = [])
     {
         if (!is_array($arrCalendars))
         {
-            return array();
+            return [];
         }
 
-        $this->arrEvents = array();
+        $this->arrEvents = [];
 
         // set end date from filter
         if ($arrFilter['startDate'] && $arrFilter['startDate'] > $intStart)
@@ -144,9 +144,8 @@ abstract class EventsPlus extends \Events
             // Get the current "jumpTo" page
             if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
             {
-                $strUrl                    =
-                    $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/events/%s'));
-                $arrFilterConfig['jumpTo'] = array($objTarget->id);
+                $strUrl                    = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/events/%s'));
+                $arrFilterConfig['jumpTo'] = [$objTarget->id];
             }
 
             // Get the events of the current period
@@ -214,7 +213,7 @@ abstract class EventsPlus extends \Events
             }
         }
 
-        $arrIds = array();
+        $arrIds = [];
 
         foreach ($this->arrEvents as $intKey => $arrDays)
         {
@@ -235,11 +234,55 @@ abstract class EventsPlus extends \Events
 
         // store events ids in session
         $session                                 = \Session::getInstance()->getData();
-        $session[CALENDARPLUS_SESSION_EVENT_IDS] = array();
+        $session[CALENDARPLUS_SESSION_EVENT_IDS] = [];
         $session[CALENDARPLUS_SESSION_EVENT_IDS] = $arrIds;
         \Session::getInstance()->setData($session);
 
         return $this->arrEvents;
+    }
+
+    /**
+     * Add an event to the array of active events
+     *
+     * @param object
+     * @param integer
+     * @param integer
+     * @param string
+     * @param integer
+     * @param integer
+     * @param integer
+     */
+    protected function addEvent($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intLimit, $intCalendar)
+    {
+        $span = \Calendar::calculateSpan($intStart, $intEnd);
+
+        // Adjust the start time of a multi-day event (see #6802)
+        if ($this->cal_noSpan && $span > 0 && $intStart < $intBegin && $intBegin < $intEnd)
+        {
+            $intStart = $intBegin;
+        }
+
+        $intDate = $intStart;
+        $intKey  = date('Ymd', $intStart);
+
+        $arrEvent = $this->getEventDetails($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar);
+
+        $this->arrEvents[$intKey][$intStart][] = $arrEvent;
+
+        // Multi-day event
+        for ($i = 1; $i <= $span && $intDate <= $intLimit; $i++)
+        {
+            // Only show first occurrence
+            if ($this->cal_noSpan && $intDate >= $intBegin)
+            {
+                break;
+            }
+
+            $intDate    = strtotime('+ 1 day', $intDate);
+            $intNextKey = date('Ymd', $intDate);
+
+            $this->arrEvents[$intNextKey][$intDate][] = $arrEvent;
+        }
     }
 
     protected function getEventDetails($objEvent, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar)
@@ -298,7 +341,7 @@ abstract class EventsPlus extends \Events
 
         if (($intParentEvent = $objEvent->parentEvent) > 0)
         {
-            if (($objParentEvent = CalendarPlusEventsModel::findPublishedByParentAndIdOrAlias($intParentEvent, array($objEvent->pid))) !== null)
+            if (($objParentEvent = CalendarPlusEventsModel::findPublishedByParentAndIdOrAlias($intParentEvent, [$objEvent->pid])) !== null)
             {
                 $arrEvent['parentHref'] = $this->generateEventUrl($objParentEvent, $strUrl);
                 $arrEvent['isSubEvent'] = true;
@@ -552,50 +595,6 @@ abstract class EventsPlus extends \Events
         return $arrEvent;
     }
 
-    /**
-     * Add an event to the array of active events
-     *
-     * @param object
-     * @param integer
-     * @param integer
-     * @param string
-     * @param integer
-     * @param integer
-     * @param integer
-     */
-    protected function addEvent($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intLimit, $intCalendar)
-    {
-        $span = \Calendar::calculateSpan($intStart, $intEnd);
-
-        // Adjust the start time of a multi-day event (see #6802)
-        if ($this->cal_noSpan && $span > 0 && $intStart < $intBegin && $intBegin < $intEnd)
-        {
-            $intStart = $intBegin;
-        }
-
-        $intDate = $intStart;
-        $intKey  = date('Ymd', $intStart);
-
-        $arrEvent = $this->getEventDetails($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar);
-
-        $this->arrEvents[$intKey][$intStart][] = $arrEvent;
-
-        // Multi-day event
-        for ($i = 1; $i <= $span && $intDate <= $intLimit; $i++)
-        {
-            // Only show first occurrence
-            if ($this->cal_noSpan && $intDate >= $intBegin)
-            {
-                break;
-            }
-
-            $intDate    = strtotime('+ 1 day', $intDate);
-            $intNextKey = date('Ymd', $intDate);
-
-            $this->arrEvents[$intNextKey][$intDate][] = $arrEvent;
-        }
-    }
-
     protected function addSingleEvent($objEvent, $strBegin)
     {
         $strUrl      = $this->strUrl;
@@ -613,7 +612,7 @@ abstract class EventsPlus extends \Events
 
     protected function getParentEventDetails($intParentEvent, $intCalendar, $strBegin)
     {
-        $objParentEvent = CalendarPlusEventsModel::findPublishedByParentAndIdOrAlias($intParentEvent, array($intCalendar));
+        $objParentEvent = CalendarPlusEventsModel::findPublishedByParentAndIdOrAlias($intParentEvent, [$intCalendar]);
 
         // do not show subevent, if parent event does not exist
         if ($objParentEvent === null)
@@ -689,7 +688,7 @@ abstract class EventsPlus extends \Events
             }
         }
 
-        $objTemplate->enclosure = array();
+        $objTemplate->enclosure = [];
 
         // Add enclosure
         if ($event['addEnclosure'])

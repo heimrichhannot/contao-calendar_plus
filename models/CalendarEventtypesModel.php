@@ -16,29 +16,6 @@ class CalendarEventtypesModel extends \Model
 {
     protected static $strTable = 'tl_calendar_eventtypes';
 
-
-    public function generateAlias()
-    {
-        $varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
-
-        $objAlias = static::findBy('alias', $varValue);
-
-        // Check whether the alias exists
-        if ($objAlias !== null)
-        {
-            if (!$this->id)
-            {
-                return $this;
-            }
-
-            $varValue .= '-' . $this->id;
-        }
-
-        $this->alias = $varValue;
-
-        return $this;
-    }
-
     /**
      * Find all item by pids
      *
@@ -119,5 +96,27 @@ class CalendarEventtypesModel extends \Model
         $arrColumns[] = "LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'";
 
         return static::findBy($arrColumns, null, $arrOptions);
+    }
+
+    public function generateAlias()
+    {
+        $varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
+
+        $objAlias = static::findBy('alias', $varValue);
+
+        // Check whether the alias exists
+        if ($objAlias !== null)
+        {
+            if (!$this->id)
+            {
+                return $this;
+            }
+
+            $varValue .= '-' . $this->id;
+        }
+
+        $this->alias = $varValue;
+
+        return $this;
     }
 }

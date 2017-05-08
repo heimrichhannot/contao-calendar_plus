@@ -3,8 +3,9 @@
  * Contao Open Source CMS
  *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
+ *
  * @package calendar_dav
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
@@ -13,125 +14,138 @@ namespace HeimrichHannot\CalendarPlus;
 
 class ModuleEventFilter extends EventsPlus
 {
-	/**
-	 * Current date object
-	 * @var integer
-	 */
-	protected $Date;
+    /**
+     * Current date object
+     *
+     * @var integer
+     */
+    protected $Date;
 
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'mod_eventfilter';
+    /**
+     * Template
+     *
+     * @var string
+     */
+    protected $strTemplate = 'mod_eventfilter';
 
-	/**
-	 * Display a wildcard in the back end
-	 * @return string
-	 */
-	public function generate()
-	{
-		if (TL_MODE == 'BE') {
-			$objTemplate = new \BackendTemplate('be_wildcard');
+    /**
+     * Display a wildcard in the back end
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        if (TL_MODE == 'BE')
+        {
+            $objTemplate = new \BackendTemplate('be_wildcard');
 
-			$objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventlist_plus'][0]) . ' ###';
-			$objTemplate->title    = $this->headline;
-			$objTemplate->id       = $this->id;
-			$objTemplate->link     = $this->name;
-			$objTemplate->href     = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+            $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['eventlist_plus'][0]) . ' ###';
+            $objTemplate->title    = $this->headline;
+            $objTemplate->id       = $this->id;
+            $objTemplate->link     = $this->name;
+            $objTemplate->href     = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
 
-			return $objTemplate->parse();
-		}
+            return $objTemplate->parse();
+        }
 
-		$this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
+        $this->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
 
-		// Return if there are no calendars
-		if (!is_array($this->cal_calendar) || empty($this->cal_calendar))
-		{
-			return '';
-		}
-		
-		parent::generate();
-		
-		// needs to be overwritten in model, otherwise datacontainer argument in options_callback contains protected calendars
-		$this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
-		
-		$objForm = new EventFilterForm($this->objModel);
-		
-		if(($strForm = $objForm->generate()) === null)
-		{
-			return '';
-		}
-		
-		$this->Template->form = $objForm->generate();
-		
-		return $this->Template->parse();
-	}
+        // Return if there are no calendars
+        if (!is_array($this->cal_calendar) || empty($this->cal_calendar))
+        {
+            return '';
+        }
 
-	protected function compile()
-	{
-	}
+        parent::generate();
 
-	public function getFilterOptions()
-	{
-		$arrOptions = array();
+        // needs to be overwritten in model, otherwise datacontainer argument in options_callback contains protected calendars
+        $this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
 
-		// needs to be overwritten in model, otherwise datacontainer argument in options_callback contains protected calendars
-		$this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
+        $objForm = new EventFilterForm($this->objModel);
 
-		$objForm = new EventFilterForm($this->objModel);
-		
-		$objForm->generate();
+        if (($strForm = $objForm->generate()) === null)
+        {
+            return '';
+        }
 
-		$arrFields = $objForm->getFilterFields();
+        $this->Template->form = $objForm->generate();
 
-		if(!is_array($arrFields) || empty($arrFields)) return $arrOptions;
+        return $this->Template->parse();
+    }
 
-		$arrRestricedValueFields = deserialize($this->cal_restrictedValueFields, true);
+    public function getFilterOptions()
+    {
+        $arrOptions = [];
 
-		$arrEventTypeArchives  = deserialize($this->cal_eventTypesArchive, true);
+        // needs to be overwritten in model, otherwise datacontainer argument in options_callback contains protected calendars
+        $this->objModel->cal_calendar = $this->sortOutProtected(deserialize($this->cal_calendar, true));
 
-		foreach($arrFields as $strName => $objWidget)
-		{
-			if(!is_array($objWidget->options)) continue;
+        $objForm = new EventFilterForm($this->objModel);
 
-			if(!in_array($strName, $arrRestricedValueFields)) continue;
-			
-			$arrFieldOptions = array();
+        $objForm->generate();
 
-			foreach($objWidget->options as $arrOption)
-			{
-				foreach ($arrOption as $strKey => $varValue)
-				{
-					// event types may be split into seperate lists
-					if(is_array($varValue) && $varValue['value'] == 'options')
-					{
-						$arrFieldOptions = array_merge($arrFieldOptions, $varValue['label']);
-					}
-					
-					else if($strKey == 'value' && $varValue != '')
-					{
-						$arrFieldOptions[] = $varValue;
-					}
-				}
-			}
+        $arrFields = $objForm->getFilterFields();
 
-			if(!$this->cal_combineEventTypesArchive && count($arrEventTypeArchives) > 0 && strrpos($strName, 'eventtypes', -strlen($strName)) !== FALSE)
-			{
-				// use multiple eventtypes
-				foreach($arrEventTypeArchives as $intArchive)
-				{
-					$strArchiveKey = $strName . '_' . $intArchive;
-					$arrOptions[$strArchiveKey] = $arrFieldOptions;
-				}
-			}
-			else
-			{
-				$arrOptions[$strName] = $arrFieldOptions;
-			}
-		}
+        if (!is_array($arrFields) || empty($arrFields))
+        {
+            return $arrOptions;
+        }
 
-		return $arrOptions;
-	}
+        $arrRestricedValueFields = deserialize($this->cal_restrictedValueFields, true);
+
+        $arrEventTypeArchives = deserialize($this->cal_eventTypesArchive, true);
+
+        foreach ($arrFields as $strName => $objWidget)
+        {
+            if (!is_array($objWidget->options))
+            {
+                continue;
+            }
+
+            if (!in_array($strName, $arrRestricedValueFields))
+            {
+                continue;
+            }
+
+            $arrFieldOptions = [];
+
+            foreach ($objWidget->options as $arrOption)
+            {
+                foreach ($arrOption as $strKey => $varValue)
+                {
+                    // event types may be split into seperate lists
+                    if (is_array($varValue) && $varValue['value'] == 'options')
+                    {
+                        $arrFieldOptions = array_merge($arrFieldOptions, $varValue['label']);
+                    }
+
+                    else if ($strKey == 'value' && $varValue != '')
+                    {
+                        $arrFieldOptions[] = $varValue;
+                    }
+                }
+            }
+
+            if (!$this->cal_combineEventTypesArchive && count($arrEventTypeArchives) > 0 && strrpos($strName, 'eventtypes', -strlen($strName)) !== false)
+            {
+                // use multiple eventtypes
+                foreach ($arrEventTypeArchives as $intArchive)
+                {
+                    $strArchiveKey              = $strName . '_' . $intArchive;
+                    $arrOptions[$strArchiveKey] = $arrFieldOptions;
+                }
+            }
+            else
+            {
+                $arrOptions[$strName] = $arrFieldOptions;
+            }
+        }
+
+        return $arrOptions;
+    }
+
+    protected function compile()
+    {
+    }
 
 }

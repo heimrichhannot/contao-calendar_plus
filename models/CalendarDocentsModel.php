@@ -1,10 +1,11 @@
 <?php
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
+ *
  * @package calendar_plus
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
@@ -13,59 +14,63 @@ namespace HeimrichHannot\CalendarPlus;
 
 class CalendarDocentsModel extends \Model
 {
-	protected static $strTable = 'tl_calendar_docents';
+    protected static $strTable = 'tl_calendar_docents';
 
+    /**
+     * Find all item by pids array
+     *
+     * @param array $arrOptions An optional options array
+     *
+     * @return \Model\Collection|null A collection of models or null if no items found
+     */
+    public static function findByPids(array $arrPids = [], array $arrOptions = [])
+    {
+        if (!is_array($arrPids) || empty($arrPids))
+        {
+            return null;
+        }
 
-	public function generateAlias()
-	{
-		$varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
+        $t = static::$strTable;
 
-		$objAlias = static::findBy('alias', $varValue);
+        $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
 
-		// Check whether the alias exists
-		if ($objAlias !== null) {
-			if(!$this->id) return $this;
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
 
-			$varValue .= '-' . $this->id;
-		}
+    /**
+     * Find all items by title
+     *
+     * @param string $varValue   The title value
+     * @param array  $arrOptions An optional options array
+     *
+     * @return \Model\Collection|null A collection of models or null if the title was not found
+     */
+    public static function findByTitle($title, array $arrOptions = [])
+    {
+        $t = static::$strTable;
 
-		$this->alias = $varValue;
+        return static::findBy(["LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'"], null, $arrOptions);
+    }
 
-		return $this;
-	}
+    public function generateAlias()
+    {
+        $varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
 
-	/**
-	 * Find all item by pids array
-	 *
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return \Model\Collection|null A collection of models or null if no items found
-	 */
-	public static function findByPids(array $arrPids=array(), array $arrOptions=array())
-	{
-		if (!is_array($arrPids) || empty($arrPids))
-		{
-			return null;
-		}
+        $objAlias = static::findBy('alias', $varValue);
 
-		$t = static::$strTable;
+        // Check whether the alias exists
+        if ($objAlias !== null)
+        {
+            if (!$this->id)
+            {
+                return $this;
+            }
 
-		$arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+            $varValue .= '-' . $this->id;
+        }
 
-		return static::findBy($arrColumns, null, $arrOptions);
-	}
+        $this->alias = $varValue;
 
-	/**
-	 * Find all items by title
-	 *
-	 * @param string  $varValue   The title value
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return \Model\Collection|null A collection of models or null if the title was not found
-	 */
-	public static function findByTitle($title, array $arrOptions=array())
-	{
-		$t = static::$strTable;
-		return static::findBy(array("LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'"), null, $arrOptions);
-	}
+        return $this;
+    }
 }

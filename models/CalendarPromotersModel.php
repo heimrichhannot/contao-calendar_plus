@@ -1,10 +1,11 @@
 <?php
 /**
  * Contao Open Source CMS
- * 
+ *
  * Copyright (c) 2015 Heimrich & Hannot GmbH
+ *
  * @package calendar_plus
- * @author Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
+ * @author  Rico Kaltofen <r.kaltofen@heimrich-hannot.de>
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
@@ -13,119 +14,125 @@ namespace HeimrichHannot\CalendarPlus;
 
 class CalendarPromotersModel extends \Model
 {
-	protected static $strTable = 'tl_calendar_promoters';
+    protected static $strTable = 'tl_calendar_promoters';
 
-	protected static $strCode = 'code';
+    protected static $strCode = 'code';
 
-	/**
-	 * Find all item by title
-	 *
-	 * @param string  $varValue   The title value
-	 * @param array   $arrOptions An optional options array
-	 *
-	 * @return \Model\Collection|null A collection of models or null if the title was not found
-	 */
-	public static function findByTitle($title, array $arrOptions=array())
-	{
-		$t = static::$strTable;
-		return static::findBy(array("LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'"), null, $arrOptions);
-	}
+    /**
+     * Find all item by title
+     *
+     * @param string $varValue   The title value
+     * @param array  $arrOptions An optional options array
+     *
+     * @return \Model\Collection|null A collection of models or null if the title was not found
+     */
+    public static function findByTitle($title, array $arrOptions = [])
+    {
+        $t = static::$strTable;
 
-	/**
-	 * Helper method to generate the alias for the current model
-	 * @return $this
-	 */
-	public function generateAlias()
-	{
-		$varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
+        return static::findBy(["LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'"], null, $arrOptions);
+    }
 
-		$objAlias = static::findBy('alias', $varValue);
+    /**
+     * Find a single record by its code
+     *
+     * @param mixed $varValue   The property value
+     * @param array $arrOptions An optional options array
+     *
+     * @return \Model|null The model or null if the result is empty
+     */
+    public static function findByCode($varValue, array $arrOptions = [])
+    {
+        $arrOptions = array_merge(
+            [
+                'limit'  => 1,
+                'column' => static::$strCode,
+                'value'  => $varValue,
+                'return' => 'Model',
+            ],
 
-		// Check whether the alias exists
-		if ($objAlias !== null) {
-			if(!$this->id) return $this;
-			$varValue .= '-' . $this->id;
-		}
+            $arrOptions
+        );
 
-		$this->alias = $varValue;
+        return static::find($arrOptions);
+    }
 
-		return $this;
-	}
+    public static function findPublishedByPidsAndTypes(array $arrPids, array $arrTypes, $arrOptions = [])
+    {
+        $t    = static::$strTable;
+        $time = time();
 
-	/**
-	 * Find a single record by its code
-	 *
-	 * @param mixed $varValue   The property value
-	 * @param array $arrOptions An optional options array
-	 *
-	 * @return \Model|null The model or null if the result is empty
-	 */
-	public static function findByCode($varValue, array $arrOptions=array())
-	{
-		$arrOptions = array_merge
-		(
-			array
-			(
-				'limit'  => 1,
-				'column' => static::$strCode,
-				'value'  => $varValue,
-				'return' => 'Model'
-			),
+        $arrColumns = ["$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")"];
 
-			$arrOptions
-		);
+        $arrColumns[] = "$t.type IN('" . implode("','", $arrTypes) . "')";
 
-		return static::find($arrOptions);
-	}
+        if (!BE_USER_LOGGED_IN)
+        {
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
 
-	public static function findPublishedByPidsAndTypes(array $arrPids, array $arrTypes, $arrOptions=array())
-	{
-		$t = static::$strTable;
-		$time = time();
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order'] = "$t.title";
+        }
 
-		$arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
 
-		$arrColumns[] = "$t.type IN('" . implode("','", $arrTypes) . "')";
+    /**
+     * Find published promoters by given ids
+     *
+     * @param array $arrIds An array of promoters IDs
+     *
+     * @return \Model\Collection|null A collection of models or null if there are no promoters
+     */
+    public static function findPublishedByIds(array $arrIds, array $arrOptions = [])
+    {
+        if (empty($arrIds))
+        {
+            return null;
+        }
 
-		if (!BE_USER_LOGGED_IN) {
-			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
-		}
+        $t          = static::$strTable;
+        $arrColumns = ["$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")"];
 
-		if(!isset($arrOptions['order']))
-		{
-			$arrOptions['order'] = "$t.title";
-		}
+        if (!BE_USER_LOGGED_IN)
+        {
+            $time         = time();
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
 
-		return static::findBy($arrColumns, null, $arrOptions);
-	}
+        if (!isset($arrOptions['order']))
+        {
+            $arrOptions['order'] = "FIELD($t.id, " . implode(',', array_map('intval', $arrIds)) . ")";
+        }
 
+        return static::findBy($arrColumns, null, $arrOptions);
+    }
 
-	/**
-	 * Find published promoters by given ids
-	 * @param array   $arrIds     An array of promoters IDs
-	 * @return \Model\Collection|null A collection of models or null if there are no promoters
-	 */
-	public static function findPublishedByIds(array $arrIds, array $arrOptions=array())
-	{
-		if (empty($arrIds))
-		{
-			return null;
-		}
+    /**
+     * Helper method to generate the alias for the current model
+     *
+     * @return $this
+     */
+    public function generateAlias()
+    {
+        $varValue = standardize(\StringUtil::restoreBasicEntities($this->title));
 
-		$t = static::$strTable;
-		$arrColumns = array("$t.id IN(" . implode(',', array_map('intval', $arrIds)) . ")");
+        $objAlias = static::findBy('alias', $varValue);
 
-		if (!BE_USER_LOGGED_IN)
-		{
-			$time = time();
-			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
-		}
+        // Check whether the alias exists
+        if ($objAlias !== null)
+        {
+            if (!$this->id)
+            {
+                return $this;
+            }
+            $varValue .= '-' . $this->id;
+        }
 
-		if(!isset($arrOptions['order']))
-		{
-			$arrOptions['order'] = "FIELD($t.id, " . implode(',', array_map('intval', $arrIds)) . ")";
-		}
+        $this->alias = $varValue;
 
-		return static::findBy($arrColumns, null, $arrOptions);
-	}
+        return $this;
+    }
 }

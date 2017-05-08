@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.31] - 2017-05-08
+
+### Added
+- promoter logo & calendar archive upload folder field
+
 ## [1.2.30] - 2017-04-12
 
 ### Fixed

@@ -13,22 +13,23 @@ namespace HeimrichHannot\CalendarPlus\Utils;
 
 class Options
 {
-	public static function getPromoterTypes()
-	{
-		$arrOptions = array();
+    public static function getPromoterTypes()
+    {
+        $arrOptions = [];
 
-		$arrConstants = preg_filter('/^CALENDARPLUS_PROMOTER_TYPE_(.*)/', 'CALENDARPLUS_PROMOTER_TYPE_$1', array_keys(get_defined_constants()));
+        $arrConstants = preg_filter('/^CALENDARPLUS_PROMOTER_TYPE_(.*)/', 'CALENDARPLUS_PROMOTER_TYPE_$1', array_keys(get_defined_constants()));
 
-		if (!is_array($arrConstants)) {
-			return $arrOptions;
-		}
+        if (!is_array($arrConstants))
+        {
+            return $arrOptions;
+        }
 
-		foreach ($arrConstants as $strConstant)
-		{
-			$type              = constant($strConstant);
-			$arrOptions[$type] = $type;
-		}
+        foreach ($arrConstants as $strConstant)
+        {
+            $type              = constant($strConstant);
+            $arrOptions[$type] = $type;
+        }
 
-		return $arrOptions;
-	}
+        return $arrOptions;
+    }
 }

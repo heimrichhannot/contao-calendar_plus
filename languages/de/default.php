@@ -73,7 +73,7 @@ $GLOBALS['TL_LANG']['eventfilter']['docentsGroupLabel'] = 'Referenten';
  * Content Elements
  */
 $GLOBALS['TL_LANG']['CTE']['calendar']     = 'Events';
-$GLOBALS['TL_LANG']['CTE']['promoterlist'] = array('Veranstalterliste', 'Fügen Sie einen Liste ausgewählter Veranstalter ein.');
+$GLOBALS['TL_LANG']['CTE']['promoterlist'] = ['Veranstalterliste', 'Fügen Sie einen Liste ausgewählter Veranstalter ein.'];
 
 /**
  * Promoterlist

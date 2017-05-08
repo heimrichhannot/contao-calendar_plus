@@ -14,51 +14,56 @@ use HeimrichHannot\CalendarPlus\Controller\PromoterController;
 
 class ContentCalendarPromoterList extends \ContentElement
 {
-	/**
-	 * Template
-	 * @var string
-	 */
-	protected $strTemplate = 'ce_calendar_promoterlist';
+    /**
+     * Template
+     *
+     * @var string
+     */
+    protected $strTemplate = 'ce_calendar_promoterlist';
 
-	protected $objPromoters;
+    protected $objPromoters;
 
-	protected $controller;
+    /**
+     * @var PromoterController
+     */
+    protected $controller;
 
-	/**
-	 * Parse the template
-	 *
-	 * @return string
-	 */
-	public function generate()
-	{
-		$this->cal_promoters = deserialize($this->cal_promoters, true);
+    /**
+     * Parse the template
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        $this->cal_promoters = deserialize($this->cal_promoters, true);
 
-		$this->Controller = new PromoterController($this->objModel);
+        $this->Controller = new PromoterController($this->objModel);
 
-		return parent::generate();
-	}
+        return parent::generate();
+    }
 
-	protected function compile()
-	{
-		$this->objPromoters = CalendarPromotersModel::findPublishedByIds($this->cal_promoters);
+    protected function compile()
+    {
+        $this->objPromoters = CalendarPromotersModel::findPublishedByIds($this->cal_promoters);
 
-		if($this->objPromoters === null)
-		{
-			$this->Template->empty = $GLOBALS['TL_LANG']['cal_promoterlist']['emptyList'];
-			return;
-		}
+        if ($this->objPromoters === null)
+        {
+            $this->Template->empty = $GLOBALS['TL_LANG']['cal_promoterlist']['emptyList'];
 
-		$i = 0;
-		$arrPromoters = array();
-		$arrList = $this->objPromoters->fetchAll();
-		$this->objPromoters->reset();
-		
-		while($this->objPromoters->next())
-		{
-			$arrPromoters[] = $this->Controller->parsePromoter($this->objPromoters->current(), $i, $arrList);
-			$i++;
-		}
+            return;
+        }
 
-		$this->Template->promoters = $arrPromoters;
-	}
+        $i            = 0;
+        $arrPromoters = [];
+        $arrList      = $this->objPromoters->fetchAll();
+        $this->objPromoters->reset();
+
+        while ($this->objPromoters->next())
+        {
+            $arrPromoters[] = $this->Controller->parsePromoter($this->objPromoters->current(), $i, $arrList);
+            $i++;
+        }
+
+        $this->Template->promoters = $arrPromoters;
+    }
 }
