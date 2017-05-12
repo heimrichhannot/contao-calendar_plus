@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.2.33] - 2017-05-12
+
+### Added
+- fixed render reader within list, when modal is present
 
 ## [1.2.32] - 2017-05-12
 

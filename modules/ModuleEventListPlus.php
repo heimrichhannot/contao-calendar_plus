@@ -57,7 +57,7 @@ class ModuleEventListPlus extends EventsPlus
         }
 
         // Show the event reader if an item has been selected
-        if (!$this->cal_showInModal && $this->cal_readerModule > 0 && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
+        if (!($this->cal_showInModal || $this->useModal) && $this->cal_readerModule > 0 && (isset($_GET['events']) || (\Config::get('useAutoItem') && isset($_GET['auto_item']))))
         {
             return $this->getFrontendModule($this->cal_readerModule, $this->strColumn);
         }
