@@ -83,3 +83,17 @@ if (TL_MODE == 'FE')
  * Content elements
  */
 $GLOBALS['TL_CTE']['calendar']['promoterlist'] = 'HeimrichHannot\CalendarPlus\ContentCalendarPromoterList';
+
+/**
+ * Modal module configuration
+ */
+$GLOBALS['MODAL_MODULES']['eventlist_plus'] = array
+(
+    'invokePalette' => 'cal_template', // The modal palette will be invoked after the field customTpl; as example
+);
+
+
+/**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['addEventDetailsToTemplate'][] = array('HeimrichHannot\CalendarPlus\Hooks', 'addEventDetailsToTemplate');

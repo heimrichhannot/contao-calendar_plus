@@ -404,9 +404,11 @@ class ModuleEventListPlus extends EventsPlus
 
             $strEvents .= $objTemplate->parse();
 
+
             ++$eventCount;
             ++$headerCount;
         }
+
 
         $strEmpty                     = "\n" . '<div class="empty">' . $strEmpty . '</div>' . "\n";
         $this->Template->emptyMessage = $strEmpty;
@@ -417,6 +419,7 @@ class ModuleEventListPlus extends EventsPlus
             $strEvents             = $strEmpty;
             $this->Template->empty = true;
         }
+
 
         // See #3672
         $this->Template->headline  = $this->headline;
@@ -431,4 +434,5 @@ class ModuleEventListPlus extends EventsPlus
             \Input::setGet('day', null);
         }
     }
+
 }

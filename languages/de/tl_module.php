@@ -24,7 +24,7 @@ $GLOBALS['TL_LANG']['tl_module']['cal_templateSubevent']                 = [
 $GLOBALS['TL_LANG']['tl_module']['cal_template_modal']                   =
     ['Event-Template (Modal)', 'Hier können Sie das Event-Template für die Anzeige im Modalfenster auswählen.'];
 $GLOBALS['TL_LANG']['tl_module']['cal_showInModal']                      =
-    ['Eventdetails im Modalfenster anzeigen', '<strong>Achtung</strong>: Der Eventleser muss entsprechend angegeben werden.'];
+    ['Eventdetails im Modalfenster anzeigen <span style="color: #c33">(Veraltet, verwenden Sie "Elemente im Modalfenstern anzeigen")</span>', '<strong>Achtung</strong>: Der Eventleser muss entsprechend angegeben werden.'];
 $GLOBALS['TL_LANG']['tl_module']['cal_combineEventTypesArchive']         = ['Eventtyp-Archive zusammenfassen', 'Fasst alle Archive zusammen'];
 $GLOBALS['TL_LANG']['tl_module']['cal_combineEventTypesArchiveMultiple'] = ['Mehrfachauswahl für zusammengefasste Archive', 'Lässt die Suche nach mehreren Eventtypen zu.'];
 $GLOBALS['TL_LANG']['tl_module']['cal_eventTypesArchive']                = ['Eventtyp-Archive auswählen', 'Aus welchen Eventtyp-Archiven sollen die Eventtypen bezogen werden?'];

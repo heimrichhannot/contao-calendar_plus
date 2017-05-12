@@ -140,7 +140,11 @@ class ModuleEventReaderPlus extends EventsPlus
         }
 
 
-        return parent::generate();
+        // default reader check
+        if($this->checkConditions())
+        {
+            return parent::generate();
+        }
     }
 
     protected function checkConditions()

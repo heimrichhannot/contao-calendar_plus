@@ -19,3 +19,9 @@ A collection of enhancements for the contao calendar module.
 - Module Eventfilter (filter list by date, promoter, docents, eventtype and keyword (make usage of contao-search) many more)
 - Module Eventchooser (Dropdown, Event Selector)
 
+### Hooks
+
+Name | Arguments | Expected return value | Description
+ ---------- | ---------- | ---------- | ---------
+addEventDetailsToTemplate | $objTemplate, $arrEvent, $objModule | void | manipulate the template data to enable modal use 
+

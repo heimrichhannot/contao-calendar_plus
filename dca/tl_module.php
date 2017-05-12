@@ -271,8 +271,6 @@ class tl_module_calendar_plus extends \Backend
             }
         }
 
-        var_dump($arrFields);
-
         return $arrFields;
     }
 

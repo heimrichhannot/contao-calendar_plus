@@ -2,8 +2,8 @@
 
     var CalendarPlus = {
         onReady: function () {
-            this.showEventsInModal();
-            this.initInfiniteScroll();
+            // this.showEventsInModal();
+            // this.initInfiniteScroll();
         },
         showEventsInModal: function () {
             $('body').on('click', '[data-event="modal"]', function (e) {
