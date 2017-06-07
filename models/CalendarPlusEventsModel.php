@@ -14,6 +14,7 @@ namespace HeimrichHannot\CalendarPlus;
 use HeimrichHannot\DavAreasOfLaw\AreasOfLawModel;
 use HeimrichHannot\Haste\Util\Url;
 use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
+use Model\Collection;
 
 class CalendarPlusEventsModel extends \CalendarEventsModel
 {
@@ -309,6 +310,17 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         return CalendarPromotersModel::findMultipleByIds($arrPromoters);
     }
 
+    /**
+     * @param       $arrPids
+     * @param       $intStart
+     * @param       $intEnd
+     * @param array $arrFilter
+     * @param array $arrFilterOptions
+     * @param array $arrFilterConfig
+     * @param array $arrOptions
+     *
+     * @return int The number of total items
+     */
     public static function countCurrentByPidAndFilter(
         $arrPids,
         $intStart,
@@ -321,6 +333,18 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         return static::findCurrentByPidAndFilter($arrPids, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig, $arrOptions, true);
     }
 
+    /**
+     * @param       $arrPids
+     * @param       $intStart
+     * @param       $intEnd
+     * @param array $arrFilter
+     * @param array $arrFilterOptions
+     * @param array $arrFilterConfig
+     * @param array $arrOptions
+     * @param bool  $count
+     *
+     * @return \CalendarEventsModel|\CalendarEventsModel[]|Collection|null|int|static
+     */
     public static function findCurrentByPidAndFilter(
         $arrPids,
         $intStart,
@@ -337,6 +361,15 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         $arrPids = !is_array($arrPids) ? [$arrPids] : $arrPids;
 
+        $arrFields = ["$t.*"];
+
+        $arrFields[] = "IF(
+                        DATEDIFF(FROM_UNIXTIME($t.endTime), FROM_UNIXTIME($t.startTime)) > 0 AND $t.startTime >= UNIX_TIMESTAMP() AND $t.endTime <= UNIX_TIMESTAMP(), 
+                        UNIX_TIMESTAMP(STR_TO_DATE(CONCAT(FROM_UNIXTIME(UNIX_TIMESTAMP(), '%%Y-%%m-%%d'),' ', FROM_UNIXTIME($t.startTime, '%%H:%%i:%%s')), '%%Y-%%m-%%d %%H:%%i:%%s')),
+                        $t.startTime
+                        ) as listTime";
+
+        $arrValues    = [];
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumnsOr = [];
 
@@ -585,8 +618,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
                             foreach ($arrUrls as $i => $strAlias)
                             {
                                 $strKeyWordColumns .= ($n > 0 ? " OR " : "") . "$t.alias = ?";
-                                $arrParts    = parse_url($strAlias);
-                                $arrValues[] = basename($arrParts['path']);
+                                $arrParts          = parse_url($strAlias);
+                                $arrValues[]       = basename($arrParts['path']);
                                 $n++;
                             }
 
@@ -624,12 +657,30 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
 
         if (!isset($arrOptions['order']))
         {
-            $arrOptions['order'] = "$t.startTime";
+            $arrOptions['order'] = "listTime ASC";
+
+//            $arrOptions['order'] = "$t.startTime";
         }
 
         if ($count)
         {
             return static::countBy($arrColumns, $arrValues, $arrOptions);
+        }
+
+        $objStatement = \Database::getInstance()->prepare(
+            sprintf("SELECT %s FROM $t WHERE %s ORDER BY %s", implode(',', $arrFields), implode(' AND ', $arrColumns), $arrOptions['order'])
+        );
+
+        if ($arrOptions['limit'] > 0)
+        {
+            $objStatement->limit($arrOptions['limit'], $arrOptions['offset'] ?: 0);
+        }
+
+        $objResult = $objStatement->execute($arrValues);
+
+        if ($objResult !== null)
+        {
+            return Collection::createFromDbResult($objResult, $t);
         }
 
         return static::findBy($arrColumns, $arrValues, $arrOptions);

@@ -2,6 +2,10 @@
 
 $arrDca = &$GLOBALS['TL_DCA']['tl_calendar_events'];
 
+$arrDca['config']['sql']['keys']['pid,start,stop,published,startTime,endTime'] = 'index';
+$arrDca['config']['sql']['keys']['pid,recurring,recurrences,repeatEnd']        = 'index';
+
+
 /**
  * Palettes
  */

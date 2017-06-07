@@ -155,15 +155,72 @@ class ModuleEventListPlus extends EventsPlus
             }
         }
 
+        $total = $this->getAllEventsCount($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig);
+        $offset = 0;
+
+        // Overall limit
+        if ($this->cal_limit > 0)
+        {
+            $total = min($this->cal_limit, $total);
+        }
+
+        // Pagination
+        if ($this->perPage > 0)
+        {
+            $id   = 'page_e' . $this->id;
+            $page = \Input::get($id) ?: 1;
+
+            // Do not index or cache the page if the page number is outside the range
+            if ($page < 1 || $page > max(ceil($total / $this->perPage), 1))
+            {
+                global $objPage;
+                $objPage->noSearch = 1;
+                $objPage->cache    = 0;
+
+                // Send a 404 header
+                header('HTTP/1.1 404 Not Found');
+
+                return;
+            }
+
+            //Set limit and offset
+            $limit = $this->perPage;
+            $offset += (max($page, 1) - 1) * $this->perPage;
+            $skip = intval($this->skipFirst);
+
+            // Overall limit
+            if ($offset + $limit > $total + $skip) {
+                $limit = $total + $skip - $offset;
+            }
+
+
+            // load specific pagination template if infiniteScroll is used
+            // otherwise keep standard pagination
+            $objT = $this->cal_useInfiniteScroll ? new \FrontendTemplate('infinite_pagination') : null;
+
+            if (!is_null($objT))
+            {
+                $objT->triggerText = $this->cal_changeTriggerText ? $this->cal_triggerText : $GLOBALS['TL_LANG']['eventlist']['loadMore'];
+            }
+
+            // Add the pagination menu
+            $objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objT);
+
+            $this->Template->pagination = $objPagination->generate("\n  ");
+
+        }
+
+        $arrQueryOptions = ['limit' => $limit, 'offset' => $offset];
+
         // Get all events
-        $arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig);
+        $arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig, $arrQueryOptions);
 
         $isRelatedList = false;
 
         if (empty($arrAllEvents) && $objFilterModule->cal_filterRelatedOnEmpty)
         {
             $arrFilterConfig['show_related'] = true;
-            $arrAllEvents                    = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig);
+            $arrAllEvents                    = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig, $arrQueryOptions);
             $isRelatedList                   = true;
         }
 
@@ -208,7 +265,6 @@ class ModuleEventListPlus extends EventsPlus
                         // event is child event --> add parent event
                         if (($intParentEvent = $event['parentEvent']) > 0)
                         {
-
                             // add parent event
                             if (($arrParentEvent = $this->getParentEventDetails($intParentEvent, $event['pid'], $strBegin)) === null)
                             {
@@ -266,55 +322,7 @@ class ModuleEventListPlus extends EventsPlus
         }
 
         unset($arrAllEvents);
-        $total  = count($arrEvents);
-        $limit  = $total;
-        $offset = 0;
 
-        // Overall limit
-        if ($this->cal_limit > 0)
-        {
-            $total = min($this->cal_limit, $total);
-            $limit = $total;
-        }
-
-        // Pagination
-        if ($this->perPage > 0)
-        {
-            $id   = 'page_e' . $this->id;
-            $page = \Input::get($id) ?: 1;
-
-            // Do not index or cache the page if the page number is outside the range
-            if ($page < 1 || $page > max(ceil($total / $this->perPage), 1))
-            {
-                global $objPage;
-                $objPage->noSearch = 1;
-                $objPage->cache    = 0;
-
-                // Send a 404 header
-                header('HTTP/1.1 404 Not Found');
-
-                return;
-            }
-
-            $offset = ($page - 1) * $this->perPage;
-            $limit  = min($this->perPage + $offset, $total);
-
-
-            // load specific pagination template if infiniteScroll is used
-            // otherwise keep standard pagination
-            $objT = $this->cal_useInfiniteScroll ? new \FrontendTemplate('infinite_pagination') : null;
-
-            if (!is_null($objT))
-            {
-                $objT->triggerText = $this->cal_changeTriggerText ? $this->cal_triggerText : $GLOBALS['TL_LANG']['eventlist']['loadMore'];
-            }
-
-            // Add the pagination menu
-            $objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objT);
-
-            $this->Template->pagination = $objPagination->generate("\n  ");
-
-        }
 
         $strMonth         = '';
         $strDate          = '';
@@ -338,7 +346,7 @@ class ModuleEventListPlus extends EventsPlus
         }
 
         // Parse events
-        for ($i = $offset; $i < $limit; $i++)
+        for ($i = 0; $i < $limit; $i++)
         {
             $event          = $arrEvents[$i];
             $blnIsLastEvent = false;

@@ -23,6 +23,13 @@ abstract class EventsPlus extends \Events
      */
     protected $arrSubEvents = [];
 
+    /**
+     * Url cache
+     *
+     * @var array
+     */
+    protected static $arrUrlCache = [];
+
     public function getPossibleFilterOptions($objModule)
     {
         \Controller::loadDataContainer('tl_calendar_events');
@@ -107,6 +114,37 @@ abstract class EventsPlus extends \Events
     }
 
     /**
+     * Get all events count of a certain period
+     *
+     * @param array
+     * @param integer
+     * @param integer
+     *
+     * @return integer
+     */
+    protected function getAllEventsCount($arrCalendars, $intStart, $intEnd, $arrFilter = [], $arrFilterOptions = [], $arrFilterConfig = [], $arrOptions = [])
+    {
+        if (!is_array($arrCalendars))
+        {
+            return [];
+        }
+
+        // set end date from filter
+        if ($arrFilter['startDate'] && $arrFilter['startDate'] > $intStart)
+        {
+            $intStart = $arrFilter['startDate'];
+        }
+
+        // set end date from filter
+        if ($arrFilter['endDate'] && $arrFilter['endDate'] <= $intEnd)
+        {
+            $intEnd = strtotime(date('d.m.Y', $arrFilter['endDate']) . ' 23:59:59'); // until last second of the day
+        }
+
+        return CalendarPlusEventsModel::countCurrentByPidAndFilter($arrCalendars, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig, $arrOptions);
+    }
+
+    /**
      * Get all events of a certain period
      *
      * @param array
@@ -115,7 +153,7 @@ abstract class EventsPlus extends \Events
      *
      * @return array
      */
-    protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter = [], $arrFilterOptions = [], $arrFilterConfig = [])
+    protected function getAllEvents($arrCalendars, $intStart, $intEnd, $arrFilter = [], $arrFilterOptions = [], $arrFilterConfig = [], $arrOptions = [])
     {
         if (!is_array($arrCalendars))
         {
@@ -136,63 +174,65 @@ abstract class EventsPlus extends \Events
             $intEnd = strtotime(date('d.m.Y', $arrFilter['endDate']) . ' 23:59:59'); // until last second of the day
         }
 
-        foreach ($arrCalendars as $id)
+        // Get the events of the current period
+        $objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($arrCalendars, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig, $arrOptions);
+
+        if ($objEvents === null)
         {
-            $strUrl      = $this->strUrl;
-            $objCalendar = \CalendarModel::findByPk($id);
+            return [];
+        }
 
-            // Get the current "jumpTo" page
-            if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
+        while ($objEvents->next())
+        {
+            if (!isset(static::$arrUrlCache[$objEvents->pid]))
             {
-                $strUrl                    = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/events/%s'));
-                $arrFilterConfig['jumpTo'] = [$objTarget->id];
-            }
+                $objCalendar = $objEvents->getRelated('pid');
 
-            // Get the events of the current period
-            $objEvents = CalendarPlusEventsModel::findCurrentByPidAndFilter($id, $intStart, $intEnd, $arrFilter, $arrFilterOptions, $arrFilterConfig);
-
-            if ($objEvents === null)
-            {
-                continue;
-            }
-
-            while ($objEvents->next())
-            {
-                $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $id);
-
-                // Recurring events
-                if ($objEvents->recurring)
+                // Get the current "jumpTo" page
+                if ($objCalendar !== null && $objCalendar->jumpTo && ($objTarget = $objCalendar->getRelated('jumpTo')) !== null)
                 {
-                    $arrRepeat = deserialize($objEvents->repeatEach);
+                    static::$arrUrlCache[$objEvents->pid] =
+                        $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/events/%s'));
+                    $arrFilterConfig['jumpTo']            = [$objTarget->id];
+                }
+            }
 
-                    if ($arrRepeat['value'] < 1)
+            $strUrl = static::$arrUrlCache[$objEvents->pid];
+
+            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $objEvents->pid);
+
+            // Recurring events
+            if ($objEvents->recurring)
+            {
+                $arrRepeat = deserialize($objEvents->repeatEach);
+
+                if ($arrRepeat['value'] < 1)
+                {
+                    continue;
+                }
+
+                $count        = 0;
+                $intStartTime = $objEvents->startTime;
+                $intEndTime   = $objEvents->endTime;
+                $strtotime    = '+ ' . $arrRepeat['value'] . ' ' . $arrRepeat['unit'];
+
+                while ($intEndTime < $intEnd)
+                {
+                    if ($objEvents->recurrences > 0 && $count++ >= $objEvents->recurrences)
+                    {
+                        break;
+                    }
+
+                    $intStartTime = strtotime($strtotime, $intStartTime);
+                    $intEndTime   = strtotime($strtotime, $intEndTime);
+
+                    // Skip events outside the scope
+                    if ($intEndTime < $intStart || $intStartTime > $intEnd)
                     {
                         continue;
                     }
 
-                    $count        = 0;
-                    $intStartTime = $objEvents->startTime;
-                    $intEndTime   = $objEvents->endTime;
-                    $strtotime    = '+ ' . $arrRepeat['value'] . ' ' . $arrRepeat['unit'];
-
-                    while ($intEndTime < $intEnd)
-                    {
-                        if ($objEvents->recurrences > 0 && $count++ >= $objEvents->recurrences)
-                        {
-                            break;
-                        }
-
-                        $intStartTime = strtotime($strtotime, $intStartTime);
-                        $intEndTime   = strtotime($strtotime, $intEndTime);
-
-                        // Skip events outside the scope
-                        if ($intEndTime < $intStart || $intStartTime > $intEnd)
-                        {
-                            continue;
-                        }
-
-                        $this->addEvent($objEvents, $intStartTime, $intEndTime, $strUrl, $intStart, $intEnd, $id);
-                    }
+                    $this->addEvent($objEvents, $intStartTime, $intEndTime, $strUrl, $intStart, $intEnd, $objEvents->pid);
                 }
             }
         }

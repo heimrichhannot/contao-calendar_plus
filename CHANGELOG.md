@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2017-06-07
+
+### Changed
+- improved calendar list getAllEvents and pagination handling, now events will be limited within sql query, not within array list
+
 ## [1.2.33] - 2017-05-12
 
 ### Added
