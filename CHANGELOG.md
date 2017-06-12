@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.3.1] - 2017-06-12
+
+### Fixed
+- "event" field sql default value
+
 ## [1.3.0] - 2017-06-07
 
 ### Changed

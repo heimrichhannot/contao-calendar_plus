@@ -40,7 +40,7 @@ $dc['fields']['event'] = [
         ['tl_extended_events_form_field', 'editEvent'],
     ],
     'options_callback' => ['tl_extended_events_form_field', 'getParentalEvents'],
-    'sql'              => "int(16) NOT NULL",
+    'sql'              => "int(16) NOT NULL default '0'",
 ];
 
 $dc['fields']['widgetType'] = [
