@@ -1,5 +1,10 @@
-# Change Log
+# Changelog
 All notable changes to this project will be documented in this file.
+
+## [1.3.2] - 2017-06-13
+
+### Fixed
+- dca field parentEvent's css classes
 
 ## [1.3.1] - 2017-06-12
 

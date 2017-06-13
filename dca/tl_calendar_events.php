@@ -54,7 +54,7 @@ $arrFields = [
         'inputType'  => 'select',
         'exclude'    => true,
         'foreignKey' => 'tl_calendar_events.title',
-        'eval'       => ['tl_class' => 'long', 'includeBlankOption' => true, 'submitOnChange' => true, 'chosen' => true],
+        'eval'       => ['tl_class' => 'long clr', 'includeBlankOption' => true, 'submitOnChange' => true, 'chosen' => true],
         'wizard'     => [
             ['tl_calendar_events_plus', 'editParentEvent'],
         ],
