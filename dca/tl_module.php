@@ -231,16 +231,21 @@ class tl_module_calendar_plus extends \Backend
 {
     public function getEditable($dc)
     {
+        $objModule = \ModuleModel::findByPk($dc->id);
+
         if (!$dc)
         {
-            $objModule = \ModuleModel::findByPk(\Input::get('id'));
-
             if ($objModule === null)
             {
                 return [];
             }
 
             $dc = new HeimrichHannot\FormHybrid\DC_Hybrid('tl_module', $objModule);
+        }
+
+        if ($objModule->formHybridDataContainer != 'tl_calendar_events')
+        {
+            return HeimrichHannot\FormHybrid\Backend\Module::getEditable($dc);
         }
 
         $strPalette = ($dc->activeRecord->type == 'eventfilter') ? 'eventfilter' : 'default';
