@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.3] - 2017-06-21
+
+### Fixed
+- "parentEvent" field sql default value
+
 ## [1.3.2] - 2017-06-13
 
 ### Fixed

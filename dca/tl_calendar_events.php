@@ -58,7 +58,7 @@ $arrFields = [
         'wizard'     => [
             ['tl_calendar_events_plus', 'editParentEvent'],
         ],
-        'sql'        => "int(16) NOT NULL",
+        'sql'        => "int(16) NOT NULL default '0'",
     ],
     'locationAdditional' => [
         'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['locationAdditional'],
