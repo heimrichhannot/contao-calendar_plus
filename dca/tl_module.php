@@ -147,7 +147,7 @@ $arrFields = [
     'cal_restrictedValueFields'            => [
         'label'            => &$GLOBALS['TL_LANG']['tl_module']['cal_restrictedValueFields'],
         'inputType'        => 'checkboxWizard',
-        'options_callback' => ['tl_form_hybrid_module', 'getFields'],
+        'options_callback' => ['HeimrichHannot\FormHybrid\Backend\Module', 'getFields'],
         'exclude'          => true,
         'eval'             => ['multiple' => true, 'includeBlankOption' => true, 'tl_class' => 'w50 autoheight clr'],
         'sql'              => "blob NULL",
