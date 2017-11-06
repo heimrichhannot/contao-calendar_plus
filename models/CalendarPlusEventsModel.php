@@ -589,24 +589,29 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
                     }
                     break;
                 case 'q':
-                    if ($value != '' && is_array($arrFilterConfig['jumpTo']))
+                    if ($value != '')
                     {
 
                         try
                         {
+                            global $objPage;
+
                             $objSearch = \Search::searchFor(
                                 $value,
                                 ($arrFilterConfig['module']['queryType'] == 'or'),
-                                $arrFilterConfig['jumpTo'],
+                                is_array($arrFilterConfig['jumpTo']) ? $arrFilterConfig['jumpTo'] : [$objPage->id],
                                 0,
                                 0,
                                 $arrFilterConfig['module']['fuzzy']
                             );
 
-                            // return if keyword not found
+                            // title / teaser search as fallback
                             if ($objSearch->numRows < 1)
                             {
-                                return null;
+                                $arrColumns[] = "$t.title LIKE ? OR $t.teaser LIKE ?";
+                                $arrValues[] = "%". $value . "%";
+                                $arrValues[] = "%" . $value . "%";
+                                break;
                             }
 
                             $arrUrls = $objSearch->fetchEach('url');

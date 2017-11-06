@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.5] - 2017-11-06
+
+### Fixed
+- if `col_noSpan` is disabled, events are not grouped while having multiple days -> fixed pagination in this mode (ignore total from database, use total event count from `Eventsplus::getAllEvents`)
+- fixed `q` filter search if contao search returned no result (no index available for current event) 
+
 ## [1.3.4] - 2017-07-21
 
 ### Fixed

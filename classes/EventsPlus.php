@@ -126,7 +126,7 @@ abstract class EventsPlus extends \Events
     {
         if (!is_array($arrCalendars))
         {
-            return [];
+            return 0;
         }
 
         // set end date from filter
@@ -168,7 +168,7 @@ abstract class EventsPlus extends \Events
             $intStart = $arrFilter['startDate'];
         }
 
-        // set end date from filter
+        // set end date from filter6
         if ($arrFilter['endDate'] && $arrFilter['endDate'] <= $intEnd)
         {
             $intEnd = strtotime(date('d.m.Y', $arrFilter['endDate']) . ' 23:59:59'); // until last second of the day
@@ -199,7 +199,7 @@ abstract class EventsPlus extends \Events
 
             $strUrl = static::$arrUrlCache[$objEvents->pid];
 
-            $this->addEvent($objEvents, $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $objEvents->pid);
+            $this->addEvent($objEvents->current(), $objEvents->startTime, $objEvents->endTime, $strUrl, $intStart, $intEnd, $objEvents->pid);
 
             // Recurring events
             if ($objEvents->recurring)
@@ -232,7 +232,7 @@ abstract class EventsPlus extends \Events
                         continue;
                     }
 
-                    $this->addEvent($objEvents, $intStartTime, $intEndTime, $strUrl, $intStart, $intEnd, $objEvents->pid);
+                    $this->addEvent($objEvents->current(), $intStartTime, $intEndTime, $strUrl, $intStart, $intEnd, $objEvents->pid);
                 }
             }
         }

@@ -155,62 +155,39 @@ class ModuleEventListPlus extends EventsPlus
             }
         }
 
-        $total = $this->getAllEventsCount($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig);
-        $offset = 0;
+        $arrQueryOptions = [];
+        $total = 0;
+        $id   = 'page_e' . $this->id;
+        $page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
 
-        // Overall limit
-        if ($this->cal_limit > 0)
+        if($this->cal_noSpan)
         {
-            $total = min($this->cal_limit, $total);
-        }
-
-        // Pagination
-        if ($this->perPage > 0)
-        {
-            $id   = 'page_e' . $this->id;
-            $page = \Input::get($id) ?: 1;
-
-            // Do not index or cache the page if the page number is outside the range
-            if ($page < 1 || $page > max(ceil($total / $this->perPage), 1))
-            {
-                global $objPage;
-                $objPage->noSearch = 1;
-                $objPage->cache    = 0;
-
-                // Send a 404 header
-                header('HTTP/1.1 404 Not Found');
-
-                return;
-            }
-
-            //Set limit and offset
-            $limit = $this->perPage;
-            $offset += (max($page, 1) - 1) * $this->perPage;
-            $skip = intval($this->skipFirst);
+            $total = $this->getAllEventsCount($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig);
+            $offset = 0;
 
             // Overall limit
-            if ($offset + $limit > $total + $skip) {
-                $limit = $total + $skip - $offset;
-            }
-
-
-            // load specific pagination template if infiniteScroll is used
-            // otherwise keep standard pagination
-            $objT = $this->cal_useInfiniteScroll ? new \FrontendTemplate('infinite_pagination') : null;
-
-            if (!is_null($objT))
+            if ($this->cal_limit > 0)
             {
-                $objT->triggerText = $this->cal_changeTriggerText ? $this->cal_triggerText : $GLOBALS['TL_LANG']['eventlist']['loadMore'];
+                $total = min($this->cal_limit, $total);
             }
 
-            // Add the pagination menu
-            $objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objT);
+            // Pagination
+            if ($this->perPage > 0)
+            {
+                //Set limit and offset
+                $limit = $this->perPage;
+                $offset += (max($page, 1) - 1) * $this->perPage;
+                $skip = intval($this->skipFirst);
 
-            $this->Template->pagination = $objPagination->generate("\n  ");
+                // Overall limit
+                if ($offset + $limit > $total + $skip) {
+                    $limit = $total + $skip - $offset;
+                }
+            }
 
+            $arrQueryOptions = ['limit' => $limit, 'offset' => $total < $this->perPage ? 0 : $offset];
         }
 
-        $arrQueryOptions = ['limit' => $limit, 'offset' => $offset];
 
         // Get all events
         $arrAllEvents = $this->getAllEvents($this->cal_calendar, $strBegin, $strEnd, $arrFilter, $arrOptions, $arrFilterConfig, $arrQueryOptions);
@@ -305,6 +282,46 @@ class ModuleEventListPlus extends EventsPlus
             }
         }
 
+        $iteratorOffset = 0;
+
+        if(!$this->cal_noSpan)
+        {
+            $total = count($arrEvents);
+            $limit = $total;
+        }
+
+        if($this->perPage){
+
+            // Do not index or cache the page if the page number is outside the range
+            if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
+            {
+                /** @var \PageError404 $objHandler */
+                $objHandler = new $GLOBALS['TL_PTY']['error_404']();
+                $objHandler->generate($objPage->id);
+            }
+
+            $offset = ($page - 1) * $this->perPage;
+            $limit = min($this->perPage + $offset, $total);
+
+            // load specific pagination template if infiniteScroll is used
+            // otherwise keep standard pagination
+            $objT = $this->cal_useInfiniteScroll ? new \FrontendTemplate('infinite_pagination') : null;
+
+            if (!is_null($objT))
+            {
+                $objT->triggerText = $this->cal_changeTriggerText ? $this->cal_triggerText : $GLOBALS['TL_LANG']['eventlist']['loadMore'];
+            }
+
+            // Add the pagination menu
+            $objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objT);
+
+            $this->Template->pagination = $objPagination->generate("\n  ");
+        }
+
+        if(!$this->cal_noSpan){
+            $iteratorOffset = $offset;
+        }
+
         // add parent events to $arrEvents
         if (!empty($arrParentEventIds))
         {
@@ -345,9 +362,16 @@ class ModuleEventListPlus extends EventsPlus
             }
         }
 
+
+
         // Parse events
-        for ($i = 0; $i < $limit; $i++)
+        for ($i = $iteratorOffset; $i < $limit; $i++)
         {
+            if(!isset($arrEvents[$i]))
+            {
+                break;
+            }
+
             $event          = $arrEvents[$i];
             $blnIsLastEvent = false;
 
