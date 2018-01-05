@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.6] - 2018-01-05
+
+### Fixed
+- added contao version compare. if contao >= 4 no strUrl needed for addEvent function
+
 ## [1.3.5] - 2017-11-06
 
 ### Fixed
