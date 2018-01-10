@@ -11,6 +11,7 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
+use Contao\ModuleLoader;
 use HeimrichHannot\EventRegistration\EventRegistration;
 use HeimrichHannot\Share\Share;
 
@@ -240,7 +241,7 @@ class ModuleEventReaderPlus extends EventsPlus
             $this->Template->event = '<p class="error">' . sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('events')) . '</p>';
 
             // remove page from search index
-            if ($this->cal_showInModal)
+            if ($this->cal_showInModal && in_array('search_plus', ModuleLoader::getActive()))
             {
                 \HeimrichHannot\SearchPlus\Search::removePageFromIndex(\Environment::get('request'));
             }

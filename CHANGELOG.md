@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2018-01-10
+
+### Changed
+- removed contao-calendar_plus as dependency (added to suggest)
+
 ## [1.3.6] - 2018-01-05
 
 ### Fixed
