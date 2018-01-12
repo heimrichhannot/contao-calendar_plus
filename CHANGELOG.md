@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2018-01-12
+             
+#### Added
+- added linkedMember to tl_calendar_events. link a member to a events
+
 ## [1.4.0] - 2018-01-10
 
 ### Changed

@@ -5,8 +5,7 @@ $arrLang = &$GLOBALS['TL_LANG']['tl_calendar_events'];
 /**
  * Fields
  */
-$arrLang['parentEvent']        =
-    ['Übergeordnete Veranstaltung', 'Wählen Sie eine übergeordnete Veranstaltung aus, sofern es sich bei diesem Event um eine Unterveranstaltung handelt.'];
+$arrLang['parentEvent']        = ['Übergeordnete Veranstaltung', 'Wählen Sie eine übergeordnete Veranstaltung aus, sofern es sich bei diesem Event um eine Unterveranstaltung handelt.'];
 $arrLang['promoter']           = ['Veranstalter', 'Wählen Sie einen Veranstalter aus.'];
 $arrLang['docents']            = ['Dozenten', 'Wählen Sie Dozenten dieser Veranstaltung aus.'];
 $arrLang['memberDocents']      = ['Mitglieder-Dozenten', 'Wählen Sie Mitglieder als Dozenten dieser Veranstaltung aus.'];
@@ -27,16 +26,18 @@ $arrLang['map']                = ['Anfahrtplan', 'Bitte wählen Sie die Dateien 
 $arrLang['mapText']            = ['Text', 'Bitte geben Sie hier einen Text für die Überschrift ein, falls er von "Abfahrtsplan" abweicht.'];
 $arrLang['website']            = ['Webseite', 'Hier können Sie eine Web-Adresse eingeben.'];
 $arrLang['q']                  = ['Stichwortsuche', 'Suchen Sie über alle Veranstaltungen'];
+$arrLang['linkedMembers']      = ['Mitglieder verknüpfen', 'Geben Sie den Nachnamen eines Mitglieds ein um es mit der Nachricht zu verknüpfen.'];
 
 /**
  * Legends
  */
-$arrLang['promoter_legend']   = 'Veranstalter';
-$arrLang['docents_legend']    = 'Dozenten';
-$arrLang['hosts_legend']      = 'Moderatoren';
-$arrLang['eventtypes_legend'] = 'Veranstaltungsarten';
-$arrLang['contact_legend']    = 'Kontakt';
-$arrLang['location_legend']   = 'Veranstaltungsort';
+$arrLang['promoter_legend']      = 'Veranstalter';
+$arrLang['docents_legend']       = 'Dozenten';
+$arrLang['hosts_legend']         = 'Moderatoren';
+$arrLang['eventtypes_legend']    = 'Veranstaltungsarten';
+$arrLang['contact_legend']       = 'Kontakt';
+$arrLang['location_legend']      = 'Veranstaltungsort';
+$arrLang['linkedMembers_legend'] = 'Mitglieder-Verknüpfung';
 
 
 /**
@@ -54,4 +55,5 @@ $arrLang['editparentevent'] = ['Elternevent bearbeiten', 'Elternevent ID %s bear
 /**
  * Placeholders
  */
-$arrLang['placeholders']['q'] = 'Stichwortsuche';
+$arrLang['placeholders']['q']             = 'Stichwortsuche';
+$arrLang['placeholders']['linkedMembers'] = 'Nachnamen eingeben';
