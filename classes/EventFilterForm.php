@@ -12,6 +12,8 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use Contao\PageModel;
+
 class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 {
     protected $strTable = 'tl_calendar_events';
@@ -22,6 +24,7 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
     {
         $this->strMethod    = FORMHYBRID_METHOD_GET;
         $this->isFilterForm = true;
+
         parent::__construct($objModule);
     }
 
@@ -65,12 +68,9 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
 
         // adjust docents field
 
-        if ($this->objModule->cal_docent_combine)
-        {
+        if ($this->objModule->cal_docent_combine) {
             $arrDca['fields']['docents']['options_callback'] = ['HeimrichHannot\CalendarPlus\EventFilterHelper', 'getCombinedHostsAndDocentsSelectOptions'];
-        }
-        else
-        {
+        } else {
             $arrDca['fields']['docents']['options_callback'] = ['HeimrichHannot\CalendarPlus\EventFilterHelper', 'getDocentSelectOptions'];
         }
 
@@ -81,17 +81,14 @@ class EventFilterForm extends \HeimrichHannot\FormHybrid\Form
         $arrDca['fields']['docents']['eval']['blankOptionLabel']   = &$GLOBALS['TL_LANG']['eventfilter']['docentsBlankOptionLabel'];
 
         // HOOK: add custom logic
-        if (isset($GLOBALS['TL_HOOKS']['loadDCEventFilterForm']) && is_array($GLOBALS['TL_HOOKS']['loadDCEventFilterForm']))
-        {
-            foreach ($GLOBALS['TL_HOOKS']['loadDCEventFilterForm'] as $callback)
-            {
+        if (isset($GLOBALS['TL_HOOKS']['loadDCEventFilterForm']) && is_array($GLOBALS['TL_HOOKS']['loadDCEventFilterForm'])) {
+            foreach ($GLOBALS['TL_HOOKS']['loadDCEventFilterForm'] as $callback) {
                 $this->import($callback[0]);
                 $this->{$callback[0]}->{$callback[1]}($arrDca);
             }
         }
 
-        if ($this->cal_addKeywordSearch)
-        {
+        if ($this->cal_addKeywordSearch) {
             $this->addEditableField('q', $arrDca['fields']['q'], true);
         }
 

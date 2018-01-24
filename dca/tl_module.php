@@ -45,7 +45,8 @@ $dc['palettes']['eventfilter'] = '
 									{docent_legend},cal_docent_combine;
 									{eventtype_legend},cal_eventTypesArchive,cal_eventTypesArchiveMultiple,cal_combineEventTypesArchive,cal_combineEventTypesArchiveMultiple;
 									{related_legend},cal_filterRelatedOnEmpty;
-									{restrict_legend},cal_restrictedValueFields
+									{redirect_legend},formHybridAction;
+									{restrict_legend},cal_restrictedValueFields;
 									{template_legend:hide},customTpl;
 									{protected_legend:hide},protected;
 									{expert_legend:hide},guests,cssID,space';

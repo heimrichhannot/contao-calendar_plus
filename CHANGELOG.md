@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.3] - 2017-01-24
+
+### Added
+- `formHybridAction` to `eventfilter` module type
+
 ## [1.4.2] - 2017-01-24
 
 ### Added
