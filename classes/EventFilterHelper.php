@@ -171,7 +171,7 @@ class EventFilterHelper extends \Frontend
 
     public static function getEventTypesFieldsByArchive(\DataContainer $dc)
     {
-        $arrItems = [];
+        $arrArchives = [];
 
         if ($dc->objModule->cal_combineEventTypesArchive === "1")
         {
@@ -182,7 +182,7 @@ class EventFilterHelper extends \Frontend
             $arrEventTypesArchives = deserialize($dc->objModule->cal_eventTypesArchive);
             if ($arrEventTypesArchives === null || empty($arrEventTypesArchives))
             {
-                return $arrItems;
+                return $arrArchives;
             }
 
             $arrEventTypesArchivesMultiple = deserialize($dc->objModule->cal_eventTypesArchiveMultiple, true);
@@ -196,14 +196,14 @@ class EventFilterHelper extends \Frontend
                 $objArchive = CalendarEventtypesArchiveModel::findByIdOrAlias($value);
                 if ($objArchive === null)
                 {
-                    return $arrItems;
+                    return $arrArchives;
                 }
 
                 $objEventTypes = CalendarEventtypesModel::findPublishedByPids([$value]);
 
                 if ($objEventTypes === null)
                 {
-                    return $arrItems;
+                    return $arrArchives;
                 }
 
                 while ($objEventTypes->next())

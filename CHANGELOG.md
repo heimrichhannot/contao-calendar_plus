@@ -1,12 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.4.3] - 2017-01-24
+## [1.4.4] - 2018-02-01
+
+### Fixed
+- changed $arrItems to $arrArchives in getEventTypesFieldsByArchive
+
+## [1.4.3] - 2018-01-24
 
 ### Added
 - `formHybridAction` to `eventfilter` module type
 
-## [1.4.2] - 2017-01-24
+## [1.4.2] - 2018-01-24
 
 ### Added
 - some english translations
