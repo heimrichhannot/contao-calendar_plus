@@ -21,6 +21,21 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `heimrichhannot/contao-formhybrid` 3.x dependency
 
+## [1.4.5] - 2018-02-01
+
+### Added
+
+- `tl_module.cal_alwaysShowParents` to always show parent events, also if child event was found by filter criteria
+
+### Fixed
+- `CalendarPlusEventsModel::getUniqueCityNamesByPids()` current handling
+- `CalendarPlusEventsModel::getUniquePromotersByPids()` current handling
+- `CalendarPlusEventsModel::getUniqueDocentsByPids()` current handling
+- `CalendarPlusEventsModel::getUniqueMemberDocentsByPids()` current handling
+- `CalendarPlusEventsModel::getUniqueHostsByPids()` current handling
+- `CalendarPlusEventsModel::getUniqueMemberHostsByPids()` current handling
+- `CalendarPlusEventsModel::getUniquePromoterNamesByPids()` current handling
+
 ## [1.4.4] - 2018-02-01
 
 ### Fixed
