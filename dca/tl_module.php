@@ -22,7 +22,7 @@ $dc['palettes']['eventlist']     = str_replace('cal_noSpan', 'hideSubEvents,cal_
 
 $dc['palettes']['eventlist_plus'] = '
 									{title_legend},name,headline,type;
-									{config_legend},cal_calendar,cal_noSpan,cal_format,cal_ignoreDynamic,cal_order,cal_readerModule,cal_filterModule,cal_limit,perPage,cal_ungroupSubevents;
+									{config_legend},cal_calendar,cal_noSpan,cal_format,cal_ignoreDynamic,cal_order,cal_readerModule,cal_filterModule,cal_limit,perPage,cal_ungroupSubevents,cal_alwaysShowParents;
 									{template_legend:hide},cal_template,cal_templateSubevent,customTpl,cal_showInModal, cal_useInfiniteScroll;
 									{image_legend:hide},imgSize;
 									{protected_legend:hide},protected;
@@ -218,6 +218,13 @@ $arrFields = [
         'eval'      => ['tl_class' => 'w50'],
         'sql'       => "varchar(64) NOT NULL default ''",
     ],
+    'cal_alwaysShowParents' => [
+        'label'     => &$GLOBALS['TL_LANG']['tl_module']['cal_alwaysShowParents'],
+        'exclude'   => true,
+        'inputType' => 'checkbox',
+        'eval'      => ['tl_class' => 'w50'],
+        'sql'       => "char(1) NOT NULL default ''",
+    ]
 ];
 
 

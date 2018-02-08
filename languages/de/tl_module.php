@@ -53,6 +53,7 @@ $GLOBALS['TL_LANG']['tl_module']['cal_triggerText']                      = ['Tri
 $GLOBALS['TL_LANG']['tl_module']['cal_promoterTypes']                    = ['Veranstaltertypen', 'Wählen sie Veranstaltertypen aus.'];
 $GLOBALS['TL_LANG']['tl_module']['cal_promoters']                        = ['Veranstalter', 'Wählen sie Veranstalter aus.'];
 $GLOBALS['TL_LANG']['tl_module']['cal_promoterTemplate']                 = ['Veranstalter-Template', 'Hier können Sie das Veranstalter-Template überschreiben.'];
+$GLOBALS['TL_LANG']['tl_module']['cal_alwaysShowParents']                = ['Immer Eltern-Events ausgeben', 'Funktioniert nur wenn "Untergeordnete Events nicht gruppieren" deaktiviert ist. Führt die Filterung zu einem Treffer bei einem Kind-Event, wird stattdessen das Elternelement ausgegeben.'];
 
 
 /**

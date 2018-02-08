@@ -252,6 +252,13 @@ class ModuleEventListPlus extends EventsPlus
                             $arrParentEvent['datetime']  = date('Y-m-d', $day);
                             $arrParentEvent['dateday']   = $day;
 
+                            if($this->cal_alwaysShowParents && !in_array($arrParentEvent['id'], $arrEventIds))
+                            {
+                                $arrEvents[] = $arrParentEvent;
+                                $arrEventIds[] = $arrParentEvent['id'];
+                                continue;
+                            }
+
                             $arrParentEvents[$arrParentEvent['id']] = $arrParentEvent;
                             $arrParentEventIds[]                    = $arrParentEvent['id'];
 

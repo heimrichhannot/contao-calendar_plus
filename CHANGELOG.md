@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.1] - 2018-02-08
+
+### Added
+
+- `tl_module.cal_alwaysShowParents` to always show parent events, also if child event was found by filter criteria
+
+### Fixed
+- `CalendarPlusEventsModel::getUniqueCityNamesByPids()` current handling
+- `CalendarPlusEventsModel::getUniquePromotersByPids()` current handling
+- `CalendarPlusEventsModel::getUniqueDocentsByPids()` current handling
+- `CalendarPlusEventsModel::getUniqueMemberDocentsByPids()` current handling
+- `CalendarPlusEventsModel::getUniqueHostsByPids()` current handling
+- `CalendarPlusEventsModel::getUniqueMemberHostsByPids()` current handling
+- `CalendarPlusEventsModel::getUniquePromoterNamesByPids()` current handling
+
 ## [2.0.0] - 2018-02-06
 
 ### Changed
