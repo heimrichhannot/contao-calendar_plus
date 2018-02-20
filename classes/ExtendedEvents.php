@@ -16,29 +16,26 @@ class ExtendedEvents extends \Frontend
 
     public function parseBackendTemplate($strContent, $strTemplate)
     {
-        if ($_GET['epid'])
-        {
+        if ('be_main' !== $strTemplate) {
+            return $strContent;
+        }
+
+        if ($_GET['epid']) {
             $objEvent = CalendarPlusEventsModel::findByPk($_GET['epid']);
-            if ($objEvent !== null)
-            {
-                if ($this->Input->get('table') == 'tl_content')
-                {
+            if ($objEvent !== null) {
+                if ($this->Input->get('table') == 'tl_content') {
                     $strContent = preg_replace(
                         '/<a href=\"(.*?)\" class=\"header_back\"/',
                         '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $_GET['epid'] . '&pid=' . $_GET['pid'] . '"',
                         $strContent
                     );
-                }
-                else if ($objEvent->parentEvent)
-                {
+                } else if ($objEvent->parentEvent && \Input::get('id')) {
                     $strContent = preg_replace(
                         '/<a href=\"(.*?)\" class=\"header_back\"/',
                         '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $objEvent->parentEvent . '&pid=' . $_GET['pid'] . '"',
                         $strContent
                     );
-                }
-                else
-                {
+                } else {
                     $strContent = preg_replace(
                         '/<a href=\"(.*?)\" class=\"header_back\"/',
                         '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&id=' . $_GET['pid'] . '"',
@@ -54,16 +51,11 @@ class ExtendedEvents extends \Frontend
     public function getAllParentEvents($arrEvents, $arrCalendars, $intStart, $intEnd, \Module $objModule)
     {
         $arrResult = [];
-        if ($objModule->hideSubEvents)
-        {
-            foreach ($arrEvents as $date => $eventsThisDay)
-            {
-                foreach ($eventsThisDay as $startDateTime => $eventsThisDateTime)
-                {
-                    foreach ($eventsThisDateTime as $currentEventThisDateTime)
-                    {
-                        if (!$currentEventThisDateTime['parentEvent'])
-                        {
+        if ($objModule->hideSubEvents) {
+            foreach ($arrEvents as $date => $eventsThisDay) {
+                foreach ($eventsThisDay as $startDateTime => $eventsThisDateTime) {
+                    foreach ($eventsThisDateTime as $currentEventThisDateTime) {
+                        if (!$currentEventThisDateTime['parentEvent']) {
                             $arrResult[$date][$startDateTime][] = $currentEventThisDateTime;
                         }
                     }

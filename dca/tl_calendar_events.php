@@ -21,6 +21,7 @@ $arrDca['palettes']['default'] = str_replace('{location_legend}', '{contact_lege
  */
 
 $arrDca['config']['onload_callback'][]   = ['tl_calendar_events_plus', 'setDefaultParentEvent'];
+$arrDca['config']['onload_callback'][]   = ['tl_calendar_events_plus', 'filterSubEvents'];
 $arrDca['config']['onsubmit_callback'][] = ['tl_calendar_events_plus', 'clearCaches'];
 
 /**
@@ -45,15 +46,15 @@ $arrFields = [
         'sql'       => "varchar(255) NOT NULL default ''",
     ],
     'parentEvent'        => [
-        'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['parentEvent'],
-        'inputType'  => 'select',
-        'exclude'    => true,
-        'foreignKey' => 'tl_calendar_events.title',
-        'eval'       => ['tl_class' => 'long clr', 'includeBlankOption' => true, 'submitOnChange' => true, 'chosen' => true],
-        'wizard'     => [
+        'label'            => &$GLOBALS['TL_LANG']['tl_calendar_events']['parentEvent'],
+        'inputType'        => 'select',
+        'exclude'          => true,
+        'options_callback' => ['tl_calendar_events_plus', 'getParentEventChoices'],
+        'eval'             => ['tl_class' => 'long clr', 'includeBlankOption' => true, 'submitOnChange' => true, 'chosen' => true],
+        'wizard'           => [
             ['tl_calendar_events_plus', 'editParentEvent'],
         ],
-        'sql'        => "int(16) NOT NULL default '0'",
+        'sql'              => "int(16) NOT NULL default '0'",
     ],
     'locationAdditional' => [
         'label'     => &$GLOBALS['TL_LANG']['tl_calendar_events']['locationAdditional'],
@@ -204,8 +205,6 @@ $arrDca['fields'] += $arrFields;
 
 $arrDca['fields']['location']['eval']['tl_class'] = 'w50 clr';
 
-tl_calendar_events_plus::filterSubEvents($arrDca);
-
 class tl_calendar_events_plus extends \Backend
 {
     /**
@@ -217,13 +216,15 @@ class tl_calendar_events_plus extends \Backend
         $this->import('BackendUser', 'User');
     }
 
-    public static function filterSubEvents(&$arrDca)
+    public static function filterSubEvents()
     {
+        $arrDca = &$GLOBALS['TL_DCA']['tl_calendar_events'];
+
         if (\Input::get('table') == 'tl_calendar_events') {
             $intEpid = \Input::get('epid');
 
             if ($intEpid) {
-                if (($objEvents = \HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findByParentEvent($intEpid)) !== null) {
+                if (($objEvents = \HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findBy(['tl_calendar_events.parentEvent=?', 'tl_calendar_events.id!=tl_calendar_events.parentEvent'], [$intEpid], ['order' => 'title'])) !== null) {
                     while ($objEvents->next()) {
                         $arrDca['list']['sorting']['root'][] = $objEvents->id;
                     }
@@ -231,11 +232,7 @@ class tl_calendar_events_plus extends \Backend
                     $arrDca['list']['sorting']['root'] = [-1]; // don't display anything
                 }
             } else {
-                if (($objEvents = \HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findByParentEvent(0)) !== null) {
-                    while ($objEvents->next()) {
-                        $arrDca['list']['sorting']['root'][] = $objEvents->id;
-                    }
-                }
+                $arrDca['list']['sorting']['filter'][] = ['(parentEvent=? OR id=parentEvent)', 0];
             }
         }
     }
@@ -378,5 +375,17 @@ class tl_calendar_events_plus extends \Backend
         }
 
         return $arrOption;
+    }
+
+
+    public function getParentEventChoices(\DataContainer $dc)
+    {
+        $choices = [];
+
+        if (null === ($events = \HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findBy(['tl_calendar_events.parentEvent=0', 'tl_calendar_events.id!=?'], [$dc->id], ['order' => 'title']))) {
+            return $choices;
+        }
+
+        return $events->fetchEach('title');
     }
 }
