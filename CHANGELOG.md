@@ -21,6 +21,13 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - `heimrichhannot/contao-formhybrid` 3.x dependency
 
+## [1.4.6] - 2018-02-20
+
+### Fixed
+
+- duplicated parentEvents when `cal_alwaysShowParents` enabled
+- wrong `listTime` event sorting when `cal_alwaysShowParents` enabled
+
 ## [1.4.5] - 2018-02-01
 
 ### Added

@@ -12,6 +12,8 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use HeimrichHannot\Haste\Util\Arrays;
+
 class ModuleEventListPlus extends EventsPlus
 {
     /**
@@ -282,6 +284,11 @@ class ModuleEventListPlus extends EventsPlus
                         }
                     }
 
+                    if(in_array($event['id'], $arrEventIds))
+                    {
+                        continue;
+                    }
+
                     $arrEvents[]   = $event;
                     $arrEventIds[] = $event['id'];
 
@@ -346,6 +353,11 @@ class ModuleEventListPlus extends EventsPlus
         }
 
         unset($arrAllEvents);
+
+        // sort events by their listTime to maintain child <-> parent time relation
+        usort($arrEvents, function($a, $b) {
+            return $a['listTime'] - $b['listTime'];
+        });
 
 
         $strMonth         = '';
