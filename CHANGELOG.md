@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.3] - 2018-02-20
+
+### Fixed
+
+- parentEvent id must not equal event id
+- back button in epid list view fixed
+- improved event filter for childEvents
+
 ## [2.0.2] - 2018-02-20
 
 ### Fixed
