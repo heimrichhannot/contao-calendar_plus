@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.2] - 2018-02-20
+
+### Fixed
+
+- duplicated parentEvents when `cal_alwaysShowParents` enabled
+- wrong `listTime` event sorting when `cal_alwaysShowParents` enabled
+
 ## [2.0.1] - 2018-02-08
 
 ### Added
