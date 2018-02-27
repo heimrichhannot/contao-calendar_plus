@@ -33,6 +33,13 @@ All notable changes to this project will be documented in this file.
 
 ## [2.0.0] - 2018-02-06
 
+
+## [1.4.8] - 2018-02-27
+
+### Fixed
+
+- contao search implementation for `q` filter-field, wrong form action
+
 ## [1.4.7] - 2018-02-20
 
 ### Fixed

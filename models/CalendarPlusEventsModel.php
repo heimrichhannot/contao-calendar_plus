@@ -522,7 +522,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
                             $objSearch = \Search::searchFor(
                                 $value,
                                 ($arrFilterConfig['module']['queryType'] == 'or'),
-                                is_array($arrFilterConfig['jumpTo']) ? $arrFilterConfig['jumpTo'] : [$objPage->id],
+				$arrFilterConfig['module']['formHybridAction'] ?: [$objPage->id],
                                 0,
                                 0,
                                 $arrFilterConfig['module']['fuzzy']
