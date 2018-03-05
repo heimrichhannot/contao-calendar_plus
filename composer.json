@@ -30,7 +30,8 @@
     "heimrichhannot/contao-formhybrid": "^3.0",
     "heimrichhannot/contao-member_plus": ">=2.0.0,<3.0.0-dev",
     "heimrichhannot/contao-modal": "^1.2.5",
-    "heimrichhannot/contao-haste_plus": "^1.6"
+    "heimrichhannot/contao-haste_plus": "^1.6",
+    "heimrichhannot-contao-components/jscroll": "^2.3"
   },
   "suggest": {
     "heimrichhannot/contao-search_plus": "Allows updating the search index"

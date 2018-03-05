@@ -74,7 +74,8 @@ $GLOBALS['EFG']['storable_fields'][] = 'subEventList';
  */
 if (TL_MODE == 'FE')
 {
-    $GLOBALS['TL_JAVASCRIPT']['infinitescroll'] = '/system/modules/calendar_plus/assets/js/jscroll/jquery.jscroll.min.js';
+    $assetsPath = version_compare(VERSION, '4.0', '<') ? 'assets/components' : 'assets';
+    $GLOBALS['TL_JAVASCRIPT']['huh_components_jscroll'] = $assetsPath.'/jscroll/dist/jquery.jscroll.min.js|static';
     $GLOBALS['TL_JAVASCRIPT']['calendarplus']   =
         '/system/modules/calendar_plus/assets/js/jquery.calendarplus' . (!$GLOBALS['TL_CONFIG']['debugMode'] ? '.min' : '') . '.js|static';
 }
