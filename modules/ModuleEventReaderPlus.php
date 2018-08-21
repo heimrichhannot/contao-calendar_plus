@@ -66,6 +66,9 @@ class ModuleEventReaderPlus extends EventsPlus
             return $objTemplate->parse();
         }
 
+        if (version_compare(VERSION, '4.0', '>=')) {
+            $this->strTemplate = 'mod_eventreader';
+        }
 
         global $objPage;
 
@@ -75,7 +78,7 @@ class ModuleEventReaderPlus extends EventsPlus
             && $this->objEvent->addRegistration
         )
         {
-            if ((!$this->objEvent->codes && !\Input::get('step')) || \Input::get('step') == EventRegistration::STEP_REGISTRATION)
+            if ((!$this->codeCheckModule && !\Input::get('step')) || \Input::get('step') == EventRegistration::STEP_REGISTRATION)
             {
                 if ($this->registrationFormModule > 0)
                 {

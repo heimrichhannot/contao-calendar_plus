@@ -1,10 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2018-08-21
+
+### Fixed
+- contao 4 and event registration issues
+
 ## [2.1.0] - 2018-03-05
 
-#### Changed
-* removed jscroll from repository, added as composer dependency
+### Changed
+- removed jscroll from repository, added as composer dependency
 
 ## [2.0.4] - 2018-02-27
 
