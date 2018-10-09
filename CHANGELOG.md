@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.5] - 2018-08-21
+
+### Fixed
+- `ModuleEventReaderPlus` now properly renders event when RebuildIndex is running (refactored modal check)
+
 ## [2.1.4] - 2018-08-21
 
 ### Fixed
