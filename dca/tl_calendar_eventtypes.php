@@ -69,7 +69,7 @@ $GLOBALS['TL_DCA']['tl_calendar_eventtypes'] = [
                 'label'      => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
             ],
             'toggle' => [
                 'label'           => &$GLOBALS['TL_LANG']['tl_calendar_eventtypes']['toggle'],
@@ -215,8 +215,7 @@ class tl_calendar_eventtypes extends Backend
         $autoAlias = false;
 
         // Generate alias if there is none
-        if ($varValue == '')
-        {
+        if ($varValue == '') {
             $autoAlias = true;
             $varValue  = standardize(StringUtil::restoreBasicEntities($dc->activeRecord->title));
         }
@@ -224,15 +223,13 @@ class tl_calendar_eventtypes extends Backend
         $objAlias = $this->Database->prepare("SELECT id FROM tl_calendar_eventtypes WHERE alias=?")->execute($varValue);
 
         // Check whether the alias exists
-        if ($objAlias->numRows > 1 && !$autoAlias)
-        {
+        if ($objAlias->numRows > 1 && !$autoAlias) {
             throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
         }
 
         // Add ID to alias
-        if ($objAlias->numRows && $autoAlias)
-        {
-            $varValue .= '-' . $dc->id;
+        if ($objAlias->numRows && $autoAlias) {
+            $varValue .= '-'.$dc->id;
         }
 
         return $varValue;
@@ -247,7 +244,7 @@ class tl_calendar_eventtypes extends Backend
      */
     public function listEventtypes($arrRow)
     {
-        return '<div class="tl_content_left">' . $arrRow['title'] . '</div>';
+        return '<div class="tl_content_left">'.$arrRow['title'].'</div>';
     }
 
     /**
@@ -264,26 +261,23 @@ class tl_calendar_eventtypes extends Backend
      */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
-        if (strlen(Input::get('tid')))
-        {
+        if (strlen(Input::get('tid'))) {
             $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1), (@func_get_arg(12) ?: null));
             $this->redirect($this->getReferer());
         }
 
         // Check permissions AFTER checking the tid, so hacking attempts are logged
-        if (!$this->User->hasAccess('tl_calendar_eventtypes::published', 'alexf'))
-        {
+        if (!$this->User->hasAccess('tl_calendar_eventtypes::published', 'alexf')) {
             return '';
         }
 
-        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
+        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
 
-        if (!$row['published'])
-        {
+        if (!$row['published']) {
             $icon = 'invisible.gif';
         }
 
-        return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+        return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
     }
 
     /**
@@ -301,9 +295,8 @@ class tl_calendar_eventtypes extends Backend
         $this->checkPermission();
 
         // Check permissions to publish
-        if (!$this->User->hasAccess('tl_calendar_eventtypes::published', 'alexf'))
-        {
-            $this->log('Not enough permissions to publish/unpublish eventtype ID "' . $intId . '"', __METHOD__, TL_ERROR);
+        if (!$this->User->hasAccess('tl_calendar_eventtypes::published', 'alexf')) {
+            $this->log('Not enough permissions to publish/unpublish eventtype ID "'.$intId.'"', __METHOD__, TL_ERROR);
             $this->redirect('contao/main.php?act=error');
         }
 
@@ -311,28 +304,23 @@ class tl_calendar_eventtypes extends Backend
         $objVersions->initialize();
 
         // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_calendar_eventtypes']['fields']['published']['save_callback']))
-        {
-            foreach ($GLOBALS['TL_DCA']['tl_calendar_eventtypes']['fields']['published']['save_callback'] as $callback)
-            {
-                if (is_array($callback))
-                {
+        if (is_array($GLOBALS['TL_DCA']['tl_calendar_eventtypes']['fields']['published']['save_callback'])) {
+            foreach ($GLOBALS['TL_DCA']['tl_calendar_eventtypes']['fields']['published']['save_callback'] as $callback) {
+                if (is_array($callback)) {
                     $this->import($callback[0]);
                     $blnVisible = $this->{$callback[0]}->{$callback[1]}($blnVisible, ($dc ?: $this));
-                }
-                elseif (is_callable($callback))
-                {
+                } elseif (is_callable($callback)) {
                     $blnVisible = $callback($blnVisible, ($dc ?: $this));
                 }
             }
         }
 
         // Update the database
-        $this->Database->prepare("UPDATE tl_calendar_eventtypes SET tstamp=" . time() . ", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")->execute($intId);
+        $this->Database->prepare("UPDATE tl_calendar_eventtypes SET tstamp=".time().", published='".($blnVisible ? 1 : '')."' WHERE id=?")->execute($intId);
 
         $objVersions->create();
         $this->log(
-            'A new version of record "tl_calendar_eventtypes.id=' . $intId . '" has been created' . $this->getParentEntries('tl_calendar_eventtypes', $intId),
+            'A new version of record "tl_calendar_eventtypes.id='.$intId.'" has been created'.$this->getParentEntries('tl_calendar_eventtypes', $intId),
             __METHOD__,
             TL_GENERAL
         );
@@ -348,43 +336,40 @@ class tl_calendar_eventtypes extends Backend
      */
     public function checkPermission()
     {
-        if ($this->User->isAdmin)
-        {
+        if ($this->User->isAdmin) {
             return;
         }
 
         // Set root IDs
-        if (!is_array($this->User->calendars) || empty($this->User->calendars))
-        {
+        if (!is_array($this->User->calendars) || empty($this->User->calendars)) {
             $root = [0];
-        }
-        else
-        {
+        } else {
             $root = $this->User->calendars;
         }
 
         $id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
 
         // Check current action
-        switch (Input::get('act'))
-        {
+        switch (Input::get('act')) {
             case 'paste':
                 // Allow
                 break;
 
             case 'create':
-                if (!strlen(Input::get('pid')) || !in_array(Input::get('pid'), $root))
-                {
-                    $this->log('Not enough permissions to create eventtypes in calendar ID "' . Input::get('pid') . '"', __METHOD__, TL_ERROR);
+                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute((int)Input::get('pid'));
+
+                if (!$objEventTypeArchive->numRows || !in_array($objEventTypeArchive->pid, $root)) {
+                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
-
             case 'cut':
             case 'copy':
-                if (!in_array(Input::get('pid'), $root))
-                {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' eventtypes ID "' . $id . '" to calendar ID "' . Input::get('pid') . '"', __METHOD__, TL_ERROR);
+
+                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute((int)Input::get('pid'));
+
+                if (!$objEventTypeArchive->numRows || !in_array($objEventTypeArchive->pid, $root)) {
+                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
             // NO BREAK STATEMENT HERE
@@ -393,17 +378,15 @@ class tl_calendar_eventtypes extends Backend
             case 'show':
             case 'delete':
             case 'toggle':
-                $objEventtype = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes WHERE id=?")->limit(1)->execute($id);
+                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute($id);
 
-                if ($objEventtype->numRows < 1)
-                {
-                    $this->log('Invalid event ID "' . $id . '"', __METHOD__, TL_ERROR);
-                    $this->redirect('contao/main.php?act=error');
+                if ($objEventTypeArchive->numRows) {
+                    $id = $objEventTypeArchive->pid;
                 }
 
-                if (!in_array($objEventtype->pid, $root))
-                {
-                    $this->log('Not enough permissions to ' . Input::get('act') . ' eventtypes ID "' . $id . '" of calendar ID "' . $objEventtype->pid . '"', __METHOD__, TL_ERROR);
+
+                if (!in_array($id, $root)) {
+                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'" of calendar ID "'.$objEventTypeArchive->pid.'"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
@@ -414,17 +397,18 @@ class tl_calendar_eventtypes extends Backend
             case 'overrideAll':
             case 'cutAll':
             case 'copyAll':
-                if (!in_array($id, $root))
-                {
-                    $this->log('Not enough permissions to access calendar ID "' . $id . '"', __METHOD__, TL_ERROR);
+
+                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute($id);
+
+                if (!$objEventTypeArchive->numRows || !in_array($objEventTypeArchive->pid, $root)) {
+                    $this->log('Not enough permissions to access calendar ID "'.$id.'"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
 
                 $objEventtype = $this->Database->prepare("SELECT id FROM tl_calendar_eventtypes WHERE pid=?")->execute($id);
 
-                if ($objEventtype->numRows < 1)
-                {
-                    $this->log('Invalid calendar ID "' . $id . '"', __METHOD__, TL_ERROR);
+                if ($objEventtype->numRows < 1) {
+                    $this->log('Invalid calendar ID "'.$id.'"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
 
@@ -434,14 +418,17 @@ class tl_calendar_eventtypes extends Backend
                 break;
 
             default:
-                if (strlen(Input::get('act')))
-                {
-                    $this->log('Invalid command "' . Input::get('act') . '"', __METHOD__, TL_ERROR);
-                    $this->redirect('contao/main.php?act=error');
+                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute($id);
+
+                if ($objEventTypeArchive->numRows) {
+                    $id = $objEventTypeArchive->pid;
                 }
-                elseif (!in_array($id, $root))
-                {
-                    $this->log('Not enough permissions to access calendar ID "' . $id . '"', __METHOD__, TL_ERROR);
+
+                if (strlen(Input::get('act'))) {
+                    $this->log('Invalid command "'.Input::get('act').'"', __METHOD__, TL_ERROR);
+                    $this->redirect('contao/main.php?act=error');
+                } elseif (!in_array($id, $root)) {
+                    $this->log('Not enough permissions to access calendar ID "'.$id.'"', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
