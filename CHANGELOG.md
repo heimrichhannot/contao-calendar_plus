@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.4] - 2018-08-21
+
+### Fixed
+- `ModuleEventListPlus` groups now multi day events only of `cal_noSpan` is enabled
+
 ## [2.1.3] - 2018-08-21
 
 ### Fixed
