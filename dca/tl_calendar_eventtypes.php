@@ -357,9 +357,9 @@ class tl_calendar_eventtypes extends Backend
 
             case 'create':
                 $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute((int)Input::get('pid'));
-
-                if (!$objEventTypeArchive->numRows || !in_array($objEventTypeArchive->pid, $root)) {
-                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+                
+                if ($objEventTypeArchive->numRows  < 1 || !in_array($objEventTypeArchive->pid, $root)) {
+                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'.', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
@@ -369,7 +369,7 @@ class tl_calendar_eventtypes extends Backend
                 $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute((int)Input::get('pid'));
 
                 if (!$objEventTypeArchive->numRows || !in_array($objEventTypeArchive->pid, $root)) {
-                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'" to calendar ID "'.Input::get('pid').'"', __METHOD__, TL_ERROR);
+                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'.', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
             // NO BREAK STATEMENT HERE
@@ -378,15 +378,10 @@ class tl_calendar_eventtypes extends Backend
             case 'show':
             case 'delete':
             case 'toggle':
-                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute($id);
+                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute((int)Input::get('pid'));
 
-                if ($objEventTypeArchive->numRows) {
-                    $id = $objEventTypeArchive->pid;
-                }
-
-
-                if (!in_array($id, $root)) {
-                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'" of calendar ID "'.$objEventTypeArchive->pid.'"', __METHOD__, TL_ERROR);
+                if (!$objEventTypeArchive->numRows || !in_array($objEventTypeArchive->pid, $root)) {
+                    $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'.', __METHOD__, TL_ERROR);
                     $this->redirect('contao/main.php?act=error');
                 }
                 break;
