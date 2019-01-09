@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.6] - 2019-01-09
+
+### Fixed
+- `ModuleEventReaderPlus` -> array cast issue
+
 ## [2.1.5] - 2018-08-21
 
 ### Fixed
