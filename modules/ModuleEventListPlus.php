@@ -284,7 +284,7 @@ class ModuleEventListPlus extends EventsPlus
                         }
                     }
 
-                    if(in_array($event['id'], $arrEventIds) && $this->cal_noSpan)
+                    if(in_array($event['id'], $arrEventIds))
                     {
                         continue;
                     }
