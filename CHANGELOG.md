@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [2.1.7] - 2019-01-23
 
 ### Fixed
-- `ModuleEventListPlus` remove duplicate parent events
+- `ModuleEventListPlus` groups now multi day events only of `cal_noSpan` is enabled and timediff in days is greater than a
 
 ## [2.1.6] - 2019-01-09
 
