@@ -382,7 +382,10 @@ class tl_calendar_events_plus extends \Backend
     {
         $choices = [];
 
-        if (null === ($events = \HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findBy(['tl_calendar_events.parentEvent=0', 'tl_calendar_events.id!=?'], [$dc->id], ['order' => 'title']))) {
+        $query = "SELECT id, title FROM tl_calendar_events WHERE parentEvent=0 and id!=? ORDER BY title";
+        $events = Database::getInstance()->prepare($query)->execute($dc->id);
+
+        if (null === $events) {
             return $choices;
         }
 

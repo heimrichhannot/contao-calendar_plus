@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.8] - 2019-02-21
+
+### Fixed
+- possible memory error when calculating parent events in backend
+
 ## [2.1.7] - 2019-01-23
 
 ### Fixed
