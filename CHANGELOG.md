@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2019-03-14
+
+### Added
+- `heimrichhannot/contao-components` support, in order disable assets on page layout
+
 ## [2.1.8] - 2019-02-21
 
 ### Fixed

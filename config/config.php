@@ -66,15 +66,13 @@ define('CALENDARPLUS_PROMOTER_TYPE_DEFAULT', 'default');
  */
 $GLOBALS['EFG']['storable_fields'][] = 'subEventList';
 
-/**
- * Javascript
- */
+$assetsPath = version_compare(VERSION, '4.0', '<') ? 'assets/components' : 'assets';
+
 /**
  * JS
  */
 if (TL_MODE == 'FE')
 {
-    $assetsPath = version_compare(VERSION, '4.0', '<') ? 'assets/components' : 'assets';
     $GLOBALS['TL_JAVASCRIPT']['huh_components_jscroll'] = $assetsPath.'/jscroll/dist/jquery.jscroll.min.js|static';
     $GLOBALS['TL_JAVASCRIPT']['calendarplus']   =
         '/system/modules/calendar_plus/assets/js/jquery.calendarplus' . (!$GLOBALS['TL_CONFIG']['debugMode'] ? '.min' : '') . '.js|static';
@@ -98,3 +96,15 @@ $GLOBALS['MODAL_MODULES']['eventlist_plus'] = array
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['addEventDetailsToTemplate'][] = array('HeimrichHannot\CalendarPlus\Hooks', 'addEventDetailsToTemplate');
+
+
+/**
+ * Component support (disable/enable css & js on page layout)
+ */
+$GLOBALS['TL_COMPONENTS']['calendar_plus'] = [
+    'js'  => [
+        $assetsPath.'/jscroll/dist/jquery.jscroll.min.js',
+        '/system/modules/calendar_plus/assets/js/jquery.calendarplus.min.js',
+        '/system/modules/calendar_plus/assets/js/jquery.calendarplus.js'
+    ]
+];
