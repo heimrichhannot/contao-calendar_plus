@@ -1,3 +1,7 @@
+We do not develop calendar_plus further (only if needed for some legacy projects), so we won't update the modules (since their successors are bundles). You can check out our events bundle, which is kind of the spiritual successor to calendar plus.
+
+https://github.com/heimrichhannot/contao-events-bundle
+
 # Calendar Plus
 
 [![Latest Stable Version](https://poser.pugx.org/heimrichhannot/contao-calendar_plus/v/stable)](https://packagist.org/packages/heimrichhannot/contao-calendar_plus)
