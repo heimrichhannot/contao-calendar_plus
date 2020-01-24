@@ -32,6 +32,8 @@ class CalendarDocentsModel extends \Model
 
         $t = static::$strTable;
 
+        $arrPids = array_map('intval', $arrPids);
+
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
 
         return static::findBy($arrColumns, null, $arrOptions);
@@ -49,7 +51,7 @@ class CalendarDocentsModel extends \Model
     {
         $t = static::$strTable;
 
-        return static::findBy(["LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'"], null, $arrOptions);
+        return static::findBy(["LOWER($t.title) LIKE ?"], [strval(strtolower($title))], $arrOptions);
     }
 
     public function generateAlias()

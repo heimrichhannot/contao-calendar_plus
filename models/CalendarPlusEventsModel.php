@@ -29,6 +29,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         $intStart = time();
         $intEnd   = 99999999999999;
 
+        $arrPids = array_map('intval', $arrPids);
+
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumns[] = "($t.city != '')";
 
@@ -54,6 +56,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         $t    = static::$strTable;
         $intStart = time();
         $intEnd   = 999999999999;
+
+        $arrPids = array_map('intval', $arrPids);
 
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumns[] = "($t.promoter IS NOT NULL)";
@@ -94,6 +98,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         $intStart = time();
         $intEnd   = 99999999999999;
 
+        $arrPids = array_map('intval', $arrPids);
+
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumns[] = "($t.docents != '')";
 
@@ -133,6 +139,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         $t        = static::$strTable;
         $intStart = time();
         $intEnd   = 999999999999;
+
+        $arrPids = array_map('intval', $arrPids);
 
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumns[] = "($t.memberDocents != '')";
@@ -177,6 +185,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         $intStart = time();
         $intEnd   = 999999999999;
 
+        $arrPids = array_map('intval', $arrPids);
+
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumns[] = "($t.hosts != '')";
 
@@ -217,6 +227,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         $t    = static::$strTable;
         $intStart = time();
         $intEnd   = 999999999999;
+
+        $arrPids = array_map('intval', $arrPids);
 
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumns[] = "($t.memberHosts != '')";
@@ -259,6 +271,8 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
         $t    = static::$strTable;
         $intStart = time();
         $intEnd   = 999999999999;
+
+        $arrPids = array_map('intval', $arrPids);
 
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumns[] = "($t.promoter != '')";
@@ -351,6 +365,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
                         ) as listTime";
 
         $arrValues    = [];
+        $arrPids = array_map('intval', $arrPids);
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
         $arrColumnsOr = [];
 

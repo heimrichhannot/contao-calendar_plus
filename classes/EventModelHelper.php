@@ -25,6 +25,8 @@ class EventModelHelper extends EventsPlusHelper
             return '';
         }
 
+        $arrIds = array_map('intval', $arrIds);
+
         foreach ($arrIds as $val)
         {
             if ($strRegexp !== null)

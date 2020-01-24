@@ -12,6 +12,8 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use HeimrichHannot\CalendarPlus\Utils\Options;
+
 class CalendarPromotersModel extends \Model
 {
     protected static $strTable = 'tl_calendar_promoters';
@@ -30,7 +32,7 @@ class CalendarPromotersModel extends \Model
     {
         $t = static::$strTable;
 
-        return static::findBy(["LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'"], null, $arrOptions);
+        return static::findBy(["LOWER($t.title) LIKE ?"], [strval(strtolower($title))], $arrOptions);
     }
 
     /**
@@ -63,6 +65,10 @@ class CalendarPromotersModel extends \Model
         $time = time();
 
         $arrColumns = ["$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")"];
+
+        $validTypes = Options::getPromoterTypes();
+
+        $arrTypes = array_intersect($arrTypes, $validTypes);
 
         $arrColumns[] = "$t.type IN('" . implode("','", $arrTypes) . "')";
 

@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.2.1] - 2020-01-24
+
+- fixed model issues
+
 ## [2.2.0] - 2019-03-14
 
 ### Added

@@ -32,6 +32,8 @@ class CalendarEventtypesModel extends \Model
 
         $t = static::$strTable;
 
+        $arrPids = array_map('intval', $arrPids);
+
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
 
 
@@ -59,6 +61,8 @@ class CalendarEventtypesModel extends \Model
 
         $t    = static::$strTable;
         $time = time();
+
+        $arrPids = array_map('intval', $arrPids);
 
         $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
 
@@ -92,10 +96,12 @@ class CalendarEventtypesModel extends \Model
 
         $t = static::$strTable;
 
-        $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
-        $arrColumns[] = "LOWER($t.title) LIKE '" . strval(strtolower($title)) . "'";
+        $arrPids = array_map('intval', $arrPids);
 
-        return static::findBy($arrColumns, null, $arrOptions);
+        $arrColumns[] = "($t.pid IN (" . implode(',', $arrPids) . "))";
+        $arrColumns[] = "LOWER($t.title) LIKE ?";
+
+        return static::findBy($arrColumns, [strval(strtolower($title))], $arrOptions);
     }
 
     public function generateAlias()
