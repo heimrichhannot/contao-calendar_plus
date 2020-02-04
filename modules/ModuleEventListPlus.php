@@ -355,10 +355,11 @@ class ModuleEventListPlus extends EventsPlus
         unset($arrAllEvents);
 
         // sort events by their listTime to maintain child <-> parent time relation
-        usort($arrEvents, function($a, $b) {
-            return $a['listTime'] - $b['listTime'];
-        });
-
+        if ($this->cal_alwaysShowParents) {
+            usort($arrEvents, function($a, $b) {
+                return $a['listTime'] - $b['listTime'];
+            });
+        }
 
         $strMonth         = '';
         $strDate          = '';

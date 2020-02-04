@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.2.2] - 2020-02-04
+
+- restricted `listTime` event sorting when `cal_alwaysShowParents` enabled
+
 ## [2.2.1] - 2020-01-24
 
 - fixed model issues
