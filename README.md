@@ -5,6 +5,8 @@
 [![Monthly Downloads](https://poser.pugx.org/heimrichhannot/contao-calendar_plus/d/monthly)](https://packagist.org/packages/heimrichhannot/contao-calendar_plus)
 [![License](https://poser.pugx.org/heimrichhannot/contao-calendar_plus/license)](https://packagist.org/packages/heimrichhannot/contao-calendar_plus)
 
+> This extension is not activly maintained anymore. Try [Events Bundle](https://github.com/heimrichhannot/contao-events-bundle) instead.
+
 A collection of enhancements for the contao calendar module.
 
 ## Features
