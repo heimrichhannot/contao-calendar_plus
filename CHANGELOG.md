@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - 2020-05-08
+- removed `GROUP BY` options from `CalendarPlusEventsModel`
+
 ## [2.2.2] - 2020-02-04
 
 - restricted `listTime` event sorting when `cal_alwaysShowParents` enabled

@@ -38,13 +38,29 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
         }
 
-        $arrOptions['group'] = 'city';
-
         if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "($t.start='' OR $t.start<$intStart) AND ($t.stop='' OR $t.stop>$intStart) AND $t.published=1";
         }
 
-        return static::findBy($arrColumns, null, $arrOptions);
+        $objEvents = static::findBy($arrColumns, null, $arrOptions);
+
+        if ($objEvents === null) {
+            return null;
+        }
+
+        $uniqueEvents = [];
+
+        foreach ($objEvents as $event) {
+            $uniqueEvents[$event->city] = $event;
+        }
+
+        $arrCities = [];
+
+        foreach ($uniqueEvents as $uniqueEvent) {
+            $arrCities = array_merge($arrCities, deserialize($uniqueEvent->city, true));
+        }
+
+        return array_unique($arrCities);
     }
 
     public static function getUniquePromotersByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
@@ -107,8 +123,6 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
         }
 
-        $arrOptions['group'] = 'docents';
-
         if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "($t.start='' OR $t.start<$intStart) AND ($t.stop='' OR $t.stop>$intStart) AND $t.published=1";
         }
@@ -119,10 +133,16 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return null;
         }
 
+        $uniqueEvents = [];
+
+        foreach ($objEvents as $event) {
+            $uniqueEvents[$event->docents] = $event;
+        }
+
         $arrDocents = [];
 
-        while ($objEvents->next()) {
-            $arrDocents = array_merge($arrDocents, deserialize($objEvents->docents, true));
+        foreach ($uniqueEvents as $uniqueEvent) {
+            $arrDocents = array_merge($arrDocents, deserialize($uniqueEvent->docents, true));
         }
 
         $arrDocents = array_unique($arrDocents);
@@ -149,8 +169,6 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
         }
 
-        $arrOptions['group'] = 'memberDocents';
-
         if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "($t.start='' OR $t.start<$intStart) AND ($t.stop='' OR $t.stop>$intStart) AND $t.published=1";
         }
@@ -161,13 +179,16 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return null;
         }
 
+        $uniqueEvents = [];
+
+        foreach ($objEvents as $event) {
+            $uniqueEvents[$event->memberDocents] = $event;
+        }
+
         $arrDocents = [];
 
-        $objEvents->reset();
-
-        while ($objEvents->next()) {
-            $objEvent = $objEvents->current();
-            $arrDocents = array_merge($arrDocents, deserialize($objEvent->memberDocents, true));
+        foreach($uniqueEvents as $uniqueEvent) {
+            $arrDocents = array_merge($arrDocents, deserialize($uniqueEvent->memberDocents, true));
         }
 
         $arrDocents = array_unique($arrDocents);
@@ -194,8 +215,6 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
         }
 
-        $arrOptions['group'] = 'hosts';
-
         if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "($t.start='' OR $t.start<$intStart) AND ($t.stop='' OR $t.stop>$intStart) AND $t.published=1";
         }
@@ -206,11 +225,16 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return null;
         }
 
+        $uniqueEvents = [];
+
+        foreach ($objEvents as $event) {
+            $uniqueEvents[$event->hosts] = $event;
+        }
+
         $arrHosts = [];
 
-        while ($objEvents->next()) {
-            $objEvent = $objEvents->current();
-            $arrHosts = array_merge($arrHosts, deserialize($objEvent->hosts, true));
+        foreach ($uniqueEvents as $uniqueEvent) {
+            $arrHosts = array_merge($arrHosts, deserialize($uniqueEvent->hosts, true));
         }
 
         $arrHosts = array_unique($arrHosts);
@@ -237,8 +261,6 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
         }
 
-        $arrOptions['group'] = 'memberHosts';
-
         if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "($t.start='' OR $t.start<$intStart) AND ($t.stop='' OR $t.stop>$intStart) AND $t.published=1";
         }
@@ -249,11 +271,16 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return null;
         }
 
+        $uniqueEvents = [];
+
+        foreach ($objEvents as $event) {
+            $uniqueEvents[$event->memberHosts] = $event;
+        }
+
         $arrHosts = [];
 
-        while ($objEvents->next()) {
-            $objEvent = $objEvents->current();
-            $arrHosts = array_merge($arrHosts, deserialize($objEvent->memberHosts, true));
+        foreach ($uniqueEvents as $uniqueEvent) {
+            $arrHosts = array_merge($arrHosts, deserialize($uniqueEvent->memberHosts, true));
         }
 
         $arrHosts = array_unique($arrHosts);
@@ -281,8 +308,6 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             $arrColumns[] = "(($t.startTime>=$intStart AND $t.startTime<=$intEnd) OR ($t.endTime>=$intStart AND $t.endTime<=$intEnd) OR ($t.startTime<=$intStart AND $t.endTime>=$intEnd) OR ($t.recurring='1' AND ($t.recurrences=0 OR $t.repeatEnd>=$intStart) AND $t.startTime<=$intEnd))";
         }
 
-        $arrOptions['group'] = 'promoter';
-
         if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "($t.start='' OR $t.start<$intStart) AND ($t.stop='' OR $t.stop>$intStart) AND $t.published=1";
         }
@@ -293,11 +318,16 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
             return $objEvents;
         }
 
+        $uniqueEvents =  [];
+
+        foreach($objEvents as $event) {
+            $uniqueEvents[$event->promoter] = $event;
+        }
+
         $arrPromoters = [];
 
-        while ($objEvents->next()) {
-            $objEvent = $objEvents->current();
-            $arrPromoters = array_merge($arrPromoters, deserialize($objEvent->promoter, true));
+        foreach ($uniqueEvents as $uniqueEvent) {
+            $arrPromoters = array_merge($arrPromoters, deserialize($uniqueEvent->promoter, true));
         }
 
         $arrPromoters = array_unique($arrPromoters);
@@ -537,7 +567,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
                             $objSearch = \Search::searchFor(
                                 $value,
                                 ($arrFilterConfig['module']['queryType'] == 'or'),
-				$arrFilterConfig['module']['formHybridAction'] ?: [$objPage->id],
+                                $arrFilterConfig['module']['formHybridAction'] ?: [$objPage->id],
                                 0,
                                 0,
                                 $arrFilterConfig['module']['fuzzy']
