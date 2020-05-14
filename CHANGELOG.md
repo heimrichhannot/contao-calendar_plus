@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.3.1] - 2020-05-14
+- `tl_calendar_eventtypes` checkPermission handling (`edit`)
+
 ## [2.3.0] - 2020-05-08
 - removed `GROUP BY` options from `CalendarPlusEventsModel`
 

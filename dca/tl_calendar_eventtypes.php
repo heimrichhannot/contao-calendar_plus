@@ -365,7 +365,6 @@ class tl_calendar_eventtypes extends Backend
                 break;
             case 'cut':
             case 'copy':
-
                 $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute((int)Input::get('pid'));
 
                 if (!$objEventTypeArchive->numRows || !in_array($objEventTypeArchive->pid, $root)) {
@@ -378,7 +377,11 @@ class tl_calendar_eventtypes extends Backend
             case 'show':
             case 'delete':
             case 'toggle':
-                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute((int)Input::get('pid'));
+                $objArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes WHERE id=?")
+                    ->limit(1)
+                    ->execute($id);
+
+                $objEventTypeArchive = $this->Database->prepare("SELECT pid FROM tl_calendar_eventtypes_archive WHERE id=?")->limit(1)->execute($objArchive->pid);
 
                 if (!$objEventTypeArchive->numRows || !in_array($objEventTypeArchive->pid, $root)) {
                     $this->log('Not enough permissions to '.Input::get('act').' eventtypes ID "'.$id.'.', __METHOD__, TL_ERROR);
