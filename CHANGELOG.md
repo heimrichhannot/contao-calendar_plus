@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.3.2] - 2020-05-14
+- made `tl_calendar_eventtypes` filter an OR filter according to customer wish
+
 ## [2.3.1] - 2020-05-14
 - `tl_calendar_eventtypes` checkPermission handling (`edit`)
 

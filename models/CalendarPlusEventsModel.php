@@ -469,7 +469,7 @@ class CalendarPlusEventsModel extends \CalendarEventsModel
                             if ($arrFilterConfig['show_related']) {
                                 $arrColumnsOr[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_OR);
                             } else {
-                                $arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_AND);
+                                $arrColumns[] = EventModelHelper::createMySQLRegexpForMultipleIds("$t.eventtypes", $valueArray, EVENTMODEL_CONDITION_OR);
                             }
 
                         }
