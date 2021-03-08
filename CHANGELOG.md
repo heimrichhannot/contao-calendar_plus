@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.3.3] - 2021-08-03
+- throw a 404 if the event couldn't be found
+
 ## [2.3.2] - 2020-05-14
 - made `tl_calendar_eventtypes` filter an OR filter according to customer wish
 

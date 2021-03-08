@@ -14,6 +14,7 @@ namespace HeimrichHannot\CalendarPlus;
 use Contao\ModuleLoader;
 use HeimrichHannot\EventRegistration\EventRegistration;
 use HeimrichHannot\Share\Share;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
@@ -161,6 +162,10 @@ class ModuleEventReaderPlus extends EventsPlus
         }
 
         $this->objEvent = \CalendarEventsModel::findPublishedByParentAndIdOrAlias(\Input::get('events'), $this->cal_calendar);
+
+        if (null === $this->objEvent) {
+            throw new NotFoundHttpException('News not found');
+        }
 
         return true;
     }
