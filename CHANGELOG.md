@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.3.4] - 2021-12-09
+- Fixed: type errors on option callbacks in tl_calendar_events_plus if datacontainer is null
+
 ## [2.3.3] - 2021-08-03
 - throw a 404 if the event couldn't be found
 

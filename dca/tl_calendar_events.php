@@ -1,5 +1,7 @@
 <?php
 
+use HeimrichHannot\CalendarPlus\CalendarPlusModel;
+
 $arrDca = &$GLOBALS['TL_DCA']['tl_calendar_events'];
 
 $arrDca['config']['sql']['keys']['pid,start,stop,published,startTime,endTime'] = 'index';
@@ -284,14 +286,13 @@ class tl_calendar_events_plus extends \Backend
         return $arrRooms;
     }
 
-    public function getMemberDocents(DataContainer $objDc)
+    public function getMemberDocents(DataContainer $objDc = null)
     {
-        $arrOptions  = [];
-        $objCalendar = \HeimrichHannot\CalendarPlus\CalendarPlusModel::findByPk($objDc->activeRecord->pid);
-
-        if ($objCalendar === null) {
-            return $arrOptions;
+        if (!$objDc || !($objCalendar = CalendarPlusModel::findByPk($objDc->activeRecord->pid))) {
+            return [];
         }
+
+        $arrOptions  = [];
 
         $arrMemberDocentGroups = deserialize($objCalendar->memberDocentGroups, true);
 
@@ -318,11 +319,11 @@ class tl_calendar_events_plus extends \Backend
         return $arrOptions;
     }
 
-    public function getEventTypes(DataContainer $objDc)
+    public function getEventTypes(DataContainer $objDc = null)
     {
         $arrOptions = [];
 
-        $objCalendar = \HeimrichHannot\CalendarPlus\CalendarPlusModel::findByPk($objDc->activeRecord->pid);
+        $objCalendar = CalendarPlusModel::findByPk($objDc->activeRecord->pid);
 
         if ($objCalendar === null) {
             return $arrOptions;
