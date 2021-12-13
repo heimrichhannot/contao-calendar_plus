@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2021-12-13
+## [2.3.5] - 2021-12-13
 - Fixed: tl_calendar_events_plus::getRooms() parameter type
 - Fixed: warning in tl_calendar_events_plus::getRooms()
 
