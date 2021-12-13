@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2021-12-13
+- Fixed: tl_calendar_events_plus::getRooms() parameter type
+- Fixed: warning in tl_calendar_events_plus::getRooms()
+
 ## [2.3.4] - 2021-12-09
 - Fixed: type errors on option callbacks in tl_calendar_events_plus if datacontainer is null
 

@@ -269,11 +269,11 @@ class tl_calendar_events_plus extends \Backend
         }
     }
 
-    public function getRooms(\DataContainer $objDc)
+    public function getRooms(\DataContainer $objDc = null)
     {
         $arrRooms = [];
 
-        if (($objRoomArchives = \HeimrichHannot\CalendarPlus\CalendarRoomArchiveModel::findByPid($objDc->activeRecord->pid)) !== null) {
+        if ($objDc && $objRoomArchives = \HeimrichHannot\CalendarPlus\CalendarRoomArchiveModel::findByPid($objDc->activeRecord->pid)) {
             foreach ($objRoomArchives as $objRoomArchive) {
                 if (($objRooms = \HeimrichHannot\CalendarPlus\CalendarRoomModel::findByPid($objRoomArchive->id)) !== null) {
                     foreach ($objRooms as $objRoom) {
