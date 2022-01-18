@@ -379,8 +379,11 @@ class tl_calendar_events_plus extends \Backend
     }
 
 
-    public function getParentEventChoices(\DataContainer $dc)
+    public function getParentEventChoices(\DataContainer $dc = null)
     {
+        if (null === $dc) {
+            return [];
+        }
         $choices = [];
 
         $query = "SELECT id, title FROM tl_calendar_events WHERE parentEvent=0 and id!=? ORDER BY title";

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.3.6] - 2022-01-18
+- Fixed: tl_calendar_events_plus::getParentEventChoices() exception if dc is null
+
 ## [2.3.5] - 2021-12-13
 - Fixed: tl_calendar_events_plus::getRooms() parameter type
 - Fixed: warning in tl_calendar_events_plus::getRooms()
