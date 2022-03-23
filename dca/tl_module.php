@@ -9,6 +9,8 @@
  * @license http://www.gnu.org/licences/lgpl-3.0.html LGPL
  */
 
+use HeimrichHannot\CalendarPlus\DataContainer\ModulesContainer;
+
 $dc = &$GLOBALS['TL_DCA']['tl_module'];
 
 /**
@@ -233,60 +235,8 @@ $dc['fields'] = array_merge($dc['fields'], $arrFields);
 $dc['fields']['cal_readerModule']['options_callback']   = ['tl_module_calendar_plus', 'getReaderModules'];
 $dc['fields']['cal_calendar']['eval']['submitOnChange'] = true;
 
-$dc['fields']['formHybridEditable']['options_callback'] = ['tl_module_calendar_plus', 'getEditable'];
-
 class tl_module_calendar_plus extends \Backend
 {
-    public function getEditable($dc)
-    {
-        $objModule = \ModuleModel::findByPk($dc->id);
-
-        if (!$dc)
-        {
-            if ($objModule === null)
-            {
-                return [];
-            }
-
-            $dc = new HeimrichHannot\FormHybrid\DC_Hybrid('tl_module', $objModule);
-        }
-
-        if ($objModule->formHybridDataContainer != 'tl_calendar_events')
-        {
-            return HeimrichHannot\FormHybrid\Backend\Module::getEditable($dc);
-        }
-
-        $strPalette = ($dc->activeRecord->type == 'eventfilter') ? 'eventfilter' : 'default';
-
-        \Controller::loadDataContainer('tl_calendar_events');
-
-        $arrFields = HeimrichHannot\FormHybrid\FormHelper::getPaletteFields(
-            'tl_calendar_events',
-            $GLOBALS['TL_DCA']['tl_calendar_events']['palettes'][$strPalette]
-        );
-
-        if (is_array($GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']))
-        {
-            $arrSubPalettes = array_keys($GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes']);
-
-            // ignore subpalettes not in palette
-            $arrSubPalettes = HeimrichHannot\FormHybrid\FormHelper::getFilteredSubPalettes($arrSubPalettes, $arrFields, $dc);
-
-            foreach ($arrSubPalettes as $strSubPalette)
-            {
-                $arrFields = array_merge(
-                    $arrFields,
-                    HeimrichHannot\FormHybrid\FormHelper::getPaletteFields(
-                        'tl_calendar_events',
-                        $GLOBALS['TL_DCA']['tl_calendar_events']['subpalettes'][$strSubPalette]
-                    )
-                );
-            }
-        }
-
-        return $arrFields;
-    }
-
     /**
      * Get all event filter modules and return them as array
      *

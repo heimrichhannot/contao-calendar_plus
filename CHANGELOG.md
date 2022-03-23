@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - 2022-03-17
+- Added: php 8 support
+- Added: reduce number of database/model calls for recurring events
+- Changed: some adjustments to contao 4
+- Removed: php <7.1 support
+- Removed: contao <4.4 support
+
 ## [2.3.6] - 2022-01-18
 - Fixed: tl_calendar_events_plus::getParentEventChoices() exception if dc is null
 
