@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2022-03-17
+## [2.4.0] - 2022-03-24
 - Added: php 8 support
 - Added: reduce number of database/model calls for recurring events
 - Changed: some adjustments to contao 4
