@@ -12,7 +12,11 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use Contao\Calendar;
+use Contao\CalendarEventsModel;
+use Contao\ContentModel;
 use Events;
+use HeimrichHannot\CalendarPlus\Processor\EventDetailsProcessor;
 use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
 
 abstract class EventsPlus extends Events
@@ -262,7 +266,7 @@ abstract class EventsPlus extends Events
      */
     protected function addEvent($objEvents, $intStart, $intEnd, $intBegin, $intLimit, $intCalendar, $strUrl = null)
     {
-        $span = \Calendar::calculateSpan($intStart, $intEnd);
+        $span = Calendar::calculateSpan($intStart, $intEnd);
 
         // Adjust the start time of a multi-day event (see #6802)
         if ($this->cal_noSpan && $span > 0 && $intStart < $intBegin && $intBegin < $intEnd) {
@@ -272,7 +276,7 @@ abstract class EventsPlus extends Events
         $intDate = $intStart;
         $intKey  = date('Ymd', $intStart);
 
-        $arrEvent = $this->getEventDetails($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar);
+        $arrEvent = $this->getEventDetails($objEvents, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar, true);
 
         $this->arrEvents[$intKey][$intStart][] = $arrEvent;
 
@@ -290,10 +294,20 @@ abstract class EventsPlus extends Events
         }
     }
 
-    protected function getEventDetails($objEvent, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar)
+    /**
+     * @param CalendarEventsModel $objEvent
+     * @param $intStart
+     * @param $intEnd
+     * @param $strUrl
+     * @param $intBegin
+     * @param $intCalendar
+     * @param bool $skipDetails
+     * @return mixed
+     */
+    protected function getEventDetails($objEvent, $intStart, $intEnd, $strUrl, $intBegin, $intCalendar, bool $skipDetails = false)
     {
         global $objPage;
-        $span = \Calendar::calculateSpan($intStart, $intEnd);
+        $span = Calendar::calculateSpan($intStart, $intEnd);
 
         // Adjust the start time of a multi-day event (see #6802)
         if ($this->cal_noSpan && $span > 0 && $intStart < $intBegin && $intBegin < $intEnd) {
@@ -358,159 +372,59 @@ abstract class EventsPlus extends Events
             $arrEvent['modalTarget'] = '#' . EventsPlusHelper::getCSSModalID($this->cal_readerModule);
         }
 
-        if ($objEvent->promoter) {
+        if (!$skipDetails && $objEvent->promoter) {
             if (isset($this->eventDetailCache[$objEvent->id]['promoterList'])) {
                 $arrEvent['promoterList'] = $this->eventDetailCache[$objEvent->id]['promoterList'];
             } else {
-                $arrPromoters = deserialize($objEvent->promoter, true);
-
-                if (!empty($arrPromoters)) {
-                    $objPromoters = CalendarPromotersModel::findMultipleByIds($arrPromoters);
-
-                    if ($objPromoters !== null) {
-                        while ($objPromoters->next()) {
-                            $objPromoter = $objPromoters->current();
-
-                            if ($objPromoter->website != '') {
-                                $strWebsiteLink = $objPromoter->website;
-
-                                // Add http:// to the website
-                                if (($strWebsiteLink != '') && !preg_match('@^(https?://|ftp://|mailto:|#)@i', $strWebsiteLink)) {
-                                    $objPromoter->website = 'http://' . $strWebsiteLink;
-                                }
-                            }
-
-                            $arrEvent['promoterList'][] = $objPromoter;
-                        }
-                    }
-                }
+                $arrEvent['promoterList'] = EventDetailsProcessor::promoterList($objEvent->row());
             }
         }
 
-        if ($objEvent->docents) {
+        if (!$skipDetails && $objEvent->docents) {
             if (isset($this->eventDetailCache[$objEvent->id]['docentList'])) {
                 $arrEvent['docentList'] = $this->eventDetailCache[$objEvent->id]['docentList'];
             } else {
-                $objEvent->docents = deserialize($objEvent->docents, true);
-
-                if (is_array($objEvent->docents) && !empty($objEvent->docents)) {
-                    $objDocents = CalendarDocentsModel::findMultipleByIds($objEvent->docents);
-
-                    if ($objDocents !== null) {
-                        while ($objDocents->next()) {
-                            $arrEvent['docentList'][] = $objDocents->current();
-                        }
-                    }
-                }
+                $arrEvent['docentList'] = EventDetailsProcessor::docentList($objEvent->row());
             }
         }
 
-        if ($objEvent->memberDocents) {
+        if (!$skipDetails && $objEvent->memberDocents) {
             if (isset($this->eventDetailCache[$objEvent->id]['memberDocentList'])) {
                 $arrEvent['memberDocentList'] = $this->eventDetailCache[$objEvent->id]['memberDocentList'];
             } else {
-                $objEvent->memberDocents = deserialize($objEvent->memberDocents, true);
-
-                if (is_array($objEvent->memberDocents) && !empty($objEvent->memberDocents)) {
-                    $objMembers = MemberPlusMemberModel::findMultipleByIds($objEvent->memberDocents);
-
-                    if ($objMembers !== null) {
-                        while ($objMembers->next()) {
-                            $objMemberPlus = new \HeimrichHannot\MemberPlus\MemberPlus($this->objModel);
-                            // custom subevent memberlist template
-                            $objMemberPlus->mlTemplate      = ($arrEvent['isSubEvent'] && $this->cal_subeventDocentTemplate != '') ? $this->cal_subeventDocentTemplate : $objMemberPlus->mlTemplate;
-                            $arrEvent['memberDocentList'][] = $objMemberPlus->parseMember($objMembers);
-                        }
-                    }
-                }
+                $arrEvent['memberDocentList'] = EventDetailsProcessor::memberDocentList($objEvent->row(), $this->getModel());
             }
         }
 
-        if ($objEvent->hosts) {
+        if (!$skipDetails && $objEvent->hosts) {
             if (isset($this->eventDetailCache[$objEvent->id]['hostList'])) {
                 $arrEvent['hostList'] = $this->eventDetailCache[$objEvent->id]['hostList'];
             } else {
-                $objEvent->hosts = deserialize($objEvent->hosts, true);
-
-                if (is_array($objEvent->hosts) && !empty($objEvent->hosts)) {
-                    $objDocents = CalendarDocentsModel::findMultipleByIds($objEvent->hosts);
-
-                    if ($objDocents !== null) {
-                        while ($objDocents->next()) {
-                            $arrEvent['hostList'][] = $objDocents->current();
-                        }
-                    }
-                }
+                $arrEvent['hostList'] = EventDetailsProcessor::hostList($objEvent->row());
             }
         }
 
-        if ($objEvent->memberHosts) {
+        if (!$skipDetails && $objEvent->memberHosts) {
             if (isset($this->eventDetailCache[$objEvent->id]['memberHostList'])) {
                 $arrEvent['memberHostList'] = $this->eventDetailCache[$objEvent->id]['memberHostList'];
             } else {
-                $objEvent->memberHosts = deserialize($objEvent->memberHosts, true);
-
-                if (is_array($objEvent->memberHosts) && !empty($objEvent->memberHosts)) {
-                    $objMembers = MemberPlusMemberModel::findMultipleByIds($objEvent->memberHosts);
-
-                    if ($objMembers !== null) {
-                        while ($objMembers->next()) {
-                            $objMemberPlus = new \HeimrichHannot\MemberPlus\MemberPlus($this->objModel);
-                            // custom subevent memberlist template
-                            $objMemberPlus->mlTemplate    = ($arrEvent['isSubEvent'] && $this->cal_subeventHostTemplate != '') ? $this->cal_subeventHostTemplate : $objMemberPlus->mlTemplate;
-                            $arrEvent['memberHostList'][] = $objMemberPlus->parseMember($objMembers);
-                        }
-                    }
-
-                }
+                $arrEvent['memberHostList'] = EventDetailsProcessor::memberHostList($objEvent->row(), $this->getModel());
             }
         }
 
-        if ($objEvent->eventtypes) {
+        if (!$skipDetails && $objEvent->eventtypes) {
             if (isset($this->eventDetailCache[$objEvent->id]['eventtypeList'])) {
                 $arrEvent['eventtypeList'] = $this->eventDetailCache[$objEvent->id]['eventtypeList'];
             } else {
-                $objEvent->eventtypes = deserialize($objEvent->eventtypes, true);
-
-                if (is_array($objEvent->eventtypes) && !empty($objEvent->eventtypes)) {
-                    $objEventTypes = CalendarEventtypesModel::findMultipleByIds($objEvent->eventtypes);
-
-                    if ($objEventTypes !== null) {
-                        while ($objEventTypes->next()) {
-                            $objEventtypesArchive = $objEventTypes->getRelated('pid');
-
-                            if ($objEventtypesArchive === null) {
-                                continue;
-                            }
-
-                            $strClass = (($objEventTypes->cssClass != '') ? ' ' . $objEventTypes->cssClass : '');
-                            $strClass .= (($objEventtypesArchive->cssClass != '') ? ' ' . $objEventtypesArchive->cssClass : '');
-
-                            $objEventTypes->class = $strClass;
-
-                            $arrEvent['eventtypeList'][] = $objEventTypes->current();
-                        }
-                    }
-                }
+                $arrEvent['eventtypeList'] = EventDetailsProcessor::eventTypeList($objEvent->row());
             }
         }
 
-        if ($objEvent->rooms) {
+        if (!$skipDetails && $objEvent->rooms) {
             if (isset($this->eventDetailCache[$objEvent->id]['roomList'])) {
                 $arrEvent['roomList'] = $this->eventDetailCache[$objEvent->id]['roomList'];
             } else {
-                $objEvent->rooms = deserialize($objEvent->rooms, true);
-
-                if (!empty($objEvent->rooms)) {
-                    $objRooms = CalendarRoomModel::findPublishedByIds($objEvent->rooms);
-
-                    if ($objRooms !== null) {
-                        while ($objRooms->next()) {
-                            $arrEvent['roomList'][] = $objRooms->current();
-                        }
-                    }
-
-                }
+                $arrEvent['roomList'] = EventDetailsProcessor::roomList($objEvent->row());
             }
         }
 
@@ -551,19 +465,37 @@ abstract class EventsPlus extends Events
         }
 
         // Display the "read more" button for external/article links
-        if ($objEvent->source != 'default') {
-            $arrEvent['details'] = true;
-        } // Compile the event text
-        else {
-            $objElement = \ContentModel::findPublishedByPidAndTable($objEvent->id, 'tl_calendar_events');
-
-            if ($objElement !== null) {
-                while ($objElement->next()) {
-                    $arrEvent['details'] .= $this->getContentElement($objElement->current());
-                }
-            }
+        if ($objEvent->source != 'default')
+        {
+            $arrEvent['hasDetails'] = true;
         }
 
+        // Compile the event text
+        else
+        {
+            $id = $objEvent->id;
+
+            $arrEvent['details'] = function () use ($id)
+            {
+                $strDetails = '';
+                $objElement = ContentModel::findPublishedByPidAndTable($id, 'tl_calendar_events');
+
+                if ($objElement !== null)
+                {
+                    while ($objElement->next())
+                    {
+                        $strDetails .= $this->getContentElement($objElement->current());
+                    }
+                }
+
+                return $strDetails;
+            };
+
+            $arrEvent['hasDetails'] = static function () use ($id)
+            {
+                return ContentModel::countPublishedByPidAndTable($id, 'tl_calendar_events') > 0;
+            };
+        }
         // Get todays start and end timestamp
         if ($this->intTodayBegin === null) {
             $this->intTodayBegin = strtotime('00:00:00');
@@ -616,7 +548,7 @@ abstract class EventsPlus extends Events
             $strUrl = $this->generateFrontendUrl($objTarget->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/events/%s'));
         }
 
-        return $this->getEventDetails($objParentEvent, $objParentEvent->startTime, $objParentEvent->endTime, $strUrl, $strBegin, $objParentEvent->pid);
+        return $this->getEventDetails($objParentEvent, $objParentEvent->startTime, $objParentEvent->endTime, $strUrl, $strBegin, $objParentEvent->pid, true);
     }
 
     protected function addEventDetailsToTemplate($objTemplate, $event, $strClassList, $strClassUpcoming, $imgSize)

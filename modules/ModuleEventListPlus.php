@@ -12,7 +12,9 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
-use HeimrichHannot\Haste\Util\Arrays;
+use Contao\FrontendTemplate;
+use Contao\StringUtil;
+use HeimrichHannot\CalendarPlus\Processor\EventDetailsProcessor;
 
 class ModuleEventListPlus extends EventsPlus
 {
@@ -132,7 +134,7 @@ class ModuleEventListPlus extends EventsPlus
             $this->Date = new \Date();
         }
 
-        list($strBegin, $strEnd, $strEmpty) = $this->getDatesFromFormat($this->Date, $this->cal_format);
+        [$strBegin, $strEnd, $strEmpty] = $this->getDatesFromFormat($this->Date, $this->cal_format);
 
         $arrFilter       = [];
         $arrOptions      = [];
@@ -374,15 +376,13 @@ class ModuleEventListPlus extends EventsPlus
         // Override the default image size
         if ($this->imgSize != '')
         {
-            $size = deserialize($this->imgSize);
+            $size = StringUtil::deserialize($this->imgSize);
 
             if ($size[0] > 0 || $size[1] > 0 || is_numeric($size[2]))
             {
                 $imgSize = $this->imgSize;
             }
         }
-
-
 
         // Parse events
         for ($i = $iteratorOffset; $i < $limit; $i++)
@@ -401,7 +401,15 @@ class ModuleEventListPlus extends EventsPlus
                 $blnIsLastEvent = true;
             }
 
-            $objTemplate = new \FrontendTemplate($this->cal_template);
+            $event['promoterList'] = EventDetailsProcessor::promoterList($event);
+            $event['docentList'] = EventDetailsProcessor::docentList($event);
+            $event['memberDocentList'] = EventDetailsProcessor::memberDocentList($event, $this->getModel());
+            $event['hostList'] = EventDetailsProcessor::hostList($event);
+            $event['memberHostList'] = EventDetailsProcessor::memberHostList($event, $this->getModel());
+            $event['roomList'] = EventDetailsProcessor::roomList($event);
+            $event['eventtypeList'] = EventDetailsProcessor::eventTypeList($event);
+
+            $objTemplate = new FrontendTemplate($this->cal_template);
             $objTemplate->setData($event);
 
             $objTemplate->lastItem = (($i + 1) == $limit) || ($arrEvents[($i + 1)]['month'] != $event['month']) || ($arrEvents[($i + 1)]['firstDate'] != $event['firstDate']);
@@ -451,6 +459,8 @@ class ModuleEventListPlus extends EventsPlus
             $strClassUpcoming =
                 $event['class'] . ((($eventCount % 2) == 0) ? ' even' : ' odd') . (($eventCount == 0) ? ' first' : '') . ((($offset + $eventCount + 1) >= $limit) ? ' last' : '')
                 . ' cal_' . $event['parent'];
+
+
 
             $this->addEventDetailsToTemplate($objTemplate, $event, $strClassList, $strClassUpcoming, $imgSize);
 

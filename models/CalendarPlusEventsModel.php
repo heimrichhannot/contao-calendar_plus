@@ -11,12 +11,11 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
-use HeimrichHannot\DavAreasOfLaw\AreasOfLawModel;
-use HeimrichHannot\Haste\Util\Url;
+use Contao\CalendarEventsModel;
 use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
 use Model\Collection;
 
-class CalendarPlusEventsModel extends \CalendarEventsModel
+class CalendarPlusEventsModel extends CalendarEventsModel
 {
 
     public static function getUniqueCityNamesByPids(array $arrPids = [], $currentOnly = true, $arrOptions = [])
