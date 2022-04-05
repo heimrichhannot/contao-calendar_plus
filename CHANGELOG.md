@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] - 2022-04-05
+- Changed: reduced number of database call in list module (Attention! event details and hasDetails attribute are now callback functions as in contao core)
+- Fixed: some deprecations and imports
+
 ## [2.4.0] - 2022-03-24
 - Added: php 8 support
 - Added: reduce number of database/model calls for recurring events
