@@ -53,6 +53,7 @@ abstract class EventsPlus extends Events
         $strClass = \Module::findClass($objModule->type);
 
         if (class_exists($strClass)) {
+            /** @var ModuleEventFilter $objFilterModule */
             $objFilterModule = new $strClass($objModule);
             $arrOptions      = $objFilterModule->getFilterOptions();
         }

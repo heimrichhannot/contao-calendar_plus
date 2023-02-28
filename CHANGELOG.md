@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.5.1] - 2023-02-28
+- Fixed: variable not deserialized in some cases
+
 ## [2.5.0] - 2022-04-05
 - Changed: reduced number of database call in list module (Attention! event details and hasDetails attribute are now callback functions as in contao core)
 - Fixed: some deprecations and imports

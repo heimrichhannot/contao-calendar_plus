@@ -11,6 +11,7 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
+use Contao\StringUtil;
 use HeimrichHannot\Haste\Cache\FileCache;
 
 class EventFilterHelper extends \Frontend
@@ -52,6 +53,8 @@ class EventFilterHelper extends \Frontend
     public static function getHostSelectOptions(\DataContainer $dc)
     {
         $arrItems = [];
+
+        $dc->objModule->cal_calendar = StringUtil::deserialize($dc->objModule->cal_calendar);
 
         if (!is_array($dc->objModule->cal_calendar) || empty($dc->objModule->cal_calendar))
         {
@@ -112,6 +115,8 @@ class EventFilterHelper extends \Frontend
     public static function getDocentSelectOptions(\DataContainer $dc)
     {
         $arrItems = [];
+
+        $dc->objModule->cal_calendar = StringUtil::deserialize($dc->objModule->cal_calendar);
 
         if (!is_array($dc->objModule->cal_calendar) || empty($dc->objModule->cal_calendar))
         {
@@ -261,6 +266,8 @@ class EventFilterHelper extends \Frontend
     {
         $arrItems = [];
 
+        $dc->objModule->cal_calendar = StringUtil::deserialize($dc->objModule->cal_calendar);
+
         if (!is_array($dc->objModule->cal_calendar) || empty($dc->objModule->cal_calendar))
         {
             return $arrItems;
@@ -302,6 +309,8 @@ class EventFilterHelper extends \Frontend
     {
         $arrItems = [];
 
+        $dc->objModule->cal_calendar = StringUtil::deserialize($dc->objModule->cal_calendar);
+
         if (!is_array($dc->objModule->cal_calendar) || empty($dc->objModule->cal_calendar))
         {
             return $arrItems;
@@ -336,6 +345,8 @@ class EventFilterHelper extends \Frontend
     public static function getCitySelectOptions(\DataContainer $dc)
     {
         $arrItems = [];
+
+        $dc->objModule->cal_calendar = StringUtil::deserialize($dc->objModule->cal_calendar);
 
         if (!is_array($dc->objModule->cal_calendar) || empty($dc->objModule->cal_calendar))
         {
