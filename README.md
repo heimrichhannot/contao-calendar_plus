@@ -23,7 +23,8 @@ A collection of enhancements for the contao calendar module.
 
 ### Hooks
 
-Name | Arguments | Expected return value | Description
- ---------- | ---------- | ---------- | ---------
-addEventDetailsToTemplate | $objTemplate, $arrEvent, $objModule | void | manipulate the template data to enable modal use 
+| Name                      | Arguments                           | Expected return value | Description                                      |
+|---------------------------|-------------------------------------|-----------------------|--------------------------------------------------|
+| addEventDetailsToTemplate | $objTemplate, $arrEvent, $objModule | void                  | manipulate the template data to enable modal use |
+| loadDCEventFilterForm     | array $arrDca                       | void                  | Adjust filter dca                                |
 
