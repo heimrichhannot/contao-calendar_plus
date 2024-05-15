@@ -26,13 +26,13 @@ class ExtendedEvents extends \Frontend
                 if ($this->Input->get('table') == 'tl_content') {
                     $strContent = preg_replace(
                         '/<a href=\"(.*?)\" class=\"header_back\"/',
-                        '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $_GET['epid'] . '&pid=' . $_GET['pid'] . '"',
+                        '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $_GET['epid'] . '&pid=' . $_GET['pid'] . '&id='.$objEvent->pid.'"',
                         $strContent
                     );
-                } else if ($objEvent->parentEvent && \Input::get('id')) {
+                } else if (\Input::get('act') && \Input::get('epid')) {
                     $strContent = preg_replace(
                         '/<a href=\"(.*?)\" class=\"header_back\"/',
-                        '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $objEvent->parentEvent . '&pid=' . $_GET['pid'] . '"',
+                        '<a class="header_back" href="contao/main.php?do=calendar&table=tl_calendar_events&epid=' . $_GET['epid']. '&id='.$objEvent->pid.'&pid=' . $_GET['pid'] .'"',
                         $strContent
                     );
                 } else {

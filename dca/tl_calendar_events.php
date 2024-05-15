@@ -246,7 +246,7 @@ class tl_calendar_events_plus extends \Backend
 
     public function showSubEvents($row, $href, $label, $title, $icon, $attributes)
     {
-        return '<a href="contao/main.php?do=calendar&amp;table=tl_calendar_events&amp;pid=' . $row['pid'] . '&amp;epid=' . $row['id'] . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+        return '<a href="contao/main.php?do=calendar&amp;table=tl_calendar_events&amp;id=' . $row['pid'] . '&amp;pid=' . $row['pid'].'&amp;epid=' . $row['id'] . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
     }
 
     public function setDefaultParentEvent($objDc)

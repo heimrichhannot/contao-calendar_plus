@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.5.2] - 2024-05-15
+- Fixed: user permission on subevents 
+
 ## [2.5.1] - 2023-02-28
 - Fixed: variable not deserialized in some cases
 
