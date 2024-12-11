@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.5.3] - 2024-12-11
+- Fixed: php8 warning
+
 ## [2.5.2] - 2024-05-15
 - Fixed: user permission on subevents 
 

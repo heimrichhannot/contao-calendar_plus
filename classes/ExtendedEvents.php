@@ -20,7 +20,7 @@ class ExtendedEvents extends \Frontend
             return $strContent;
         }
 
-        if ($_GET['epid']) {
+        if ($_GET['epid'] ?? false) {
             $objEvent = CalendarPlusEventsModel::findByPk($_GET['epid']);
             if ($objEvent !== null) {
                 if ($this->Input->get('table') == 'tl_content') {
