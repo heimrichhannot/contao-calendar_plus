@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.6.0] - 2025-02-18
+- Changed: make if visible if in subevent list
+- Changed: adjust subevent button icon to indicate if event has subevents
+- Changed: require at least php 7.4
+- Fixed: missing showSubEvents action label
+
 ## [2.5.3] - 2024-12-11
 - Fixed: php8 warning
 

@@ -1,5 +1,6 @@
 <?php
 
+use HeimrichHannot\CalendarPlus\CalendarPlusEventsModel;
 use HeimrichHannot\CalendarPlus\CalendarPlusModel;
 
 $arrDca = &$GLOBALS['TL_DCA']['tl_calendar_events'];
@@ -226,7 +227,14 @@ class tl_calendar_events_plus extends \Backend
             $intEpid = \Input::get('epid');
 
             if ($intEpid) {
-                if (($objEvents = \HeimrichHannot\CalendarPlus\CalendarPlusEventsModel::findBy(['tl_calendar_events.parentEvent=?', 'tl_calendar_events.id!=tl_calendar_events.parentEvent'], [$intEpid], ['order' => 'title'])) !== null) {
+                $arrDca['list']['sorting']['mode'] = 1;
+                $arrDca['list']['label']['format'] = '%s <span style="color:#999;padding-left:3px">[%s]</span>';
+                $arrDca['list']['label']['fields'] = ['title', 'startDate', 'startTime'];
+                $arrDca['list']['label']['label_callback'] = static function (array $row, string $label) {
+                    return \Contao\System::importStatic('tl_calendar_events')->listEvents($row);
+                };
+
+                if (($objEvents = CalendarPlusEventsModel::findBy(['tl_calendar_events.parentEvent=?', 'tl_calendar_events.id!=tl_calendar_events.parentEvent'], [$intEpid], ['order' => 'title'])) !== null) {
                     while ($objEvents->next()) {
                         $arrDca['list']['sorting']['root'][] = $objEvents->id;
                     }
@@ -246,7 +254,12 @@ class tl_calendar_events_plus extends \Backend
 
     public function showSubEvents($row, $href, $label, $title, $icon, $attributes)
     {
-        return '<a href="contao/main.php?do=calendar&amp;table=tl_calendar_events&amp;id=' . $row['pid'] . '&amp;pid=' . $row['pid'].'&amp;epid=' . $row['id'] . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+        $hasSubEvents = (bool)CalendarPlusEventsModel::countBy('parentEvent', $row['id']);
+        if (!$hasSubEvents) {
+            $icon = '/system/modules/calendar_plus/assets/img/icons/show-sub-events_.png';
+        }
+
+        return '<a href="contao?do=calendar&amp;table=tl_calendar_events&amp;id=' . $row['pid'] . '&amp;pid=' . $row['pid'].'&amp;epid=' . $row['id'] . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
     }
 
     public function setDefaultParentEvent($objDc)

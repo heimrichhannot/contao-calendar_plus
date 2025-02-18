@@ -57,3 +57,8 @@ $arrLang['editparentevent'] = ['Elternevent bearbeiten', 'Elternevent ID %s bear
  */
 $arrLang['placeholders']['q']             = 'Stichwortsuche';
 $arrLang['placeholders']['linkedMembers'] = 'Nachnamen eingeben';
+
+/**
+ * Buttons
+ */
+$arrLang['showSubEvents'] = ['Unterveranstaltungen anzeigen', 'Unterveranstaltungen von ID %s anzeigen'];

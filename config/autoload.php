@@ -12,6 +12,9 @@
 /**
  * Register the namespaces
  */
+
+use HeimrichHannot\CalendarPlus\EventListener\Hooks\ParseTemplateListener;
+
 ClassLoader::addNamespaces(
     [
         'HeimrichHannot',
@@ -55,7 +58,8 @@ ClassLoader::addClasses(
         'HeimrichHannot\CalendarPlus\Controller\PromoterController'  => 'system/modules/calendar_plus/classes/Controller/PromoterController.php',
         'HeimrichHannot\CalendarPlus\EventFilterForm'                => 'system/modules/calendar_plus/classes/EventFilterForm.php',
         'HeimrichHannot\CalendarPlus\EventModelHelper'               => 'system/modules/calendar_plus/classes/EventModelHelper.php',
-        'HeimrichHannot\CalendarPlus\Hooks'                          => 'system/modules/calendar_plus/classes/Hooks.php'
+        'HeimrichHannot\CalendarPlus\Hooks'                          => 'system/modules/calendar_plus/classes/Hooks.php',
+        ParseTemplateListener::class => 'system/modules/calendar_plus/classes/EventListener/Hooks/ParseTemplateListener.php',
     ]
 );
 

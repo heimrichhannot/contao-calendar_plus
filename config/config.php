@@ -96,6 +96,7 @@ $GLOBALS['MODAL_MODULES']['eventlist_plus'] = array
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['addEventDetailsToTemplate'][] = array('HeimrichHannot\CalendarPlus\Hooks', 'addEventDetailsToTemplate');
+$GLOBALS['TL_HOOKS']['parseTemplate'][] = [\HeimrichHannot\CalendarPlus\EventListener\Hooks\ParseTemplateListener::class, '__invoke'];
 
 
 /**
