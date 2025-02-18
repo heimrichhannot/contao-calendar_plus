@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.6.1] - 2025-02-18
+- Fixed: missing token on subevents link in backend
+- Fixed: performance issue on memberDocents field
+
 ## [2.6.0] - 2025-02-18
 - Changed: make if visible if in subevent list
 - Changed: adjust subevent button icon to indicate if event has subevents

@@ -27,11 +27,12 @@
     "php": "^7.4 || ^8.0",
     "contao/core-bundle": "^4.4",
     "contao-community-alliance/composer-plugin": "~2.4 || ~3.0",
+    "heimrichhannot-contao-components/jscroll": "^2.3",
     "heimrichhannot/contao-formhybrid": "^3.0",
+    "heimrichhannot/contao-haste_plus": "^1.6",
     "heimrichhannot/contao-member_plus": "^2.0",
     "heimrichhannot/contao-modal": "^1.2.5",
-    "heimrichhannot/contao-haste_plus": "^1.6",
-    "heimrichhannot-contao-components/jscroll": "^2.3"
+    "heimrichhannot/contao-utils-bundle": "^2.241"
   },
   "suggest": {
     "heimrichhannot/contao-search_plus": "Allows updating the search index"

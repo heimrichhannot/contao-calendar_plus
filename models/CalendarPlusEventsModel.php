@@ -724,7 +724,7 @@ class CalendarPlusEventsModel extends CalendarEventsModel
         $arrColumns = ["($t.parentEvent=?)"];
 
         if (!isset($arrOptions['order'])) {
-            $arrOptions['order'] = "$t.startTime";
+            $arrOptions['order'] = "$t.startTime, $t.sorting ASC";
         }
 
         if (!BE_USER_LOGGED_IN) {

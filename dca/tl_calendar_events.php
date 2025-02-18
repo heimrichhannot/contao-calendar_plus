@@ -1,7 +1,9 @@
 <?php
 
+use Contao\Image;
 use HeimrichHannot\CalendarPlus\CalendarPlusEventsModel;
 use HeimrichHannot\CalendarPlus\CalendarPlusModel;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 
 $arrDca = &$GLOBALS['TL_DCA']['tl_calendar_events'];
 
@@ -254,12 +256,28 @@ class tl_calendar_events_plus extends \Backend
 
     public function showSubEvents($row, $href, $label, $title, $icon, $attributes)
     {
+        /** @var Utils $utils */
+        $utils = \Contao\System::getContainer()->get(Utils::class);
+
         $hasSubEvents = (bool)CalendarPlusEventsModel::countBy('parentEvent', $row['id']);
         if (!$hasSubEvents) {
             $icon = '/system/modules/calendar_plus/assets/img/icons/show-sub-events_.png';
         }
 
-        return '<a href="contao?do=calendar&amp;table=tl_calendar_events&amp;id=' . $row['pid'] . '&amp;pid=' . $row['pid'].'&amp;epid=' . $row['id'] . '" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+        $url = $utils->routing()->generateBackendRoute([
+            'do'   => 'calendar',
+            'table' => 'tl_calendar_events',
+            'id'   => $row['pid'],
+            'pid'  => $row['pid'],
+            'epid' => $row['id'],
+        ]);
+
+        $return = sprintf(
+            '<a href="%s" title="' . \Contao\StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ',
+            $url
+        );
+
+        return $return;
     }
 
     public function setDefaultParentEvent($objDc)
@@ -307,26 +325,30 @@ class tl_calendar_events_plus extends \Backend
 
         $arrOptions  = [];
 
-        $arrMemberDocentGroups = deserialize($objCalendar->memberDocentGroups, true);
+        $arrMemberDocentGroups = \Contao\StringUtil::deserialize($objCalendar->memberDocentGroups, true);
 
         if (!$objCalendar->addMemberDocentGroups || empty($arrMemberDocentGroups)) {
             return $arrOptions;
         }
 
-        $objMembers = \HeimrichHannot\MemberPlus\MemberPlusMemberModel::findActiveByGroups($arrMemberDocentGroups);
+        /** @var \HeimrichHannot\UtilsBundle\Member\MemberUtil $utils */
+        $utils = \Contao\System::getContainer()->get(\HeimrichHannot\UtilsBundle\Member\MemberUtil::class);
 
-        if ($objMembers === null) {
+
+        $members = $utils->findActiveByGroups($arrMemberDocentGroups, ['ignoreLogin' => true]);
+
+        if ($members === null) {
             return $arrOptions;
         }
 
-        while ($objMembers->next()) {
-            $arrTitle = [$objMembers->academicTitle, $objMembers->firstname, $objMembers->lastname];
+        while ($members->next()) {
+            $arrTitle = [$members->academicTitle, $members->firstname, $members->lastname];
 
             if (empty($arrTitle)) {
                 continue;
             }
 
-            $arrOptions[$objMembers->id] = implode(' ', $arrTitle);
+            $arrOptions[$members->id] = implode(' ', $arrTitle);
         }
 
         return $arrOptions;
