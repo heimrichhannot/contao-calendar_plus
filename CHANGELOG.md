@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.7.0] - 2025-02-19
+- Changed: better indication of parent event
+- Changed: added urls to parent events
+- Fixed: default order directive in model using non existing field
+
 ## [2.6.1] - 2025-02-18
 - Fixed: missing token on subevents link in backend
 - Fixed: performance issue on memberDocents field

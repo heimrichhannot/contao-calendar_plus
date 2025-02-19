@@ -2,10 +2,13 @@
 
 namespace HeimrichHannot\CalendarPlus\EventListener\Hooks;
 
+use Contao\Backend;
 use Contao\CalendarModel;
 use Contao\Input;
+use Contao\System;
 use Contao\Template;
 use HeimrichHannot\CalendarPlus\CalendarPlusEventsModel;
+use HeimrichHannot\UtilsBundle\Util\Utils;
 
 class ParseTemplateListener
 {
@@ -24,9 +27,17 @@ class ParseTemplateListener
                 return;
             }
 
+            $utils = System::getContainer()->get(Utils::class);
+
             $headlineParts = explode('> <', $template->headline);
             unset($headlineParts[array_key_last($headlineParts)]);
-            $headlineParts[] = 'span>'.$eventModel->title.'</span';
+            $eventUrl = $utils->routing()->generateBackendRoute([
+                'do' => 'calendar',
+                'table' => 'tl_calendar_events',
+                'id' => $eventId,
+                'act' => 'edit',
+            ]);
+            $headlineParts[] = 'span><a href="'. $eventUrl .'">'.$eventModel->title.'</a></span';
             $headlineParts[] = 'span>'.$GLOBALS['TL_LANG']['MSC']['subevents'].'</span>';
 
             $template->headline = implode('> <', $headlineParts);

@@ -230,6 +230,27 @@ class tl_calendar_events_plus extends \Backend
 
             if ($intEpid) {
                 $arrDca['list']['sorting']['mode'] = 1;
+                $arrDca['list']['sorting']['header_callback'] = static function (array $labels, DataContainer $dc) use ($intEpid): array {
+                    $parentEvent = CalendarPlusEventsModel::findByPk($intEpid);
+                    $archive = CalendarPlusModel::findByPk($parentEvent?->pid);
+                    if (!$parentEvent || !$archive) {
+                        return $labels;
+                    }
+
+                    $utils = \Contao\System::getContainer()->get(Utils::class);
+                    $eventUrl = $utils->routing()->generateBackendRoute([
+                        'do' => 'calendar',
+                        'table' => 'tl_calendar_events',
+                        'id' => $intEpid,
+                        'act' => 'edit',
+                    ]);
+
+                    $header = [
+                        ($GLOBALS['TL_LANG']['tl_calendar_events']['reference']['archive'] ?? 'Calendar') => $archive->title,
+                        ($GLOBALS['TL_LANG']['tl_calendar_events']['parentEvent'][0] ?? 'Event') => '<a href="'.$eventUrl.'">'.$parentEvent->title.'</a>',
+                    ];
+                    return $header;
+                };
                 $arrDca['list']['label']['format'] = '%s <span style="color:#999;padding-left:3px">[%s]</span>';
                 $arrDca['list']['label']['fields'] = ['title', 'startDate', 'startTime'];
                 $arrDca['list']['label']['label_callback'] = static function (array $row, string $label) {

@@ -62,3 +62,8 @@ $arrLang['placeholders']['linkedMembers'] = 'Nachnamen eingeben';
  * Buttons
  */
 $arrLang['showSubEvents'] = ['Unterveranstaltungen anzeigen', 'Unterveranstaltungen von ID %s anzeigen'];
+
+/**
+ * References
+ */
+$arrLang['reference']['archive'] = 'Kalender';
