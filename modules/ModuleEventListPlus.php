@@ -12,12 +12,14 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use Contao\Config;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Date;
 use Contao\FrontendTemplate;
 use Contao\Input;
 use Contao\Model\Collection;
 use Contao\ModuleModel;
+use Contao\Pagination;
 use Contao\StringUtil;
 use Contao\Template;
 use HeimrichHannot\CalendarPlus\Processor\EventDetailsProcessor;
@@ -290,13 +292,13 @@ class ModuleEventListPlus extends EventsPlus
 
         $iteratorOffset = 0;
 
-        if(!$this->cal_noSpan)
+        if (!$this->cal_noSpan)
         {
             $total = count($arrEvents);
             $limit = $total;
         }
 
-        if($this->perPage){
+        if ($this->perPage){
 
             // Do not index or cache the page if the page number is outside the range
             if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
@@ -309,7 +311,7 @@ class ModuleEventListPlus extends EventsPlus
 
             // load specific pagination template if infiniteScroll is used
             // otherwise keep standard pagination
-            $objT = $this->cal_useInfiniteScroll ? new \FrontendTemplate('infinite_pagination') : null;
+            $objT = $this->cal_useInfiniteScroll ? new FrontendTemplate('infinite_pagination') : null;
 
             if (!is_null($objT))
             {
@@ -317,7 +319,7 @@ class ModuleEventListPlus extends EventsPlus
             }
 
             // Add the pagination menu
-            $objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id, $objT);
+            $objPagination = new Pagination($total, $this->perPage, Config::get('maxPaginationLinks'), $id, $objT);
 
             $this->Template->pagination = $objPagination->generate("\n  ");
         }
