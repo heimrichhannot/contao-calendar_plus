@@ -15,6 +15,8 @@ namespace HeimrichHannot\CalendarPlus;
 use Contao\Calendar;
 use Contao\CalendarEventsModel;
 use Contao\ContentModel;
+use Contao\Date;
+use Contao\Template;
 use Events;
 use HeimrichHannot\CalendarPlus\Processor\EventDetailsProcessor;
 use HeimrichHannot\MemberPlus\MemberPlusMemberModel;
@@ -362,10 +364,10 @@ abstract class EventsPlus extends Events
         $arrEvent['begin']              = $intStart;
         $arrEvent['end']                = $intEnd;
         $arrEvent['details']            = '';
-        $arrEvent['startDateFormatted'] = $objEvent->startDate > 0 ? \Date::parse($objPage->dateFormat, $objEvent->startDate) : null;
-        $arrEvent['endDateFormatted']   = $objEvent->endDate > 0 ? \Date::parse($objPage->dateFormat, $objEvent->endDate) : null;
-        $arrEvent['startTimeFormated']  = $objEvent->startTime > 0 ? \Date::parse($objPage->timeFormat, $objEvent->startTime) : null;
-        $arrEvent['endTimeFormated']    = $objEvent->endTime > 0 ? \Date::parse($objPage->timeFormat, $objEvent->endTime) : null;
+        $arrEvent['startDateFormatted'] = $objEvent->startDate > 0 ? Date::parse($objPage->dateFormat, $objEvent->startDate) : null;
+        $arrEvent['endDateFormatted']   = $objEvent->endDate > 0 ? Date::parse($objPage->dateFormat, $objEvent->endDate) : null;
+        $arrEvent['startTimeFormated']  = $objEvent->startTime > 0 ? Date::parse($objPage->timeFormat, $objEvent->startTime) : null;
+        $arrEvent['endTimeFormated']    = $objEvent->endTime > 0 ? Date::parse($objPage->timeFormat, $objEvent->endTime) : null;
 
         // modal
         if ($this->cal_showInModal && $objEvent->source == 'default' && $this->cal_readerModule) {
@@ -373,63 +375,49 @@ abstract class EventsPlus extends Events
             $arrEvent['modalTarget'] = '#' . EventsPlusHelper::getCSSModalID($this->cal_readerModule);
         }
 
-        if (!$skipDetails && $objEvent->promoter) {
-            if (isset($this->eventDetailCache[$objEvent->id]['promoterList'])) {
-                $arrEvent['promoterList'] = $this->eventDetailCache[$objEvent->id]['promoterList'];
-            } else {
-                $arrEvent['promoterList'] = EventDetailsProcessor::promoterList($objEvent->row());
+        if (!$skipDetails) {
+            if ($objEvent->promoter) {
+                $arrEvent['promoterList'] = Template::once(function () use ($objEvent) {
+                    return EventDetailsProcessor::promoterList($objEvent->row());
+                });
+            }
+
+            if ($objEvent->docents) {
+                $arrEvent['docentList'] = Template::once(function () use ($objEvent) {
+                    return EventDetailsProcessor::docentList($objEvent->row());
+                });
+            }
+
+            if ($objEvent->memberDocents) {
+                $arrEvent['memberDocentList'] = Template::once(function () use ($objEvent) {
+                    return EventDetailsProcessor::memberDocentList($objEvent->row(), $this->getModel());
+                });
+            }
+
+            if ($objEvent->hosts) {
+                $arrEvent['hostList'] = Template::once(function () use ($objEvent) {
+                    return EventDetailsProcessor::hostList($objEvent->row());
+                });
+            }
+
+            if ($objEvent->memberHosts) {
+                $arrEvent['memberHostList'] = Template::once(function () use ($objEvent) {
+                    return EventDetailsProcessor::memberHostList($objEvent->row(), $this->getModel());
+                });
+            }
+
+            if ($objEvent->eventtypes) {
+                $arrEvent['eventtypeList'] = Template::once(function () use ($objEvent) {
+                    return EventDetailsProcessor::eventTypeList($objEvent->row());
+                });
+            }
+
+            if ($objEvent->rooms) {
+                $arrEvent['roomList'] = Template::once(function () use ($objEvent) {
+                    return EventDetailsProcessor::roomList($objEvent->row());
+                });
             }
         }
-
-        if (!$skipDetails && $objEvent->docents) {
-            if (isset($this->eventDetailCache[$objEvent->id]['docentList'])) {
-                $arrEvent['docentList'] = $this->eventDetailCache[$objEvent->id]['docentList'];
-            } else {
-                $arrEvent['docentList'] = EventDetailsProcessor::docentList($objEvent->row());
-            }
-        }
-
-        if (!$skipDetails && $objEvent->memberDocents) {
-            if (isset($this->eventDetailCache[$objEvent->id]['memberDocentList'])) {
-                $arrEvent['memberDocentList'] = $this->eventDetailCache[$objEvent->id]['memberDocentList'];
-            } else {
-                $arrEvent['memberDocentList'] = EventDetailsProcessor::memberDocentList($objEvent->row(), $this->getModel());
-            }
-        }
-
-        if (!$skipDetails && $objEvent->hosts) {
-            if (isset($this->eventDetailCache[$objEvent->id]['hostList'])) {
-                $arrEvent['hostList'] = $this->eventDetailCache[$objEvent->id]['hostList'];
-            } else {
-                $arrEvent['hostList'] = EventDetailsProcessor::hostList($objEvent->row());
-            }
-        }
-
-        if (!$skipDetails && $objEvent->memberHosts) {
-            if (isset($this->eventDetailCache[$objEvent->id]['memberHostList'])) {
-                $arrEvent['memberHostList'] = $this->eventDetailCache[$objEvent->id]['memberHostList'];
-            } else {
-                $arrEvent['memberHostList'] = EventDetailsProcessor::memberHostList($objEvent->row(), $this->getModel());
-            }
-        }
-
-        if (!$skipDetails && $objEvent->eventtypes) {
-            if (isset($this->eventDetailCache[$objEvent->id]['eventtypeList'])) {
-                $arrEvent['eventtypeList'] = $this->eventDetailCache[$objEvent->id]['eventtypeList'];
-            } else {
-                $arrEvent['eventtypeList'] = EventDetailsProcessor::eventTypeList($objEvent->row());
-            }
-        }
-
-        if (!$skipDetails && $objEvent->rooms) {
-            if (isset($this->eventDetailCache[$objEvent->id]['roomList'])) {
-                $arrEvent['roomList'] = $this->eventDetailCache[$objEvent->id]['roomList'];
-            } else {
-                $arrEvent['roomList'] = EventDetailsProcessor::roomList($objEvent->row());
-            }
-        }
-
-
 
         // time diff
         if ($objEvent->endTime > $objEvent->startTime) {

@@ -1,6 +1,7 @@
 <?php
 
 use Contao\Image;
+use Contao\Input;
 use HeimrichHannot\CalendarPlus\CalendarPlusEventsModel;
 use HeimrichHannot\CalendarPlus\CalendarPlusModel;
 use HeimrichHannot\UtilsBundle\Util\Utils;
@@ -225,8 +226,8 @@ class tl_calendar_events_plus extends \Backend
     {
         $arrDca = &$GLOBALS['TL_DCA']['tl_calendar_events'];
 
-        if (\Input::get('table') == 'tl_calendar_events') {
-            $intEpid = \Input::get('epid');
+        if (Input::get('table') == 'tl_calendar_events') {
+            $intEpid = Input::get('epid');
 
             if ($intEpid) {
                 $arrDca['list']['sorting']['mode'] = 1;
@@ -257,12 +258,17 @@ class tl_calendar_events_plus extends \Backend
                     return \Contao\System::importStatic('tl_calendar_events')->listEvents($row);
                 };
 
-                if (($objEvents = CalendarPlusEventsModel::findBy(['tl_calendar_events.parentEvent=?', 'tl_calendar_events.id!=tl_calendar_events.parentEvent'], [$intEpid], ['order' => 'title'])) !== null) {
+                if (($objEvents = CalendarPlusEventsModel::findBy(
+                    ['tl_calendar_events.parentEvent=?', 'tl_calendar_events.id!=tl_calendar_events.parentEvent'],
+                    [$intEpid],
+                    ['order' => 'title'])
+                    ) !== null)
+                {
                     while ($objEvents->next()) {
                         $arrDca['list']['sorting']['root'][] = $objEvents->id;
                     }
                 } else {
-                    $arrDca['list']['sorting']['root'] = [-1]; // don't display anything
+                    $arrDca['list']['sorting']['filter'][] = ['1=?', 0];
                 }
             } else {
                 $arrDca['list']['sorting']['filter'][] = ['(parentEvent=? OR id=parentEvent)', 0];
