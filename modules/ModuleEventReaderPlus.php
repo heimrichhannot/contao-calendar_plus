@@ -11,6 +11,7 @@
 
 namespace HeimrichHannot\CalendarPlus;
 
+use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\ModuleLoader;
 use HeimrichHannot\EventRegistration\EventRegistration;
 use HeimrichHannot\Share\Share;
@@ -211,20 +212,7 @@ class ModuleEventReaderPlus extends EventsPlus
 
 
         if ($this->objEvent === null) {
-            // Do not index or cache the page
-            $objPage->noSearch = 1;
-            $objPage->cache    = 0;
-
-            // Send a 404 header
-            header('HTTP/1.1 404 Not Found');
-            $this->Template->event = '<p class="error">'.sprintf($GLOBALS['TL_LANG']['MSC']['invalidPage'], \Input::get('events')).'</p>';
-
-            // remove page from search index
-            if ($this->cal_showInModal && in_array('search_plus', ModuleLoader::getActive())) {
-                \HeimrichHannot\SearchPlus\Search::removePageFromIndex(\Environment::get('request'));
-            }
-
-            return;
+            throw new PageNotFoundException();
         }
 
         // Overwrite the page title (see #2853 and #4955)

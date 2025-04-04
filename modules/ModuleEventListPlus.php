@@ -12,12 +12,15 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Date;
 use Contao\FrontendTemplate;
 use Contao\Input;
+use Contao\Model\Collection;
+use Contao\ModuleModel;
 use Contao\StringUtil;
+use Contao\Template;
 use HeimrichHannot\CalendarPlus\Processor\EventDetailsProcessor;
-use function Clue\StreamFilter\fun;
 
 class ModuleEventListPlus extends EventsPlus
 {
@@ -145,7 +148,7 @@ class ModuleEventListPlus extends EventsPlus
 
         if ($this->cal_filterModule)
         {
-            $objFilterModule = \ModuleModel::findByPk($this->cal_filterModule);
+            $objFilterModule = ModuleModel::findByPk($this->cal_filterModule);
 
             if ($objFilterModule !== null)
             {
@@ -239,7 +242,7 @@ class ModuleEventListPlus extends EventsPlus
                 foreach ($events as $event)
                 {
                     $event['firstDay']  = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
-                    $event['firstDate'] = \Date::parse($objPage->dateFormat, $day);
+                    $event['firstDate'] = Date::parse($objPage->dateFormat, $day);
                     $event['datetime']  = date('Y-m-d', $day);
                     $event['dateday']   = $day;
 
@@ -248,35 +251,15 @@ class ModuleEventListPlus extends EventsPlus
                         // event is child event --> add parent event
                         if (($intParentEvent = $event['parentEvent']) > 0)
                         {
+                            if (!$this->cal_alwaysShowParents) {
+                                $event['href'] = $event['parentHref'];
+                                $arrSubEvents[$intParentEvent][$event['id']] = $event;
+                            }
+
+
+
                             $eventsWithParents[] = $event;
                             continue;
-
-//                            $arrParentEventIds[] = $intParentEvent;
-
-//                            // add parent event
-//                            if (($arrParentEvent = $this->getParentEventDetails($intParentEvent, $event['pid'], $strBegin)) === null)
-//                            {
-//                                continue;
-//                            }
-//                            $arrParentEvent['firstDay']  = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
-//                            $arrParentEvent['firstDate'] = \Date::parse($objPage->dateFormat, $day);
-//                            $arrParentEvent['datetime']  = date('Y-m-d', $day);
-//                            $arrParentEvent['dateday']   = $day;
-//
-//                            if($this->cal_alwaysShowParents && !in_array($arrParentEvent['id'], $arrEventIds))
-//                            {
-//                                $arrEvents[] = $arrParentEvent;
-//                                $arrEventIds[] = $arrParentEvent['id'];
-//                                continue;
-//                            }
-//
-//                            $arrParentEvents[$arrParentEvent['id']] = $arrParentEvent;
-//                            $arrParentEventIds[]                    = $arrParentEvent['id'];
-//
-//                            // set parent event as href
-//                            $event['href']                               = $event['parentHref'];
-//                            $arrSubEvents[$intParentEvent][$event['id']] = $event;
-//                            continue;
                         }
                         // event is parent even --> add child events
                         else
@@ -318,9 +301,7 @@ class ModuleEventListPlus extends EventsPlus
             // Do not index or cache the page if the page number is outside the range
             if ($page < 1 || $page > max(ceil($total/$this->perPage), 1))
             {
-                /** @var \PageError404 $objHandler */
-                $objHandler = new $GLOBALS['TL_PTY']['error_404']();
-                $objHandler->generate($objPage->id);
+                throw new PageNotFoundException();
             }
 
             $offset = ($page - 1) * $this->perPage;
@@ -350,14 +331,14 @@ class ModuleEventListPlus extends EventsPlus
 
                 $parentEvent = $event['parentEvent'];
 
-                if (!$this->cal_alwaysShowParents || in_array($parentEvent, array_column($arrEvents['id'], 'id'))) {
+                if (in_array($parentEvent, array_column($arrEvents, 'id'))) {
                     continue;
                 }
 
                 $day = $event['dateday'];
 
                 // add parent event
-                if (($arrParentEvent = $this->getParentEventDetails($parentEvent, $event['pid'], $strBegin)) === null) {
+                if (!($arrParentEvent = $this->getParentEventDetails($parentEvent, $event['pid'], $strBegin))) {
                     continue;
                 }
 
@@ -365,16 +346,6 @@ class ModuleEventListPlus extends EventsPlus
                 $arrParentEvent['firstDate'] = Date::parse($objPage->dateFormat, $day);
                 $arrParentEvent['datetime'] = date('Y-m-d', $day);
                 $arrParentEvent['dateday'] = $day;
-
-                if ($this->cal_alwaysShowParents && !in_array($arrParentEvent['id'], $arrEventIds)) {
-                    $arrEvents[] = $arrParentEvent;
-                    $arrEventIds[] = $arrParentEvent['id'];
-                    continue;
-                }
-
-                // set parent event as href
-                $event['href'] = $event['parentHref'];
-                $arrSubEvents[$parentEvent][$event['id']] = $event;
 
                 $arrEvents[] = $arrParentEvent;
             }
@@ -427,13 +398,27 @@ class ModuleEventListPlus extends EventsPlus
                 $blnIsLastEvent = true;
             }
 
-            $event['promoterList'] = EventDetailsProcessor::promoterList($event);
-            $event['docentList'] = EventDetailsProcessor::docentList($event);
-            $event['memberDocentList'] = EventDetailsProcessor::memberDocentList($event, $this->getModel());
-            $event['hostList'] = EventDetailsProcessor::hostList($event);
-            $event['memberHostList'] = EventDetailsProcessor::memberHostList($event, $this->getModel());
-            $event['roomList'] = EventDetailsProcessor::roomList($event);
-            $event['eventtypeList'] = EventDetailsProcessor::eventTypeList($event);
+            $event['promoterList'] = Template::once(function () use ($event): ?array {
+                return EventDetailsProcessor::promoterList($event);
+            });
+            $event['docentList'] = Template::once(function () use ($event): ?array {
+                return EventDetailsProcessor::docentList($event);
+            });
+            $event['memberDocentList'] = Template::once(function () use ($event): ?array {
+                return EventDetailsProcessor::memberDocentList($event, $this->getModel());
+            });
+            $event['hostList'] = Template::once(function () use ($event): ?array {
+                return EventDetailsProcessor::hostList($event);
+            });
+            $event['memberHostList'] = Template::once(function () use ($event): ?array {
+                return EventDetailsProcessor::memberHostList($event, $this->getModel());
+            });
+            $event['roomList'] = Template::once(function () use ($event): ?array {
+                return EventDetailsProcessor::roomList($event);
+            });
+            $event['eventtypeList'] = Template::once(function () use ($event): ?array {
+                return EventDetailsProcessor::eventTypeList($event);
+            });
 
             $objTemplate = new FrontendTemplate($this->cal_template);
             $objTemplate->setData($event);
@@ -464,20 +449,33 @@ class ModuleEventListPlus extends EventsPlus
                 ++$dayCount;
             }
 
-            if (isset($arrSubEvents[$event['id']]) && is_array($arrSubEvents[$event['id']]))
-            {
-                $objTemplate->subEvents = function () use ($arrSubEvents, $event, $objTemplate, $headerCount, $eventCount, $imgSize) {
-                    $strSubEvents = '';
-
-                    foreach ($arrSubEvents[$event['id']] as $subID => $arrSubEvent) {
-                        $objSubEventTemplate = new FrontendTemplate($this->cal_templateSubevent);
-                        $objSubEventTemplate->setData($arrSubEvent);
-                        $this->addEventDetailsToTemplate($objTemplate, $arrSubEvent, $headerCount, $eventCount, $imgSize);
-                        $strSubEvents .= $objSubEventTemplate->parse() . "\n";
+            if ($this->cal_templateSubevent) {
+                $objTemplate->subEvents = Template::once(function () use ($event, $strBegin, $arrSubEvents, $headerCount, $eventCount, $imgSize): string {
+                    if (!($event['parentEvent'] ?? false)) {
+                        /** @var Collection $objChildEvents */
+                        $objChildEvents = CalendarPlusEventsModel::findPublishedSubEvents($event['id']);
+                        if ($objChildEvents) {
+                            while ($objChildEvents->next()) {
+                                if (!isset($arrSubEvents[$event['id']][$objChildEvents->id])) {
+                                    $arrSubEvents[$event['id']][$objChildEvents->id] = $this->addSingleEvent($objChildEvents, $strBegin);
+                                }
+                            }
+                        }
                     }
 
-                    return $strSubEvents;
-                };
+                    $strSubEvents = '';
+
+                    if (isset($arrSubEvents[$event['id']]) && is_array($arrSubEvents[$event['id']])) {
+
+                        foreach ($arrSubEvents[$event['id']] as $subID => $arrSubEvent) {
+                            $objSubEventTemplate = new FrontendTemplate($this->cal_templateSubevent);
+                            $objSubEventTemplate->setData($arrSubEvent);
+                            $this->addEventDetailsToTemplate($objSubEventTemplate, $arrSubEvent, $headerCount, $eventCount, $imgSize);
+                            $strSubEvents .= $objSubEventTemplate->parse() . "\n";
+                        }
+                    }
+                    return \trim($strSubEvents);
+                });
             }
 
             $strClassList     =
