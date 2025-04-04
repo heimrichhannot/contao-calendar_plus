@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.8.0] - 2025-04-04
+- Changed: many additional variables are lazy loaded now
+- Changed: require at least contao 4.13.46
+- Changed: some adjustments to child events calculation to improve performance
+- Fixed: page not found exceptions not correctly handled
+
 ## [2.7.0] - 2025-02-19
 - Changed: better indication of parent event
 - Changed: added urls to parent events
