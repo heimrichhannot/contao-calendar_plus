@@ -12,9 +12,12 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
+use Contao\Date;
 use Contao\FrontendTemplate;
+use Contao\Input;
 use Contao\StringUtil;
 use HeimrichHannot\CalendarPlus\Processor\EventDetailsProcessor;
+use function Clue\StreamFilter\fun;
 
 class ModuleEventListPlus extends EventsPlus
 {
@@ -162,7 +165,7 @@ class ModuleEventListPlus extends EventsPlus
         $arrQueryOptions = [];
         $total = 0;
         $id   = 'page_e' . $this->id;
-        $page = (\Input::get($id) !== null) ? \Input::get($id) : 1;
+        $page = (Input::get($id) !== null) ? Input::get($id) : 1;
 
         if($this->cal_noSpan)
         {
@@ -218,9 +221,8 @@ class ModuleEventListPlus extends EventsPlus
 
         $arrEvents         = [];
         $arrEventIds       = [];
-        $arrParentEvents   = [];
-        $arrParentEventIds = [];
         $arrSubEvents      = [];
+        $eventsWithParents = [];
         $dateBegin         = date('Ymd', $strBegin);
         $dateEnd           = date('Ymd', $strEnd);
 
@@ -246,30 +248,35 @@ class ModuleEventListPlus extends EventsPlus
                         // event is child event --> add parent event
                         if (($intParentEvent = $event['parentEvent']) > 0)
                         {
-                            // add parent event
-                            if (($arrParentEvent = $this->getParentEventDetails($intParentEvent, $event['pid'], $strBegin)) === null)
-                            {
-                                continue;
-                            }
-                            $arrParentEvent['firstDay']  = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
-                            $arrParentEvent['firstDate'] = \Date::parse($objPage->dateFormat, $day);
-                            $arrParentEvent['datetime']  = date('Y-m-d', $day);
-                            $arrParentEvent['dateday']   = $day;
-
-                            if($this->cal_alwaysShowParents && !in_array($arrParentEvent['id'], $arrEventIds))
-                            {
-                                $arrEvents[] = $arrParentEvent;
-                                $arrEventIds[] = $arrParentEvent['id'];
-                                continue;
-                            }
-
-                            $arrParentEvents[$arrParentEvent['id']] = $arrParentEvent;
-                            $arrParentEventIds[]                    = $arrParentEvent['id'];
-
-                            // set parent event as href
-                            $event['href']                               = $event['parentHref'];
-                            $arrSubEvents[$intParentEvent][$event['id']] = $event;
+                            $eventsWithParents[] = $event;
                             continue;
+
+//                            $arrParentEventIds[] = $intParentEvent;
+
+//                            // add parent event
+//                            if (($arrParentEvent = $this->getParentEventDetails($intParentEvent, $event['pid'], $strBegin)) === null)
+//                            {
+//                                continue;
+//                            }
+//                            $arrParentEvent['firstDay']  = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
+//                            $arrParentEvent['firstDate'] = \Date::parse($objPage->dateFormat, $day);
+//                            $arrParentEvent['datetime']  = date('Y-m-d', $day);
+//                            $arrParentEvent['dateday']   = $day;
+//
+//                            if($this->cal_alwaysShowParents && !in_array($arrParentEvent['id'], $arrEventIds))
+//                            {
+//                                $arrEvents[] = $arrParentEvent;
+//                                $arrEventIds[] = $arrParentEvent['id'];
+//                                continue;
+//                            }
+//
+//                            $arrParentEvents[$arrParentEvent['id']] = $arrParentEvent;
+//                            $arrParentEventIds[]                    = $arrParentEvent['id'];
+//
+//                            // set parent event as href
+//                            $event['href']                               = $event['parentHref'];
+//                            $arrSubEvents[$intParentEvent][$event['id']] = $event;
+//                            continue;
                         }
                         // event is parent even --> add child events
                         else
@@ -338,19 +345,38 @@ class ModuleEventListPlus extends EventsPlus
             $iteratorOffset = $offset;
         }
 
-        // add parent events to $arrEvents
-        if (!empty($arrParentEventIds))
-        {
-            $arrEventIds = array_diff($arrParentEventIds, $arrEventIds);
+        if (!empty($eventsWithParents)) {
+            foreach ($eventsWithParents as $event) {
 
-            foreach ($arrParentEvents as $id => $event)
-            {
-                if (!in_array($id, $arrEventIds))
-                {
+                $parentEvent = $event['parentEvent'];
+
+                if (!$this->cal_alwaysShowParents || in_array($parentEvent, array_column($arrEvents['id'], 'id'))) {
                     continue;
                 }
 
-                $arrEvents[] = $event;
+                $day = $event['dateday'];
+
+                // add parent event
+                if (($arrParentEvent = $this->getParentEventDetails($parentEvent, $event['pid'], $strBegin)) === null) {
+                    continue;
+                }
+
+                $arrParentEvent['firstDay'] = $GLOBALS['TL_LANG']['DAYS'][date('w', $day)];
+                $arrParentEvent['firstDate'] = Date::parse($objPage->dateFormat, $day);
+                $arrParentEvent['datetime'] = date('Y-m-d', $day);
+                $arrParentEvent['dateday'] = $day;
+
+                if ($this->cal_alwaysShowParents && !in_array($arrParentEvent['id'], $arrEventIds)) {
+                    $arrEvents[] = $arrParentEvent;
+                    $arrEventIds[] = $arrParentEvent['id'];
+                    continue;
+                }
+
+                // set parent event as href
+                $event['href'] = $event['parentHref'];
+                $arrSubEvents[$parentEvent][$event['id']] = $event;
+
+                $arrEvents[] = $arrParentEvent;
             }
         }
 
@@ -440,17 +466,18 @@ class ModuleEventListPlus extends EventsPlus
 
             if (isset($arrSubEvents[$event['id']]) && is_array($arrSubEvents[$event['id']]))
             {
-                $strSubEvents = '';
+                $objTemplate->subEvents = function () use ($arrSubEvents, $event, $objTemplate, $headerCount, $eventCount, $imgSize) {
+                    $strSubEvents = '';
 
-                foreach ($arrSubEvents[$event['id']] as $subID => $arrSubEvent)
-                {
-                    $objSubEventTemplate = new \FrontendTemplate($this->cal_templateSubevent);
-                    $objSubEventTemplate->setData($arrSubEvent);
-                    $this->addEventDetailsToTemplate($objTemplate, $arrSubEvent, $headerCount, $eventCount, $imgSize);
-                    $strSubEvents .= $objSubEventTemplate->parse() . "\n";
-                }
+                    foreach ($arrSubEvents[$event['id']] as $subID => $arrSubEvent) {
+                        $objSubEventTemplate = new FrontendTemplate($this->cal_templateSubevent);
+                        $objSubEventTemplate->setData($arrSubEvent);
+                        $this->addEventDetailsToTemplate($objTemplate, $arrSubEvent, $headerCount, $eventCount, $imgSize);
+                        $strSubEvents .= $objSubEventTemplate->parse() . "\n";
+                    }
 
-                $objTemplate->subEvents = $strSubEvents;
+                    return $strSubEvents;
+                };
             }
 
             $strClassList     =
