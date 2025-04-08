@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.9.0] - 2025-04-08
+- Changed: filter promoters in backend based on archive
+
 ## [2.8.0] - 2025-04-04
 - Changed: many additional variables are lazy loaded now
 - Changed: require at least contao 4.13.46

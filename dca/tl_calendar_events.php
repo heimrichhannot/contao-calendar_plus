@@ -1,9 +1,11 @@
 <?php
 
+use Contao\DataContainer;
 use Contao\Image;
 use Contao\Input;
 use HeimrichHannot\CalendarPlus\CalendarPlusEventsModel;
 use HeimrichHannot\CalendarPlus\CalendarPlusModel;
+use HeimrichHannot\CalendarPlus\CalendarPromotersModel;
 use HeimrichHannot\UtilsBundle\Util\Utils;
 
 $arrDca = &$GLOBALS['TL_DCA']['tl_calendar_events'];
@@ -109,6 +111,25 @@ $arrFields = [
     'promoter'           => [
         'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['promoter'],
         'inputType'  => 'select',
+        'options_callback' => static function (DataContainer $dc): array {
+            $options = [];
+
+            $promoters = CalendarPromotersModel::findBy(
+                ['tl_calendar_promoters.pid=?', 'tl_calendar_promoters.published=1'],
+                [$dc->activeRecord->pid],
+                ['order' => 'title']
+            );
+
+            if (!$promoters) {
+                return $options;
+            }
+
+            while ($promoters->next()) {
+                $options[$promoters->id] = $promoters->title;
+            }
+
+            return $options;
+        },
         'foreignKey' => 'tl_calendar_promoters.title',
         'exclude'    => true,
         'eval'       => ['chosen' => true, 'includeBlankOption' => true, 'tl_class' => 'long', 'multiple' => true, 'style' => 'width: 853px'],
