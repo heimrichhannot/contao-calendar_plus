@@ -111,7 +111,12 @@ $arrFields = [
     'promoter'           => [
         'label'      => &$GLOBALS['TL_LANG']['tl_calendar_events']['promoter'],
         'inputType'  => 'select',
-        'options_callback' => static function (DataContainer $dc): array {
+        'options_callback' => static function (?DataContainer $dc = null): array {
+
+            if (!$dc || !$dc->activeRecord) {
+                return [];
+            }
+
             $options = [];
 
             $promoters = CalendarPromotersModel::findBy(

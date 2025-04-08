@@ -15,6 +15,11 @@ namespace HeimrichHannot\CalendarPlus;
 use Contao\Model;
 use HeimrichHannot\CalendarPlus\Utils\Options;
 
+/**
+ * @property int $id
+ * @property int $pid
+ * @property string $title
+ */
 class CalendarPromotersModel extends Model
 {
     protected static $strTable = 'tl_calendar_promoters';

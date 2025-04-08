@@ -12,7 +12,9 @@
 namespace HeimrichHannot\CalendarPlus;
 
 
-class CalendarPlusModel extends \CalendarModel
+use Contao\CalendarModel;
+
+class CalendarPlusModel extends CalendarModel
 {
 
 

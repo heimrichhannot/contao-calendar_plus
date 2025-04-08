@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.9.1] - 2025-04-08
+- Fixed: exception with promoter options callback in some edge cases
+
 ## [2.9.0] - 2025-04-08
 - Changed: filter promoters in backend based on archive
 
